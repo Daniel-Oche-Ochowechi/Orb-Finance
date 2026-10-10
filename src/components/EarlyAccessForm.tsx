@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, Lock, Sparkles, Mail } from 'lucide-react';
+import { ArrowRight, Lock, Sparkles, Mail, Check, ShieldCheck } from 'lucide-react';
 import EmailModal from './EmailModal';
+import ClassyConfetti from './ClassyConfetti';
 
 const ROLES = [
   { id: 'Bank', label: 'Bank' },
@@ -50,7 +51,7 @@ export default function EarlyAccessForm() {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
-    }, 850);
+    }, 700);
   };
 
   const handleReset = () => {
@@ -60,23 +61,33 @@ export default function EarlyAccessForm() {
     setIsSuccess(false);
   };
 
+  const passId = `ORB-${role.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (fullName.length * 137) % 9000)}`;
+
   return (
     <section className="page-section early-access-root" id="early-access">
       <div className="container">
         <div className="access-card-frame glass-surface">
+          {/* Confetti Celebration on Confirmation */}
+          {isSuccess && <ClassyConfetti duration={4800} />}
+
           {/* Ambient Glow Aura */}
           <div className="access-aura-light" aria-hidden="true" />
 
           <div className="access-layout-split">
             {/* Left Column: Context & Perks */}
             <div className="access-narrative-col">
-              <span className="section-label">EARLY ACCESS</span>
+              <div className="access-status-eyebrow">
+                <span className="amber-glow-dot" />
+                <span>Opening 15 January 2027</span>
+              </div>
+              
               <h2 className="access-main-title">
                 Reserve your place <br />
                 <span className="italic-accent gradient-shimmer">in orbit.</span>
               </h2>
+              
               <p className="access-sub-text">
-                Orb opens on <strong>15 January 2027</strong>. Join the list and we will write to you before launch with your access details.
+                Join the list and we will write to you before launch with your access details.
               </p>
 
               <div className="perks-cluster">
@@ -96,12 +107,12 @@ export default function EarlyAccessForm() {
               </div>
 
               <div className="discreet-guarantee">
-                <Lock size={15} className="lock-glyph" />
+                <Lock size={14} className="lock-glyph" />
                 <span>Discreet by design. We will only write to you about Orb Finance.</span>
               </div>
             </div>
 
-            {/* Right Column: Stateful Form / Ticket Generation */}
+            {/* Right Column: Interactive Form / Classy Confirmation */}
             <div className="access-form-col">
               {!isSuccess ? (
                 <form className="waitlist-interactive-form" onSubmit={handleSubmit} noValidate>
@@ -111,7 +122,7 @@ export default function EarlyAccessForm() {
                       id="form-fullname"
                       type="text"
                       className={`text-field ${nameError ? 'input-invalid' : ''}`}
-                      placeholder="e.g. Adebayo Adeleke"
+                      placeholder="Adebayo Adeleke"
                       value={fullName}
                       onChange={(e) => {
                         setFullName(e.target.value);
@@ -130,7 +141,7 @@ export default function EarlyAccessForm() {
                       id="form-email"
                       type="email"
                       className={`text-field ${emailError ? 'input-invalid' : ''}`}
-                      placeholder="e.g. adebayo@institution.com"
+                      placeholder="adebayo@institution.com"
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);
@@ -139,7 +150,7 @@ export default function EarlyAccessForm() {
                       autoComplete="email"
                     />
                     {emailError && (
-                      <span className="error-message">Please enter a valid email address.</span>
+                      <span className="error-message">Please enter a valid work email.</span>
                     )}
                   </div>
 
@@ -167,58 +178,102 @@ export default function EarlyAccessForm() {
 
                   <button
                     type="submit"
-                    className="btn btn-primary w-full submit-cta-btn"
+                    className="submit-cta-pill"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
-                      <span className="spinner-orbit" />
+                      <div className="spinner-wrapper">
+                        <span className="spinner-orbit" />
+                        <span>Securing your spot...</span>
+                      </div>
                     ) : (
                       <>
                         <span>Request early access</span>
-                        <ArrowRight size={17} />
+                        <span className="cta-arrow-circle">
+                          <ArrowRight size={15} strokeWidth={2.5} />
+                        </span>
                       </>
                     )}
                   </button>
+
+                  <div className="mobile-form-privacy">
+                    <Lock size={12} />
+                    <span>Discreet by design • No spam, ever</span>
+                  </div>
                 </form>
               ) : (
-                /* Success Orbit State */
+                /* Classy, Modern Orbit Confirmation State */
                 <div className="success-orbit-view">
                   <div className="success-icon-badge">
-                    <CheckCircle2 size={36} className="text-emerald" />
+                    <div className="badge-halo" aria-hidden="true" />
+                    <div className="badge-ring">
+                      <Check size={26} strokeWidth={3} className="text-emerald" />
+                    </div>
                   </div>
-                  <h3 className="success-statement-title">You are in orbit.</h3>
+
+                  <div className="success-status-pill">
+                    <Sparkles size={13} className="text-gold" />
+                    <span>EARLY ACCESS CONFIRMED</span>
+                  </div>
+
+                  <h3 className="success-statement-title">
+                    You are in <span className="italic-accent gradient-shimmer">orbit.</span>
+                  </h3>
+                  
                   <p className="success-body-message">
-                    Thank you, <strong className="text-white">{fullName}</strong>. We will be in touch before launch with your early access details.
+                    Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for our launch on <strong>15 January 2027</strong>.
                   </p>
 
-                  <div className="ticket-summary-box">
-                    <div className="summary-line">
-                      <span className="summary-k font-mono">REGISTRATION:</span>
-                      <span className="summary-v">{email}</span>
+                  {/* VIP Access Pass */}
+                  <div className="vip-access-pass">
+                    <div className="pass-specular-sheen" aria-hidden="true" />
+                    
+                    <div className="vip-pass-top">
+                      <div className="pass-brand">
+                        <span className="amber-glow-dot" />
+                        <span className="pass-brand-text">Orb Finance</span>
+                      </div>
+                      <div className="pass-tier-badge">
+                        <span>{role}</span>
+                        <span className="pass-code-mono">{passId}</span>
+                      </div>
                     </div>
-                    <div className="summary-line">
-                      <span className="summary-k font-mono">CATEGORY:</span>
-                      <span className="summary-v">{role}</span>
-                    </div>
-                    <div className="summary-line">
-                      <span className="summary-k font-mono">LAUNCH DATE:</span>
-                      <span className="summary-v text-gold font-mono">15 January 2027</span>
+
+                    <div className="vip-pass-grid">
+                      <div className="pass-cell">
+                        <span className="cell-label">MEMBER NAME</span>
+                        <span className="cell-value truncate">{fullName}</span>
+                      </div>
+                      <div className="pass-cell">
+                        <span className="cell-label">REGISTERED EMAIL</span>
+                        <span className="cell-value truncate">{email}</span>
+                      </div>
+                      <div className="pass-cell">
+                        <span className="cell-label">LAUNCH DATE</span>
+                        <span className="cell-value text-gold">15 January 2027</span>
+                      </div>
+                      <div className="pass-cell">
+                        <span className="cell-label">PROTOCOL ACCESS</span>
+                        <span className="cell-value text-emerald flex items-center gap-1">
+                          <ShieldCheck size={14} /> Priority Queue
+                        </span>
+                      </div>
                     </div>
                   </div>
 
                   <div className="success-actions-row">
                     <button
-                      className="btn btn-secondary btn-sm"
+                      className="preview-email-btn"
                       onClick={() => setShowEmailModal(true)}
                     >
-                      <Mail size={15} />
+                      <Mail size={15} strokeWidth={2} />
                       <span>Preview Confirmation Email</span>
                     </button>
                     <button
-                      className="btn btn-secondary btn-sm"
+                      className="reset-ghost-btn"
                       onClick={handleReset}
                     >
-                      <span>Submit Another Inquiry</span>
+                      <span>Submit another inquiry</span>
                     </button>
                   </div>
                 </div>
@@ -238,270 +293,436 @@ export default function EarlyAccessForm() {
       <style jsx>{`
         .access-card-frame {
           position: relative;
-          background: linear-gradient(135deg, rgba(147, 51, 234, 0.12), rgba(245, 158, 11, 0.08));
-          border-radius: var(--radius-xl);
-          padding: 4rem;
+          background: linear-gradient(145deg, rgba(22, 22, 34, 0.9) 0%, rgba(12, 12, 20, 0.95) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 28px;
+          padding: 3.5rem 3.5rem;
           overflow: hidden;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
         .access-aura-light {
           position: absolute;
-          top: -40%;
-          left: 20%;
-          width: 550px;
-          height: 550px;
-          background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
-          filter: blur(60px);
+          top: -30%;
+          right: 15%;
+          width: 500px;
+          height: 500px;
+          background: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 70%);
+          filter: blur(65px);
           pointer-events: none;
         }
 
         .access-layout-split {
           display: grid;
           grid-template-columns: 1fr 1.15fr;
-          gap: 4rem;
+          gap: 3.5rem;
           position: relative;
           z-index: 2;
+          align-items: center;
         }
 
-        .access-main-title {
-          font-size: clamp(2.4rem, 4vw, 3.4rem);
-          line-height: 1.1;
+        .access-status-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.7);
           margin-bottom: 1.25rem;
         }
 
+        .amber-glow-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #f59e0b;
+          box-shadow: 0 0 8px #f59e0b;
+        }
+
+        .access-main-title {
+          font-size: clamp(2.3rem, 4vw, 3.2rem);
+          line-height: 1.12;
+          letter-spacing: -0.035em;
+          margin-bottom: 1.15rem;
+        }
+
         .access-sub-text {
-          font-size: 1.15rem;
-          line-height: 1.65;
+          font-size: 1.05rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.65);
           margin-bottom: 2rem;
         }
 
         .perks-cluster {
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
           margin-bottom: 2rem;
         }
 
         .perks-heading {
-          font-size: 0.78rem;
-          letter-spacing: 0.12em;
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: var(--text-muted);
-          margin-bottom: 1rem;
+          color: rgba(255, 255, 255, 0.45);
+          margin-bottom: 0.25rem;
         }
 
         .perk-entry {
           display: flex;
           align-items: flex-start;
-          gap: 0.75rem;
-          margin-bottom: 0.85rem;
-          font-size: 0.96rem;
-          color: var(--text-secondary);
+          gap: 0.65rem;
+          font-size: 0.92rem;
+          color: rgba(255, 255, 255, 0.7);
+          line-height: 1.5;
         }
 
         .perk-entry strong {
-          color: var(--text-primary);
+          color: #ffffff;
         }
 
         .perk-bullet {
-          color: var(--aurora-gold);
+          color: #f59e0b;
+          font-size: 0.85rem;
+          margin-top: 0.1rem;
         }
 
         .discreet-guarantee {
           display: flex;
           align-items: center;
-          gap: 0.65rem;
-          font-size: 0.82rem;
-          color: var(--text-muted);
-          padding-top: 1.5rem;
-          border-top: 1px solid var(--glass-border);
+          gap: 0.55rem;
+          font-size: 0.78rem;
+          color: rgba(255, 255, 255, 0.45);
+          padding-top: 1.25rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .lock-glyph {
-          color: var(--text-muted);
+          color: rgba(255, 255, 255, 0.45);
           flex-shrink: 0;
         }
 
         .access-form-col {
-          background: rgba(13, 13, 23, 0.75);
-          border: 1px solid var(--glass-border);
-          border-radius: var(--radius-lg);
-          padding: 2.5rem;
-        }
-
-        html.light-mode .access-form-col {
-          background: rgba(255, 255, 255, 0.9);
+          background: rgba(14, 14, 22, 0.75);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 22px;
+          padding: 2.25rem;
+          backdrop-filter: blur(20px);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
         }
 
         .input-group {
-          margin-bottom: 1.4rem;
+          margin-bottom: 1.25rem;
         }
 
         .input-label {
           display: block;
-          font-size: 0.85rem;
+          font-size: 0.82rem;
           font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: 0.45rem;
+          color: rgba(255, 255, 255, 0.85);
+          margin-bottom: 0.4rem;
         }
 
         .text-field {
           width: 100%;
           background: rgba(255, 255, 255, 0.05);
-          border: 1px solid var(--glass-border);
-          border-radius: var(--radius-md);
-          padding: 0.9rem 1.25rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 14px;
+          padding: 0.85rem 1.15rem;
           font-family: var(--font-sans);
           font-size: 0.95rem;
-          color: var(--text-primary);
+          color: #ffffff;
           outline: none;
-          transition: all 0.2s ease;
-        }
-
-        html.light-mode .text-field {
-          background: rgba(0, 0, 0, 0.03);
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .text-field:focus {
-          border-color: var(--aurora-violet);
+          border-color: rgba(192, 132, 252, 0.7);
           background: rgba(255, 255, 255, 0.08);
-          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+          box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.18);
         }
 
         .text-field.input-invalid {
           border-color: #fb7185;
+          box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.15);
         }
 
         .error-message {
           display: block;
-          font-size: 0.78rem;
+          font-size: 0.75rem;
           color: #fb7185;
-          margin-top: 0.35rem;
+          margin-top: 0.25rem;
         }
 
         .role-options-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 0.6rem;
+          gap: 0.45rem;
+          background: rgba(0, 0, 0, 0.3);
+          padding: 0.3rem;
+          border-radius: 14px;
+          border: 1px solid rgba(255, 255, 255, 0.07);
         }
 
         .role-select-btn {
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid var(--glass-border);
-          border-radius: var(--radius-sm);
-          padding: 0.65rem 0.5rem;
+          background: transparent;
+          border: none;
+          border-radius: 10px;
+          padding: 0.65rem 0.45rem;
           font-family: var(--font-sans);
           font-size: 0.82rem;
-          font-weight: 600;
-          color: var(--text-secondary);
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.6);
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          text-align: center;
         }
 
         .role-select-btn:hover {
-          color: var(--text-primary);
-          background: rgba(255, 255, 255, 0.08);
+          color: #ffffff;
         }
 
         .role-select-btn.active {
-          background: rgba(139, 92, 246, 0.2);
-          border-color: var(--aurora-violet);
+          background: rgba(255, 255, 255, 0.14);
           color: #ffffff;
-          box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.25);
         }
 
         .general-error-box {
           background: rgba(239, 68, 68, 0.15);
-          border: 1px solid rgba(239, 68, 68, 0.4);
+          border: 1px solid rgba(239, 68, 68, 0.35);
           color: #fca5a5;
           padding: 0.75rem;
-          border-radius: var(--radius-sm);
-          font-size: 0.85rem;
-          margin-bottom: 1.25rem;
+          border-radius: 12px;
+          font-size: 0.82rem;
+          margin-bottom: 1rem;
         }
 
-        .submit-cta-btn {
-          padding: 0.95rem;
-          font-size: 1rem;
+        .submit-cta-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          background: #ffffff;
+          color: #000000;
+          border: none;
+          border-radius: 9999px;
+          padding: 0.45rem 0.55rem 0.45rem 1.6rem;
+          font-family: var(--font-sans);
+          font-size: 0.96rem;
+          font-weight: 600;
+          cursor: pointer;
           margin-top: 0.5rem;
+          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .submit-cta-pill:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(255, 255, 255, 0.38);
+        }
+
+        .submit-cta-pill:active {
+          transform: scale(0.985);
+        }
+
+        .cta-arrow-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: #000000;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .submit-cta-pill:hover .cta-arrow-circle {
+          transform: translateX(3px);
+          background: #7c3aed;
+        }
+
+        .spinner-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          width: 100%;
+          padding: 0.45rem 0;
+          font-size: 0.85rem;
         }
 
         .spinner-orbit {
-          width: 18px;
-          height: 18px;
+          width: 16px;
+          height: 16px;
           border: 2px solid rgba(0, 0, 0, 0.2);
-          border-top-color: currentColor;
+          border-top-color: #000000;
           border-radius: 50%;
           animation: spin 0.8s linear infinite;
         }
 
-        .w-full {
-          width: 100%;
+        .mobile-form-privacy {
+          display: none;
         }
 
-        /* Success View */
+        /* Success Orbit View */
         .success-orbit-view {
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          padding: 1.5rem 0;
+          padding: 1.5rem 0.5rem;
+          animation: fadeIn 0.4s ease;
         }
 
         .success-icon-badge {
-          width: 64px;
-          height: 64px;
+          position: relative;
+          margin-bottom: 1.25rem;
+        }
+
+        .badge-halo {
+          position: absolute;
+          inset: -10px;
+          background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
           border-radius: 50%;
-          background: rgba(16, 185, 129, 0.15);
-          border: 1px solid rgba(16, 185, 129, 0.4);
+          filter: blur(10px);
+        }
+
+        .badge-ring {
+          position: relative;
+          width: 68px;
+          height: 68px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
+          border: 1.5px solid rgba(16, 185, 129, 0.5);
+          box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 1.5rem;
         }
 
-        .success-statement-title {
-          font-size: 1.85rem;
-          margin-bottom: 0.75rem;
-        }
-
-        .success-body-message {
-          font-size: 1.05rem;
-          line-height: 1.6;
-          margin-bottom: 1.75rem;
-        }
-
-        .ticket-summary-box {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid var(--glass-border);
-          border-radius: var(--radius-md);
-          padding: 1.25rem;
-          margin-bottom: 1.75rem;
-          text-align: left;
-        }
-
-        .summary-line {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.5rem;
-          font-size: 0.85rem;
-        }
-
-        .summary-line:last-child {
-          margin-bottom: 0;
-        }
-
-        .summary-k {
-          color: var(--text-muted);
-          font-size: 0.75rem;
-        }
-
-        .summary-v {
-          font-weight: 600;
-          color: var(--text-primary);
+        .text-emerald {
+          color: #34d399;
         }
 
         .text-gold {
-          color: var(--aurora-gold);
+          color: #fbbf24;
+        }
+
+        .success-status-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          color: #f59e0b;
+          margin-bottom: 0.5rem;
+        }
+
+        .success-statement-title {
+          font-size: 2rem;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          margin-bottom: 0.6rem;
+        }
+
+        .success-body-message {
+          font-size: 0.98rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.65);
+          margin-bottom: 1.75rem;
+        }
+
+        /* VIP Access Pass */
+        .vip-access-pass {
+          width: 100%;
+          background: linear-gradient(145deg, rgba(28, 28, 42, 0.9) 0%, rgba(14, 14, 22, 0.95) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 20px;
+          padding: 1.5rem;
+          margin-bottom: 1.75rem;
+          text-align: left;
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .pass-specular-sheen {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.04) 50%, transparent 60%);
+          pointer-events: none;
+        }
+
+        .vip-pass-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          padding-bottom: 0.85rem;
+          margin-bottom: 1.15rem;
+        }
+
+        .pass-brand {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .pass-brand-text {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #ffffff;
+        }
+
+        .pass-tier-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .pass-tier-badge span:first-child {
+          font-size: 0.7rem;
+          font-weight: 600;
+          background: rgba(255, 255, 255, 0.1);
+          padding: 0.2rem 0.55rem;
+          border-radius: 9999px;
+          color: #ffffff;
+        }
+
+        .pass-code-mono {
+          font-family: monospace;
+          font-size: 0.65rem;
+          color: rgba(255, 255, 255, 0.45);
+        }
+
+        .vip-pass-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.15rem;
+        }
+
+        .pass-cell {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          min-width: 0;
+        }
+
+        .cell-label {
+          font-size: 0.62rem;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.4);
+          letter-spacing: 0.06em;
+        }
+
+        .cell-value {
+          font-size: 0.92rem;
+          font-weight: 600;
+          color: #ffffff;
         }
 
         .success-actions-row {
@@ -509,19 +730,127 @@ export default function EarlyAccessForm() {
           gap: 0.75rem;
           flex-wrap: wrap;
           justify-content: center;
+          width: 100%;
+        }
+
+        .preview-email-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: 9999px;
+          padding: 0.7rem 1.35rem;
+          font-family: var(--font-sans);
+          font-size: 0.88rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .preview-email-btn:hover {
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .reset-ghost-btn {
+          background: transparent;
+          color: rgba(255, 255, 255, 0.55);
+          border: none;
+          padding: 0.7rem 1.1rem;
+          font-family: var(--font-sans);
+          font-size: 0.88rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: color 0.2s ease;
+        }
+
+        .reset-ghost-btn:hover {
+          color: #ffffff;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.97); }
+          to { opacity: 1; transform: scale(1); }
         }
 
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
 
+        /* 📱 RESPONSIVE & MOBILE DESIGN */
         @media (max-width: 992px) {
           .access-layout-split {
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2.25rem;
           }
           .access-card-frame {
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1.35rem;
+            border-radius: 22px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .access-main-title {
+            font-size: 1.85rem;
+            margin-bottom: 0.5rem;
+          }
+          
+          .access-sub-text {
+            font-size: 0.92rem;
+            margin-bottom: 1.25rem;
+          }
+
+          /* Hide repetitive perks cluster on mobile for a clean, fast experience */
+          .perks-cluster,
+          .discreet-guarantee {
+            display: none;
+          }
+
+          .access-form-col {
+            padding: 1.35rem 1.15rem;
+            border-radius: 18px;
+          }
+
+          .text-field {
+            font-size: 16px; /* Prevents auto zoom */
+            padding: 0.85rem 1rem;
+          }
+
+          .role-select-btn {
+            font-size: 0.8rem;
+            padding: 0.65rem 0.25rem;
+          }
+
+          .submit-cta-pill {
+            font-size: 0.96rem;
+            padding: 0.45rem 0.55rem 0.45rem 1.35rem;
+          }
+
+          .mobile-form-privacy {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            font-size: 0.74rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 0.85rem;
+          }
+
+          .vip-pass-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+          }
+
+          .success-actions-row {
+            flex-direction: column;
+          }
+
+          .preview-email-btn,
+          .reset-ghost-btn {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>
