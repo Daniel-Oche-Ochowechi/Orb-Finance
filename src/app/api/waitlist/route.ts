@@ -6,6 +6,7 @@ import {
   checkRateLimit,
   sanitizeInput,
 } from '@/lib/security';
+import { createWaitlistEntry } from '@/lib/supabase/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -86,22 +87,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 5. Successful Clean Response
+    // 5. Save directly to Supabase
     const cleanName = nameValidation.cleanName;
     const cleanEmail = emailValidation.cleanEmail;
-    const cleanRole = sanitizeInput(role);
-    const referenceId = `ORB-${cleanRole.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (cleanName.length * 137) % 9000)}`;
+    const cleanRole = sanitizeInput(role) as any;
+    const generatedRefId = `ORB-${cleanRole.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (cleanName.length * 137) % 9000)}`;
+
+    const userAgent = req.headers.get('user-agent') || 'Unknown';
+
+    const { submission, isDuplicate } = await createWaitlistEntry({
+      fullName: cleanName,
+      email: cleanEmail,
+      role: cleanRole,
+      referenceId: generatedRefId,
+      ipAddress: ip,
+      userAgent: userAgent,
+    });
 
     return NextResponse.json(
       {
         success: true,
+        isDuplicate,
         data: {
-          name: cleanName,
-          email: cleanEmail,
-          role: cleanRole,
-          referenceId,
+          id: submission.id,
+          name: submission.full_name,
+          email: submission.email,
+          role: submission.role,
+          referenceId: submission.reference_id,
+          status: submission.status,
           launchDate: '15 January 2027',
-          timestamp: new Date().toISOString(),
+          timestamp: submission.created_at,
         },
       },
       {
