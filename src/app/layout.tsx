@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Raleway, JetBrains_Mono } from 'next/font/google';
+import StyledJsxRegistry from '@/lib/registry';
 import './globals.css';
 
 const raleway = Raleway({
@@ -48,8 +49,9 @@ export default function RootLayout({
       <body className="antialiased selection-orb">
         {/* Fine film noise overlay for authentic tactile atmosphere */}
         <div className="tactile-noise" aria-hidden="true" />
-        {children}
+        <StyledJsxRegistry>{children}</StyledJsxRegistry>
       </body>
     </html>
   );
 }
+
