@@ -1,0 +1,55 @@
+import type { Metadata } from 'next';
+import { Raleway, JetBrains_Mono } from 'next/font/google';
+import './globals.css';
+
+const raleway = Raleway({
+  subsets: ['latin'],
+  variable: '--font-raleway',
+  weight: ['300', '400', '500', '600', '700', '800'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
+
+export const metadata: Metadata = {
+  title: 'Orb Finance | The settlement layer for a borderless economy',
+  description:
+    'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
+  openGraph: {
+    title: 'Orb Finance | The settlement layer for a borderless economy',
+    description:
+      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
+    url: 'https://orbfinance.com',
+    siteName: 'Orb Finance',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Orb Finance | Every currency. One orbit.',
+    description:
+      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027.',
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className={`${raleway.variable} ${jetbrainsMono.variable}`}>
+      <body className="antialiased selection-orb">
+        {/* Fine film noise overlay for authentic tactile atmosphere */}
+        <div className="tactile-noise" aria-hidden="true" />
+        {children}
+      </body>
+    </html>
+  );
+}

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orb Finance | The settlement layer for a borderless economy</title>
+  <meta name="description" content="One API to move Naira, pay bills and settle across currencies. Orb Finance launches 1 January 2027. Join the waitlist.">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Orb Finance | The settlement layer for a borderless economy">
+  <meta property="og:description" content="One API to move Naira, pay bills and settle across currencies. Orb Finance launches 1 January 2027. Join the waitlist.">
+  
+  <!-- Google Fonts: Raleway & JetBrains Mono for Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' stroke='%23a78bfa' stroke-width='6' fill='none'/><ellipse cx='50' cy='50' rx='46' ry='18' stroke='%23f59e0b' stroke-width='4' fill='none' transform='rotate(-25 50 50)'/><circle cx='50' cy='50' r='12' fill='%23ffffff'/></svg>">
+</head>
+<body class="bg-dark text-light antialiased selection:bg-purple-500 selection:text-white">
+  <!-- Subtle Grain & Ambient Glow Canvas -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- Mouse Glow Aura -->
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" id="announcement">
+    <div class="container announcement-inner">
+      <div class="announcement-badge">
+        <span class="pulse-dot"></span>
+        <span>Coming Soon</span>
+      </div>
+      <p class="announcement-text">
+        Orb Finance opens <strong>1 January 2027</strong>.
+      </p>
+      <a href="#early-access" class="announcement-link">
+        Request early access <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Floating Navigation -->
+  <header class="site-header" id="navbar">
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo" aria-label="Orb Finance Home">
+        <div class="logo-pill">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="9" stroke-width="1.75"/>
+            <ellipse cx="12" cy="12" rx="11" ry="4.5" stroke-width="1.5" stroke="url(#logo-grad)" transform="rotate(-28 12 12)"/>
+            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#c084fc"/>
+                <stop offset="50%" stop-color="#fb7185"/>
+                <stop offset="100%" stop-color="#fbbf24"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-text">ORB</span>
+        </div>
+        <span class="brand-sub">FINANCE</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="nav-menu" id="nav-menu">
+        <a href="#platform" class="nav-link">Platform</a>
+        <a href="#how-it-works" class="nav-link">How it works</a>
+        <a href="#institutions" class="nav-link">Partners</a>
+        <a href="#principles" class="nav-link">Principles</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <!-- Nav CTA & Theme / Audio controls -->
+      <div class="nav-actions">
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme" title="Toggle visual theme">
+          <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+
+        <a href="#early-access" class="btn btn-primary nav-cta">
+          <span>Request early access</span>
+          <div class="btn-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobile-toggle" class="mobile-toggle" aria-label="Open mobile menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Floating Social Rail (matching design reference) -->
+  <aside class="social-rail" aria-label="Social connections">
+    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-rail-item" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+      </svg>
+    </a>
+    <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="social-rail-item" aria-label="X (formerly Twitter)">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    </a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-rail-item" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>
+    </a>
+    <div class="social-rail-line"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="hero-aurora-glow" aria-hidden="true"></div>
+      
+      <div class="container hero-container">
+        <!-- Badge -->
+        <div class="hero-badge reveal-fade">
+          <span class="badge-sparkle">✦</span>
+          <span class="badge-text">Opening 1 January 2027</span>
+        </div>
+
+        <!-- Headline with Orbital Wire Rings in Reference Style -->
+        <div class="hero-title-wrap reveal-fade">
+          <h1 class="hero-title">
+            <span>Every currency.</span>
+            <span class="orbital-inline-wrap">
+              <span class="orbital-rings-visual" aria-hidden="true">
+                <span class="ring ring-1"></span>
+                <span class="ring ring-2"></span>
+                <span class="ring ring-3"></span>
+                <span class="ring ring-4"></span>
+              </span>
+              <span class="italic-accent">One orbit.</span>
+            </span>
+          </h1>
+        </div>
+
+        <!-- Subheading -->
+        <p class="hero-subtitle reveal-fade">
+          The settlement layer for banks and fintechs. Move Naira, pay bills and reach recipients in their own currency through a single, elegant integration.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-actions reveal-fade">
+          <a href="#early-access" class="hero-pill-cta">
+            <span class="pill-text">Request early access</span>
+            <span class="pill-arrow-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </a>
+          <a href="#platform" class="btn btn-secondary">
+            <span>Explore the platform</span>
+          </a>
+        </div>
+
+        <!-- Live Countdown Ticker -->
+        <div class="hero-countdown-wrap reveal-fade" id="countdown-wrapper">
+          <div class="countdown-header">
+            <span class="countdown-status-dot"></span>
+            <span class="countdown-label">COUNTDOWN TO PROTOCOL ACTIVATION</span>
+          </div>
+          <div class="countdown-grid" id="countdown-grid">
+            <div class="countdown-card">
+              <div class="countdown-number" id="cd-days">000</div>
+              <div class="countdown-unit">Days</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-card">
+              <div class="countdown-number" id="cd-hours">00</div>
+              <div class="countdown-unit">Hours</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-card">
+              <div class="countdown-number" id="cd-minutes">00</div>
+              <div class="countdown-unit">Minutes</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-card">
+              <div class="countdown-number" id="cd-seconds">00</div>
+              <div class="countdown-unit">Seconds</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Bottom Telemetry Bar (Reference Design Spec) -->
+        <div class="hero-telemetry-bar reveal-fade">
+          <div class="telemetry-item">
+            <span class="telemetry-label">Architecture</span>
+            <span class="telemetry-val">Double-entry Ledger</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-num">99.99%</span>
+            <span class="telemetry-sub">Uptime SLA</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-num">&lt;2.4s</span>
+            <span class="telemetry-sub">Settlement Velocity</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-num">0.00%</span>
+            <span class="telemetry-sub">Reconciliation Drift</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE SHIFT (Quote & Comparison) -->
+    <section class="section shift-section" id="shift">
+      <div class="container">
+        <div class="shift-grid">
+          <div class="shift-left reveal-left">
+            <div class="section-tag">THE SHIFT</div>
+            <h2 class="shift-title">
+              Money should move like <span class="gradient-text italic-accent">information</span>.
+            </h2>
+            <p class="shift-desc">
+              Today, value crosses borders through layers of intermediaries, each adding delay and cost. Local payments are scattered across providers, and your teams spend their time connecting what should already be connected.
+            </p>
+            <div class="shift-callout">
+              <div class="callout-icon">✦</div>
+              <p class="callout-text">Orb brings it all into a single, cohesive system.</p>
+            </div>
+          </div>
+
+          <div class="shift-right reveal-right">
+            <div class="comparison-card">
+              <div class="comparison-header">
+                <button class="comp-tab active" data-tab="legacy">The Legacy Web</button>
+                <button class="comp-tab" data-tab="orb">The Orb Orbit</button>
+              </div>
+              <div class="comparison-body" id="comparison-content">
+                <div class="comparison-state legacy-state active">
+                  <div class="flow-step">
+                    <span class="step-badge bad">Disconnected</span>
+                    <h4>Multiple Vendor Silos</h4>
+                    <p>Separate APIs for NGN transfers, utility providers, and cross-border corridors.</p>
+                  </div>
+                  <div class="flow-step">
+                    <span class="step-badge bad">Opaque</span>
+                    <h4>Hidden FX Margins</h4>
+                    <p>Settlement fees discovered only after transactions clear days later.</p>
+                  </div>
+                  <div class="flow-step">
+                    <span class="step-badge bad">Manual</span>
+                    <h4>Reconciliation Headaches</h4>
+                    <p>Manual balancing across fragmented correspondent accounts.</p>
+                  </div>
+                </div>
+
+                <div class="comparison-state orb-state">
+                  <div class="flow-step highlight">
+                    <span class="step-badge good">Unified</span>
+                    <h4>Single Connection Point</h4>
+                    <p>One unified API endpoint for domestic payments, utilities, and global settlement.</p>
+                  </div>
+                  <div class="flow-step highlight">
+                    <span class="step-badge good">Transparent</span>
+                    <h4>Guaranteed Instant Rates</h4>
+                    <p>Locked FX quotes upfront before commitment with zero hidden markups.</p>
+                  </div>
+                  <div class="flow-step highlight">
+                    <span class="step-badge good">Automated</span>
+                    <h4>Double-Entry Verification</h4>
+                    <p>Real-time atomic reconciliation with automated signed webhooks.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE PLATFORM (One Integration. Three Capabilities.) -->
+    <section class="section platform-section" id="platform">
+      <div class="container">
+        <div class="section-header text-center reveal-fade">
+          <div class="section-tag">THE PLATFORM</div>
+          <h2 class="section-title">One integration. <span class="italic-accent">Three capabilities.</span></h2>
+          <p class="section-subtitle">
+            Engineered to streamline domestic velocity, local utility orchestration, and borderless multi-currency settlement.
+          </p>
+        </div>
+
+        <div class="platform-cards-grid">
+          <!-- Card 1: Naira Transfers -->
+          <div class="platform-card reveal-fade" style="--delay: 0.1s">
+            <div class="card-glow" style="--card-color: #a855f7;"></div>
+            <div class="card-inner">
+              <div class="card-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  <circle cx="12" cy="12" r="10" stroke-width="1.2" stroke-dasharray="2 3"/>
+                </svg>
+              </div>
+              <div class="card-category">CAPABILITY 01</div>
+              <h3 class="card-title">Naira transfers</h3>
+              <p class="card-desc">
+                Precise, dependable movement of Naira, with a clear status at every step. Complete settlement transparency with zero ambiguity.
+              </p>
+
+              <!-- Interactive mini widget -->
+              <div class="card-mini-widget">
+                <div class="widget-header">
+                  <span class="live-tag"><span class="dot"></span> NGN Instant Rail</span>
+                  <span class="widget-meta">Sub-second</span>
+                </div>
+                <div class="widget-visual-bar">
+                  <div class="bar-step done"><span>Initiated</span></div>
+                  <div class="bar-step done"><span>Screened</span></div>
+                  <div class="bar-step active"><span>Settled</span></div>
+                </div>
+                <div class="widget-status-pill">Status: <code>200 OK_CONFIRMED</code></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Bill Payments -->
+          <div class="platform-card reveal-fade" style="--delay: 0.2s">
+            <div class="card-glow" style="--card-color: #ec4899;"></div>
+            <div class="card-inner">
+              <div class="card-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <div class="card-category">CAPABILITY 02</div>
+              <h3 class="card-title">Bill payments</h3>
+              <p class="card-desc">
+                Electricity, airtime, data and television, available inside your own product with automated token vending and instant receipt dispatch.
+              </p>
+
+              <!-- Interactive mini widget -->
+              <div class="card-mini-widget">
+                <div class="widget-header">
+                  <span class="live-tag"><span class="dot"></span> Utility Mesh</span>
+                  <span class="widget-meta">35+ Providers</span>
+                </div>
+                <div class="utility-chips">
+                  <span class="utility-chip">⚡ Power DISCOs</span>
+                  <span class="utility-chip">📶 Mobile Data</span>
+                  <span class="utility-chip">📺 TV Subscriptions</span>
+                </div>
+                <div class="widget-status-pill">Vending: <code>DISPATCH_AUTO</code></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Global Settlement -->
+          <div class="platform-card reveal-fade" style="--delay: 0.3s">
+            <div class="card-glow" style="--card-color: #f59e0b;"></div>
+            <div class="card-inner">
+              <div class="card-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+              </div>
+              <div class="card-category">CAPABILITY 03</div>
+              <h3 class="card-title">Global settlement</h3>
+              <p class="card-desc">
+                Pay recipients in their own currency. Pounds, dollars, euros and more, through the same connection, with the rate in front of you before you commit.
+              </p>
+
+              <!-- Interactive mini widget: Live Multi-Currency Simulator -->
+              <div class="card-mini-widget">
+                <div class="widget-header">
+                  <span class="live-tag"><span class="dot"></span> FX Guaranteed Quote</span>
+                  <span class="widget-meta">Locked Rate</span>
+                </div>
+                <div class="fx-converter-mini">
+                  <div class="fx-row">
+                    <span class="currency-tag">NGN</span>
+                    <span class="fx-val" id="mini-calc-ngn">₦ 5,000,000</span>
+                  </div>
+                  <div class="fx-arrow">⇄</div>
+                  <div class="fx-row">
+                    <span class="currency-tag">USD / GBP / EUR</span>
+                    <span class="fx-val" id="mini-calc-dest">$ 3,280.00</span>
+                  </div>
+                </div>
+                <div class="widget-status-pill">Guaranteed Margin: <code>FIXED_0.20%</code></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-header text-center reveal-fade">
+          <div class="section-tag">HOW IT WORKS</div>
+          <h2 class="section-title">The pathway into <span class="italic-accent">orbit</span></h2>
+          <p class="section-subtitle">
+            Three simple milestones between your product and global liquidity.
+          </p>
+        </div>
+
+        <div class="how-grid">
+          <!-- Step 1 -->
+          <div class="how-step-card reveal-fade" style="--delay: 0.1s">
+            <div class="step-orbit-num">01</div>
+            <div class="step-card-content">
+              <div class="step-phase">STEP ONE</div>
+              <h3 class="step-title">Connect</h3>
+              <p class="step-text">
+                Integrate once. Rehearse the entire flow in our sandbox before anything goes live. Modern SDKs, OpenAPI specs, and instant credential provisioning.
+              </p>
+              <div class="step-feature-tags">
+                <span>✦ Sandbox Environment</span>
+                <span>✦ One-line SDKs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="how-step-card reveal-fade" style="--delay: 0.2s">
+            <div class="step-orbit-num">02</div>
+            <div class="step-card-content">
+              <div class="step-phase">STEP TWO</div>
+              <h3 class="step-title">Move</h3>
+              <p class="step-text">
+                Request a quote, confirm, and Orb handles screening, conversion and settlement. Everything executes atomically with upfront fee guarantees.
+              </p>
+              <div class="step-feature-tags">
+                <span>✦ Guaranteed Quotes</span>
+                <span>✦ Instant AML Screening</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="how-step-card reveal-fade" style="--delay: 0.3s">
+            <div class="step-orbit-num">03</div>
+            <div class="step-card-content">
+              <div class="step-phase">STEP THREE</div>
+              <h3 class="step-title">Observe</h3>
+              <p class="step-text">
+                Watch every transaction in real time. Receive a signed webhook the moment a status changes, with cryptographic signatures and automatic retry logic.
+              </p>
+              <div class="step-feature-tags">
+                <span>✦ Signed Webhooks</span>
+                <span>✦ Audit Log Streams</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive API Code Console -->
+        <div class="api-console-wrapper reveal-fade">
+          <div class="api-console-header">
+            <div class="console-tabs">
+              <button class="console-tab active" data-lang="curl">cURL</button>
+              <button class="console-tab" data-lang="node">Node.js</button>
+              <button class="console-tab" data-lang="python">Python</button>
+              <button class="console-tab" data-lang="webhook">Webhook Response</button>
+            </div>
+            <div class="console-actions">
+              <span class="console-endpoint">POST /v1/settlements/quote</span>
+              <button class="copy-btn" id="copy-code-btn" title="Copy code snippet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="api-console-body">
+            <pre><code id="code-display" class="language-json"></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUILT FOR INSTITUTIONS -->
+    <section class="section institutions-section" id="institutions">
+      <div class="container">
+        <div class="institutions-layout">
+          <div class="inst-content reveal-left">
+            <div class="section-tag">INSTITUTIONAL GRADE</div>
+            <h2 class="inst-title">
+              Engineered for banks and fintechs that <span class="italic-accent">value precision</span>.
+            </h2>
+            <p class="inst-desc">
+              Orb is constructed from first principles to provide the governance, auditability, and throughput demanded by licensed tier-1 financial infrastructure.
+            </p>
+
+            <ul class="inst-features-list">
+              <li class="inst-feat-item">
+                <div class="feat-icon">✦</div>
+                <div class="feat-text">
+                  <strong>A refined API.</strong> Clean endpoints, signed requests and webhooks that retry until delivered.
+                </div>
+              </li>
+              <li class="inst-feat-item">
+                <div class="feat-icon">✦</div>
+                <div class="feat-text">
+                  <strong>A partner console.</strong> History, statements and access keys, together in one secure interface.
+                </div>
+              </li>
+              <li class="inst-feat-item">
+                <div class="feat-icon">✦</div>
+                <div class="feat-text">
+                  <strong>Transparent economics.</strong> Fees and exchange margins are agreed in advance and visible on every quote.
+                </div>
+              </li>
+              <li class="inst-feat-item">
+                <div class="feat-icon">✦</div>
+                <div class="feat-text">
+                  <strong>Sandbox first.</strong> Your engineers can test the complete flow before a contract is signed.
+                </div>
+              </li>
+            </ul>
+
+            <div class="inst-cta-wrap">
+              <a href="#early-access" class="btn btn-primary" onclick="setRoleSelect('Bank')">
+                <span>Request sandbox access</span>
+                <span class="btn-arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="inst-preview reveal-right">
+            <!-- Simulated Partner Console Glass Mockup -->
+            <div class="console-mockup-card">
+              <div class="mockup-topbar">
+                <div class="mockup-dots">
+                  <span class="dot-red"></span>
+                  <span class="dot-yellow"></span>
+                  <span class="dot-green"></span>
+                </div>
+                <div class="mockup-title">orb-partner-console.enterprise.live</div>
+                <div class="mockup-badge">SANDBOX READY</div>
+              </div>
+              <div class="mockup-body">
+                <div class="mockup-kpis">
+                  <div class="kpi-box">
+                    <span class="kpi-label">Ledger Status</span>
+                    <span class="kpi-val text-emerald">Balanced (0.00 Drift)</span>
+                  </div>
+                  <div class="kpi-box">
+                    <span class="kpi-label">Active Corridors</span>
+                    <span class="kpi-val">NGN ⇄ USD / GBP / EUR</span>
+                  </div>
+                </div>
+
+                <div class="mockup-stream-title">Live Transaction Stream</div>
+                <div class="mockup-tx-list">
+                  <div class="tx-row">
+                    <div class="tx-type"><span class="badge-tag ngn">NGN</span> Payout</div>
+                    <div class="tx-dest">Access Bank •••• 9102</div>
+                    <div class="tx-amt">₦ 4,200,000.00</div>
+                    <div class="tx-status success">Settled</div>
+                  </div>
+                  <div class="tx-row">
+                    <div class="tx-type"><span class="badge-tag fx">FX</span> Cross-Border</div>
+                    <div class="tx-dest">Barclays UK •••• 4410</div>
+                    <div class="tx-amt">£ 12,450.00</div>
+                    <div class="tx-status success">Settled</div>
+                  </div>
+                  <div class="tx-row">
+                    <div class="tx-type"><span class="badge-tag util">UTIL</span> Ikeja Electric</div>
+                    <div class="tx-dest">Meter # 4519-8201</div>
+                    <div class="tx-amt">₦ 85,000.00</div>
+                    <div class="tx-status success">Token Vended</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRINCIPLES -->
+    <section class="section principles-section" id="principles">
+      <div class="container">
+        <div class="section-header text-center reveal-fade">
+          <div class="section-tag">CORE ARCHITECTURE</div>
+          <h2 class="section-title">Our <span class="italic-accent">principles</span></h2>
+          <p class="section-subtitle">
+            The mathematical and regulatory foundations governing every settlement.
+          </p>
+        </div>
+
+        <div class="principles-grid">
+          <!-- Principle 1 -->
+          <div class="principle-card reveal-fade" style="--delay: 0.1s">
+            <div class="principle-number">01</div>
+            <h3 class="principle-heading">Designed for Nigeria. Built for the world.</h3>
+            <p class="principle-body">
+              We begin where the need is greatest, then extend outward over the same network. Deep local clearing rails coupled directly to global liquidity hubs.
+            </p>
+          </div>
+
+          <!-- Principle 2 -->
+          <div class="principle-card reveal-fade" style="--delay: 0.2s">
+            <div class="principle-number">02</div>
+            <h3 class="principle-heading">Exact by design.</h3>
+            <p class="principle-body">
+              Every movement of value is recorded in an immutable double-entry ledger and reconciled daily. The numbers always agree with cryptographic precision.
+            </p>
+          </div>
+
+          <!-- Principle 3 -->
+          <div class="principle-card reveal-fade" style="--delay: 0.3s">
+            <div class="principle-number">03</div>
+            <h3 class="principle-heading">Compliance at the core.</h3>
+            <p class="principle-body">
+              Sanctions screening, PEP verification, and risk scoring occur before funds move, never after. Regulatory compliance as a first-order engineering principle.
+            </p>
+          </div>
+
+          <!-- Principle 4 -->
+          <div class="principle-card reveal-fade" style="--delay: 0.4s">
+            <div class="principle-number">04</div>
+            <h3 class="principle-heading">Intelligence that grows with the network.</h3>
+            <p class="principle-body">
+              As volume builds, Orb applies increasingly capable fraud detection, adaptive routing, dynamic pricing and institutional liquidity planning.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EARLY ACCESS / WAITLIST -->
+    <section class="section access-section" id="early-access">
+      <div class="container">
+        <div class="access-wrapper reveal-fade">
+          <div class="access-glow" aria-hidden="true"></div>
+          
+          <div class="access-grid">
+            <!-- Left Info -->
+            <div class="access-info">
+              <div class="section-tag">WAITLIST</div>
+              <h2 class="access-title">
+                Reserve your place <br><span class="italic-accent gradient-text">in orbit.</span>
+              </h2>
+              <p class="access-lead">
+                Orb opens on <strong>1 January 2027</strong>. Join the list and we will write to you before launch with your access details.
+              </p>
+
+              <div class="access-perks">
+                <h4 class="perks-title">What early access means</h4>
+                <div class="perk-row">
+                  <div class="perk-bullet">✦</div>
+                  <div>
+                    <strong>First in line.</strong> Connect as soon as we open.
+                  </div>
+                </div>
+                <div class="perk-row">
+                  <div class="perk-bullet">✦</div>
+                  <div>
+                    <strong>Sandbox access.</strong> Build and test ahead of launch.
+                  </div>
+                </div>
+                <div class="perk-row">
+                  <div class="perk-bullet">✦</div>
+                  <div>
+                    <strong>A direct line to our team.</strong> Discuss integration and pricing before the doors open.
+                  </div>
+                </div>
+              </div>
+
+              <div class="discreet-note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lock-icon">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Discreet by design. We will only write to you about Orb Finance.</span>
+              </div>
+            </div>
+
+            <!-- Right Form -->
+            <div class="access-form-card">
+              <form id="early-access-form" class="early-form" novalidate>
+                <div class="form-group">
+                  <label for="fullName" class="form-label">Full name</label>
+                  <input type="text" id="fullName" class="form-input" placeholder="e.g. Adebayo Adeleke" required autocomplete="name">
+                  <span class="field-error" id="name-error">Please enter your full name.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="emailAddress" class="form-label">Work email address</label>
+                  <input type="email" id="emailAddress" class="form-input" placeholder="e.g. adebayo@institution.com" required autocomplete="email">
+                  <span class="field-error" id="email-error">Please enter a valid email address.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">I am joining as:</label>
+                  <div class="role-selector-grid">
+                    <label class="role-radio-label">
+                      <input type="radio" name="joiningRole" value="Bank" checked>
+                      <span class="role-pill">Bank</span>
+                    </label>
+                    <label class="role-radio-label">
+                      <input type="radio" name="joiningRole" value="Fintech or payments company">
+                      <span class="role-pill">Fintech / Payments</span>
+                    </label>
+                    <label class="role-radio-label">
+                      <input type="radio" name="joiningRole" value="Business">
+                      <span class="role-pill">Business</span>
+                    </label>
+                    <label class="role-radio-label">
+                      <input type="radio" name="joiningRole" value="Individual">
+                      <span class="role-pill">Individual</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-general-error" id="general-error">
+                  Something went wrong. Please try again.
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block submit-btn" id="submit-waitlist-btn">
+                  <span class="btn-text">Request early access</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                  <span class="btn-arrow">→</span>
+                </button>
+              </form>
+
+              <!-- Success Overlay (Rendered when form succeeds) -->
+              <div class="form-success-state" id="form-success-state">
+                <div class="success-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <h3 class="success-title">You are in orbit.</h3>
+                <p class="success-desc">
+                  Thank you, <span id="success-user-name" class="font-semibold text-white"></span>. We will be in touch before launch with your early access details.
+                </p>
+                <div class="success-meta-card">
+                  <div class="meta-row">
+                    <span class="meta-k">Registered Email:</span>
+                    <span class="meta-v" id="success-user-email"></span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="meta-k">Access Tier:</span>
+                    <span class="meta-v" id="success-user-role"></span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="meta-k">Activation:</span>
+                    <span class="meta-v text-amber">1 January 2027</span>
+                  </div>
+                </div>
+                <div class="success-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" id="view-email-preview-btn">
+                    <span>Preview Confirmation Email</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="reset-form-btn">
+                    <span>Submit another inquiry</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="section faq-section" id="faq">
+      <div class="container max-w-4xl">
+        <div class="section-header text-center reveal-fade">
+          <div class="section-tag">FREQUENTLY ASKED QUESTIONS</div>
+          <h2 class="section-title">Everything you need <span class="italic-accent">to know</span></h2>
+          <p class="section-subtitle">
+            Straightforward answers on our launch timeline, architecture, and eligibility.
+          </p>
+        </div>
+
+        <div class="faq-accordion">
+          <!-- Item 1 -->
+          <div class="faq-item reveal-fade" style="--delay: 0.1s">
+            <button class="faq-question" aria-expanded="false">
+              <span>When does Orb Finance launch?</span>
+              <span class="faq-toggle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <p>
+                On <strong>1 January 2027</strong>. Early access members will hear from our engineering and onboarding teams first with staging credentials and SDK distribution.
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="faq-item reveal-fade" style="--delay: 0.2s">
+            <button class="faq-question" aria-expanded="false">
+              <span>Who is Orb for?</span>
+              <span class="faq-toggle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <p>
+                Banks, fintechs and businesses that want to move money, vend bills and settle across global currencies through one unified integration. Individuals may join the list too, and we will notify you when personal retail access opens.
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="faq-item reveal-fade" style="--delay: 0.3s">
+            <button class="faq-question" aria-expanded="false">
+              <span>Does it cost anything to join?</span>
+              <span class="faq-toggle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <p>
+                No. Early access is completely free and carries no obligation whatsoever.
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="faq-item reveal-fade" style="--delay: 0.4s">
+            <button class="faq-question" aria-expanded="false">
+              <span>What happens after I sign up?</span>
+              <span class="faq-toggle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <p>
+                You will receive an immediate confirmation, followed by periodic architectural updates as launch approaches, then an exclusive invitation with keys when your access tier opens.
+              </p>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="faq-item reveal-fade" style="--delay: 0.5s">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can we connect before launch?</span>
+              <span class="faq-toggle-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <p>
+                Yes. If you join as a bank or fintech, or request sandbox access, our technical partnerships team will contact you to discuss early API rehearsal in staging.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST AND COMPLIANCE BANNER -->
+    <section class="section trust-section">
+      <div class="container">
+        <div class="trust-banner reveal-fade">
+          <div class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>REGULATORY & AUDIT STANDARDS</span>
+          </div>
+          <h3 class="trust-title">Trust and compliance</h3>
+          <p class="trust-desc">
+            Orb delivers payments and settlement in partnership with licensed institutions. Data is handled in strict accordance with Nigerian data-protection requirements (NDPR), and every transaction leaves a complete, immutable audit trail.
+          </p>
+          <div class="trust-badges-grid">
+            <div class="trust-pill"><span>🔒 Double-Entry Reconciliation</span></div>
+            <div class="trust-pill"><span>⚡ Real-Time Sanctions Screening</span></div>
+            <div class="trust-pill"><span>🏛 Licensed Institutional Railings</span></div>
+            <div class="trust-pill"><span>🛡 ISO 27001 & NDPR Aligned</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING CALL TO ACTION -->
+    <section class="section closing-cta-section">
+      <div class="closing-glow" aria-hidden="true"></div>
+      <div class="container text-center reveal-fade">
+        <h2 class="closing-title">
+          Step into <span class="italic-accent gradient-text">orbit</span>.
+        </h2>
+        <p class="closing-subtitle">
+          Join us on 1 January 2027. The settlement layer for a borderless economy.
+        </p>
+
+        <div class="closing-actions">
+          <a href="#early-access" class="hero-pill-cta">
+            <span class="pill-text">Request early access</span>
+            <span class="pill-arrow-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </a>
+          <a href="#early-access" class="btn btn-secondary">
+            <span>Contact our team</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo-pill">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="9" stroke-width="1.75"/>
+              <ellipse cx="12" cy="12" rx="11" ry="4.5" stroke-width="1.5" stroke="url(#logo-grad-footer)" transform="rotate(-28 12 12)"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor"/>
+              <defs>
+                <linearGradient id="logo-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#c084fc"/>
+                  <stop offset="50%" stop-color="#fb7185"/>
+                  <stop offset="100%" stop-color="#fbbf24"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="logo-text">ORB FINANCE</span>
+          </div>
+          <p class="footer-tagline">
+            Every currency. One orbit.<br>
+            <span class="text-amber">Opening 1 January 2027</span>
+          </p>
+        </div>
+
+        <div class="footer-nav-columns">
+          <div class="footer-col">
+            <h5 class="col-title">Navigation</h5>
+            <ul class="col-links">
+              <li><a href="#platform">Platform</a></li>
+              <li><a href="#how-it-works">How it works</a></li>
+              <li><a href="#institutions">Partners</a></li>
+              <li><a href="#principles">Principles</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5 class="col-title">Resources</h5>
+            <ul class="col-links">
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#early-access">Request Sandbox</a></li>
+              <li><a href="#early-access">Waitlist</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5 class="col-title">Legal & Security</h5>
+            <ul class="col-links">
+              <li><a href="#trust">Privacy Policy</a></li>
+              <li><a href="#trust">Terms of Service</a></li>
+              <li><a href="#trust">NDPR Compliance</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">
+          © 2026 Orb Finance. All rights reserved. Registered financial technology infrastructure.
+        </p>
+        <div class="footer-social-links">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
+          <span>·</span>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">X (Twitter)</a>
+          <span>·</span>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: Confirmation Email Preview (Interactive Polish) -->
+  <div class="modal-backdrop" id="email-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">Email Dispatch Simulation</span>
+          <h4 class="modal-title">Subject: You are in orbit</h4>
+        </div>
+        <button class="modal-close-btn" id="close-email-modal" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="email-mockup">
+          <div class="email-header-meta">
+            <div><strong>From:</strong> Orb Finance &lt;hello@orbfinance.com&gt;</div>
+            <div><strong>To:</strong> <span id="modal-to-name">Adebayo Adeleke</span> &lt;<span id="modal-to-email">user@company.com</span>&gt;</div>
+            <div><strong>Date:</strong> 09 October 2026</div>
+          </div>
+          <div class="email-content">
+            <p>Dear <span id="modal-body-name">Adebayo</span>,</p>
+            <p>Thank you for requesting early access to Orb Finance.</p>
+            <p>We are building a single network for moving Naira, paying bills and settling across currencies. We open on <strong>1 January 2027</strong>, and you will hear from us before then with your details.</p>
+            <p>If you represent a bank or fintech and wish to talk sooner, simply reply to this message.</p>
+            <p class="email-closing">
+              <em>Every currency. One orbit.</em><br><br>
+              <strong>The Orb Finance team</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" id="close-modal-footer">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
