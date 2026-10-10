@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight, Lock, Sparkles, Mail, Check, ShieldCheck, AlertCircle } from 'lucide-react';
+import { ArrowRight, Lock, Sparkles, Mail, Check, ShieldCheck, AlertCircle, User, AtSign } from 'lucide-react';
 import EmailModal from './EmailModal';
 import ClassyConfetti from './ClassyConfetti';
 import { validateFullName, validateWorkEmail, validateRole, sanitizeInput } from '@/lib/security';
 
 const ROLES = [
-  { id: 'Bank', label: 'Bank' },
-  { id: 'Fintech or payments company', label: 'Fintech / Payments' },
-  { id: 'Business', label: 'Business' },
-  { id: 'Individual', label: 'Individual' },
+  { id: 'Bank', label: 'Bank', subtitle: 'Institutional settlement & clearing' },
+  { id: 'Fintech or payments company', label: 'Fintech / Payments', subtitle: 'Virtual cards & payment rails' },
+  { id: 'Business', label: 'Business', subtitle: 'Multi-currency corporate treasury' },
+  { id: 'Individual', label: 'Individual', subtitle: 'Private global wealth accounts' },
 ];
 
 export default function EarlyAccessForm() {
@@ -169,19 +169,22 @@ export default function EarlyAccessForm() {
 
                   <div className="input-group">
                     <label htmlFor="form-fullname" className="input-label">Full name</label>
-                    <input
-                      id="form-fullname"
-                      type="text"
-                      className={`text-field ${nameError ? 'input-invalid' : ''}`}
-                      placeholder="Adebayo Adeleke"
-                      value={fullName}
-                      maxLength={70}
-                      onChange={(e) => {
-                        setFullName(e.target.value);
-                        if (nameError) setNameError(null);
-                      }}
-                      autoComplete="name"
-                    />
+                    <div className="form-field-wrap">
+                      <User size={15} className="form-field-icon" />
+                      <input
+                        id="form-fullname"
+                        type="text"
+                        className={`text-field ${nameError ? 'input-invalid' : ''}`}
+                        placeholder="Adebayo Adeleke"
+                        value={fullName}
+                        maxLength={70}
+                        onChange={(e) => {
+                          setFullName(e.target.value);
+                          if (nameError) setNameError(null);
+                        }}
+                        autoComplete="name"
+                      />
+                    </div>
                     {nameError && (
                       <span className="error-message">
                         <AlertCircle size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
@@ -192,19 +195,22 @@ export default function EarlyAccessForm() {
 
                   <div className="input-group">
                     <label htmlFor="form-email" className="input-label">Work email address</label>
-                    <input
-                      id="form-email"
-                      type="email"
-                      className={`text-field ${emailError ? 'input-invalid' : ''}`}
-                      placeholder="adebayo@institution.com"
-                      value={email}
-                      maxLength={254}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (emailError) setEmailError(null);
-                      }}
-                      autoComplete="email"
-                    />
+                    <div className="form-field-wrap">
+                      <AtSign size={15} className="form-field-icon" />
+                      <input
+                        id="form-email"
+                        type="email"
+                        className={`text-field ${emailError ? 'input-invalid' : ''}`}
+                        placeholder="adebayo@institution.com"
+                        value={email}
+                        maxLength={254}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (emailError) setEmailError(null);
+                        }}
+                        autoComplete="email"
+                      />
+                    </div>
                     {emailError && (
                       <span className="error-message">
                         <AlertCircle size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
@@ -228,10 +234,13 @@ export default function EarlyAccessForm() {
                             className={`apple-line-item ${isSelected ? 'selected' : ''}`}
                             onClick={() => setRole(r.id)}
                           >
-                            <span className="apple-line-text">{r.label}</span>
+                            <div className="apple-line-info">
+                              <span className="apple-line-text">{r.label}</span>
+                              <span className="apple-line-sub">{r.subtitle}</span>
+                            </div>
                             <span className="apple-line-check-slot">
                               {isSelected && (
-                                <Check size={14} strokeWidth={2.6} className="apple-check-glyph" />
+                                <Check size={14} strokeWidth={2.8} className="apple-check-glyph" />
                               )}
                             </span>
                           </button>
@@ -494,12 +503,30 @@ export default function EarlyAccessForm() {
           margin-bottom: 0.4rem;
         }
 
+        .form-field-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        :global(.form-field-icon) {
+          position: absolute;
+          left: 1.1rem;
+          color: rgba(255, 255, 255, 0.35);
+          pointer-events: none;
+          transition: color 0.2s ease;
+        }
+
+        .form-field-wrap:focus-within :global(.form-field-icon) {
+          color: #f59e0b;
+        }
+
         .text-field {
           width: 100%;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 14px;
-          padding: 0.85rem 1.15rem;
+          padding: 0.85rem 1.15rem 0.85rem 2.85rem;
           font-family: var(--font-sans);
           font-size: 0.95rem;
           color: #ffffff;
@@ -508,9 +535,9 @@ export default function EarlyAccessForm() {
         }
 
         .text-field:focus {
-          border-color: rgba(192, 132, 252, 0.7);
+          border-color: rgba(245, 158, 11, 0.6);
           background: rgba(255, 255, 255, 0.08);
-          box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.18);
+          box-shadow: 0 0 0 3.5px rgba(245, 158, 11, 0.16);
         }
 
         .text-field.input-invalid {
@@ -519,20 +546,22 @@ export default function EarlyAccessForm() {
         }
 
         .error-message {
-          display: block;
-          font-size: 0.75rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          font-size: 0.76rem;
           color: #fb7185;
-          margin-top: 0.25rem;
+          margin-top: 0.3rem;
         }
 
         /* 🍎 Apple-Grade Clean Line Selector */
         .apple-line-list {
           display: flex;
           flex-direction: column;
-          background: rgba(255, 255, 255, 0.02);
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.025);
+          border-top: 1px solid rgba(255, 255, 255, 0.09);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+          border-radius: 12px;
           overflow: hidden;
         }
 
@@ -544,12 +573,10 @@ export default function EarlyAccessForm() {
           background: transparent;
           border: none;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          padding: 0.72rem 0.65rem;
+          padding: 0.78rem 0.85rem;
           font-family: var(--font-sans);
-          font-size: 0.92rem;
-          color: rgba(255, 255, 255, 0.65);
           cursor: pointer;
-          transition: background-color 0.18s ease, color 0.18s ease;
+          transition: background-color 0.18s ease;
           text-align: left;
         }
 
@@ -558,23 +585,49 @@ export default function EarlyAccessForm() {
         }
 
         .apple-line-item:hover {
-          background: rgba(255, 255, 255, 0.045);
-          color: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .apple-line-item.selected {
-          color: #ffffff;
-          font-weight: 600;
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.075);
+        }
+
+        .apple-line-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.12rem;
         }
 
         .apple-line-text {
+          font-size: 0.93rem;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.7);
           letter-spacing: -0.01em;
+          transition: color 0.18s ease;
+        }
+
+        .apple-line-item:hover .apple-line-text {
+          color: rgba(255, 255, 255, 0.95);
+        }
+
+        .apple-line-item.selected .apple-line-text {
+          color: #ffffff;
+          font-weight: 600;
+        }
+
+        .apple-line-sub {
+          font-size: 0.74rem;
+          color: rgba(255, 255, 255, 0.4);
+          letter-spacing: -0.005em;
+        }
+
+        .apple-line-item.selected .apple-line-sub {
+          color: rgba(255, 255, 255, 0.6);
         }
 
         .apple-line-check-slot {
-          width: 20px;
-          height: 20px;
+          width: 22px;
+          height: 22px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -583,11 +636,11 @@ export default function EarlyAccessForm() {
 
         :global(.apple-check-glyph) {
           color: #f59e0b;
-          animation: checkPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: checkPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes checkPop {
-          0% { transform: scale(0.5); opacity: 0; }
+          0% { transform: scale(0.4); opacity: 0; }
           100% { transform: scale(1); opacity: 1; }
         }
 

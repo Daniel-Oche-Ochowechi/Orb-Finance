@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
-import { X, Check, Lock, Mail, ArrowRight, Sparkles, ShieldCheck, AlertCircle } from 'lucide-react';
+import { X, Check, Lock, Mail, ArrowRight, Sparkles, ShieldCheck, AlertCircle, User, AtSign } from 'lucide-react';
 import EmailModal from './EmailModal';
 import ClassyConfetti from './ClassyConfetti';
 import { validateFullName, validateWorkEmail, validateRole, sanitizeInput } from '@/lib/security';
 
 const ROLES = [
-  { id: 'Bank', label: 'Bank' },
-  { id: 'Fintech or payments company', label: 'Fintech / Payments' },
-  { id: 'Business', label: 'Business' },
-  { id: 'Individual', label: 'Individual' },
+  { id: 'Bank', label: 'Bank', subtitle: 'Institutional settlement & clearing' },
+  { id: 'Fintech or payments company', label: 'Fintech / Payments', subtitle: 'Virtual cards & payment rails' },
+  { id: 'Business', label: 'Business', subtitle: 'Multi-currency corporate treasury' },
+  { id: 'Individual', label: 'Individual', subtitle: 'Private global wealth accounts' },
 ];
 
 export default function EarlyAccessModal() {
@@ -149,8 +149,9 @@ export default function EarlyAccessModal() {
         {/* Mobile Pull Handle Indicator */}
         <div className="mobile-handle-bar" aria-hidden="true" />
 
-        {/* Soft Ambient Diffusion Glow */}
-        <div className="apple-specular-light" aria-hidden="true" />
+        {/* Ambient Specular Highlights */}
+        <div className="apple-specular-top-light" aria-hidden="true" />
+        <div className="apple-specular-bottom-light" aria-hidden="true" />
 
         {/* Minimalist Glass Dismiss Button */}
         <button
@@ -158,7 +159,7 @@ export default function EarlyAccessModal() {
           onClick={closeEarlyAccess}
           aria-label="Close modal"
         >
-          <X size={16} strokeWidth={2.5} />
+          <X size={15} strokeWidth={2.4} />
         </button>
 
         {!isSuccess ? (
@@ -167,7 +168,7 @@ export default function EarlyAccessModal() {
             <div className="apple-narrative-panel">
               <div className="apple-status-eyebrow">
                 <span className="apple-amber-dot" />
-                <span>Opening 15 January 2027</span>
+                <span className="apple-status-text">Opening 15 January 2027</span>
               </div>
 
               <h2 id="apple-modal-title" className="apple-headline">
@@ -176,30 +177,33 @@ export default function EarlyAccessModal() {
               </h2>
 
               <p className="apple-subhead">
-                Join the list and we will write to you before launch with your access details.
+                Join the priority register. We will write to you before launch with your private access credentials.
               </p>
 
               {/* What early access means list */}
               <div className="apple-perks-group">
-                <h4 className="apple-perks-title">What early access means</h4>
-                <div className="apple-perk-item">
-                  <span className="apple-perk-bullet">✦</span>
-                  <p><strong>First in line.</strong> Connect as soon as we open.</p>
+                <div className="apple-perks-header">
+                  <Sparkles size={12} className="sparkle-accent" />
+                  <span className="apple-perks-title">Early Access Privileges</span>
                 </div>
                 <div className="apple-perk-item">
                   <span className="apple-perk-bullet">✦</span>
-                  <p><strong>Sandbox access.</strong> Build and test ahead of launch.</p>
+                  <p><strong>First in line.</strong> Direct connection as soon as doors open.</p>
                 </div>
                 <div className="apple-perk-item">
                   <span className="apple-perk-bullet">✦</span>
-                  <p><strong>A direct line to our team.</strong> Discuss integration and pricing before the doors open.</p>
+                  <p><strong>Sandbox environment.</strong> Build and test ahead of launch.</p>
+                </div>
+                <div className="apple-perk-item">
+                  <span className="apple-perk-bullet">✦</span>
+                  <p><strong>Direct partner line.</strong> Custom integration & volume pricing review.</p>
                 </div>
               </div>
 
               {/* Discreet Privacy Note */}
               <div className="apple-privacy-guarantee">
-                <Lock size={13} strokeWidth={2} className="apple-lock-icon" />
-                <span>Discreet by design. We will only write to you about Orb Finance.</span>
+                <Lock size={12} strokeWidth={2} className="apple-lock-icon" />
+                <span>Discreet by design. Zero spam, ever.</span>
               </div>
             </div>
 
@@ -223,22 +227,27 @@ export default function EarlyAccessModal() {
                   <label htmlFor="apple-name" className="apple-label">
                     Full name
                   </label>
-                  <input
-                    id="apple-name"
-                    type="text"
-                    maxLength={70}
-                    className={`apple-input-field ${nameError ? 'apple-field-error' : ''}`}
-                    placeholder="Adebayo Adeleke"
-                    value={fullName}
-                    onChange={(e) => {
-                      setFullName(e.target.value);
-                      if (nameError) setNameError(null);
-                    }}
-                    autoComplete="name"
-                    autoFocus
-                  />
+                  <div className="apple-field-wrap">
+                    <User size={15} className="apple-field-icon" />
+                    <input
+                      id="apple-name"
+                      type="text"
+                      maxLength={70}
+                      className={`apple-input-field ${nameError ? 'apple-field-error' : ''}`}
+                      placeholder="Adebayo Adeleke"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        if (nameError) setNameError(null);
+                      }}
+                      autoComplete="name"
+                      autoFocus
+                    />
+                  </div>
                   {nameError && (
-                    <span className="apple-error-text">{nameError}</span>
+                    <span className="apple-error-text">
+                      <AlertCircle size={12} /> {nameError}
+                    </span>
                   )}
                 </div>
 
@@ -247,27 +256,34 @@ export default function EarlyAccessModal() {
                   <label htmlFor="apple-email" className="apple-label">
                     Work email address
                   </label>
-                  <input
-                    id="apple-email"
-                    type="email"
-                    maxLength={254}
-                    className={`apple-input-field ${emailError ? 'apple-field-error' : ''}`}
-                    placeholder="adebayo@institution.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (emailError) setEmailError(null);
-                    }}
-                    autoComplete="email"
-                  />
+                  <div className="apple-field-wrap">
+                    <AtSign size={15} className="apple-field-icon" />
+                    <input
+                      id="apple-email"
+                      type="email"
+                      maxLength={254}
+                      className={`apple-input-field ${emailError ? 'apple-field-error' : ''}`}
+                      placeholder="adebayo@institution.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (emailError) setEmailError(null);
+                      }}
+                      autoComplete="email"
+                    />
+                  </div>
                   {emailError && (
-                    <span className="apple-error-text">{emailError}</span>
+                    <span className="apple-error-text">
+                      <AlertCircle size={12} /> {emailError}
+                    </span>
                   )}
                 </div>
 
-                {/* Apple-Grade Clean Line Selector */}
+                {/* 🍎 Apple-Grade Clean Line Selector */}
                 <div className="apple-input-container">
-                  <label className="apple-label">I am joining as</label>
+                  <label className="apple-label">
+                    I am joining as
+                  </label>
                   <div className="apple-line-list" role="radiogroup" aria-label="I am joining as">
                     {ROLES.map((r) => {
                       const isSelected = role === r.id;
@@ -280,10 +296,13 @@ export default function EarlyAccessModal() {
                           className={`apple-line-item ${isSelected ? 'selected' : ''}`}
                           onClick={() => setRole(r.id)}
                         >
-                          <span className="apple-line-text">{r.label}</span>
+                          <div className="apple-line-info">
+                            <span className="apple-line-text">{r.label}</span>
+                            <span className="apple-line-sub">{r.subtitle}</span>
+                          </div>
                           <span className="apple-line-check-slot">
                             {isSelected && (
-                              <Check size={14} strokeWidth={2.6} className="apple-check-glyph" />
+                              <Check size={14} strokeWidth={2.8} className="apple-check-glyph" />
                             )}
                           </span>
                         </button>
@@ -308,11 +327,11 @@ export default function EarlyAccessModal() {
                   {isSubmitting ? (
                     <div className="apple-spinner-wrap">
                       <span className="apple-spinner-ring" />
-                      <span>Verifying securely...</span>
+                      <span>Securing your spot...</span>
                     </div>
                   ) : (
                     <>
-                      <span>Request early access</span>
+                      <span className="apple-cta-label">Request early access</span>
                       <span className="apple-cta-arrow">
                         <ArrowRight size={15} strokeWidth={2.5} />
                       </span>
@@ -322,8 +341,8 @@ export default function EarlyAccessModal() {
 
                 {/* Compact Mobile Privacy Note */}
                 <div className="mobile-privacy-compact">
-                  <Lock size={12} strokeWidth={2} />
-                  <span>256-bit encrypted • Discreet by design</span>
+                  <Lock size={11} strokeWidth={2} />
+                  <span>256-bit encrypted • Confidential by design</span>
                 </div>
               </form>
             </div>
@@ -335,7 +354,7 @@ export default function EarlyAccessModal() {
             <div className="apple-pass-icon-badge">
               <div className="badge-pulse-glow" aria-hidden="true" />
               <div className="apple-check-ring">
-                <Check size={26} strokeWidth={3} className="check-icon-svg" />
+                <Check size={28} strokeWidth={3} className="check-icon-svg" />
               </div>
             </div>
 
@@ -421,9 +440,9 @@ export default function EarlyAccessModal() {
         .apple-modal-scrim {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.76);
-          backdrop-filter: blur(40px);
-          -webkit-backdrop-filter: blur(40px);
+          background: rgba(0, 0, 0, 0.78);
+          backdrop-filter: blur(48px) saturate(190%);
+          -webkit-backdrop-filter: blur(48px) saturate(190%);
           z-index: 100;
           display: flex;
           align-items: center;
@@ -434,31 +453,48 @@ export default function EarlyAccessModal() {
 
         .apple-sheet-card {
           position: relative;
-          background: linear-gradient(165deg, rgba(22, 22, 32, 0.95) 0%, rgba(12, 12, 18, 0.98) 100%);
+          background: linear-gradient(165deg, rgba(22, 22, 34, 0.96) 0%, rgba(11, 11, 18, 0.98) 100%);
           border: 1px solid rgba(255, 255, 255, 0.13);
-          border-radius: 28px;
-          max-width: 900px;
+          border-radius: 30px;
+          max-width: 940px;
           width: 100%;
-          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.85), 
+          box-shadow: 0 40px 100px -15px rgba(0, 0, 0, 0.9), 
                       0 0 0 1px rgba(255, 255, 255, 0.08), 
-                      inset 0 1px 1px rgba(255, 255, 255, 0.25);
+                      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+                      inset 0 0 40px rgba(255, 255, 255, 0.015);
           overflow: hidden;
           animation: appleCardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .apple-specular-light {
+        .apple-specular-top-light {
           position: absolute;
-          top: -20%;
-          right: 5%;
+          top: -30%;
+          right: 10%;
           width: 520px;
           height: 520px;
           background: radial-gradient(
             circle,
-            rgba(192, 132, 252, 0.2) 0%,
-            rgba(245, 158, 11, 0.12) 40%,
+            rgba(192, 132, 252, 0.18) 0%,
+            rgba(245, 158, 11, 0.09) 40%,
             transparent 70%
           );
-          filter: blur(65px);
+          filter: blur(75px);
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .apple-specular-bottom-light {
+          position: absolute;
+          bottom: -30%;
+          left: 5%;
+          width: 450px;
+          height: 450px;
+          background: radial-gradient(
+            circle,
+            rgba(124, 58, 237, 0.12) 0%,
+            transparent 70%
+          );
+          filter: blur(80px);
           pointer-events: none;
           z-index: 1;
         }
@@ -467,36 +503,37 @@ export default function EarlyAccessModal() {
           position: absolute;
           top: 1.5rem;
           right: 1.5rem;
-          width: 34px;
-          height: 34px;
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           color: rgba(255, 255, 255, 0.65);
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 10;
         }
 
         .apple-dismiss-btn:hover {
           color: #ffffff;
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.18);
+          border-color: rgba(255, 255, 255, 0.25);
           transform: scale(1.06);
         }
 
         .apple-sheet-layout {
           display: grid;
-          grid-template-columns: 1.12fr 1.28fr;
+          grid-template-columns: 1.15fr 1.25fr;
           position: relative;
           z-index: 2;
         }
 
         /* Left Panel */
         .apple-narrative-panel {
-          padding: 3.5rem 3rem;
+          padding: 3.8rem 3.2rem;
           background: rgba(255, 255, 255, 0.015);
           border-right: 1px solid rgba(255, 255, 255, 0.07);
           display: flex;
@@ -506,12 +543,17 @@ export default function EarlyAccessModal() {
         .apple-status-eyebrow {
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 0.8rem;
-          font-weight: 500;
-          color: rgba(255, 255, 255, 0.7);
-          margin-bottom: 1.25rem;
-          letter-spacing: -0.01em;
+          gap: 0.55rem;
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.75);
+          margin-bottom: 1.35rem;
+          letter-spacing: 0.02em;
+          background: rgba(245, 158, 11, 0.08);
+          border: 1px solid rgba(245, 158, 11, 0.2);
+          padding: 0.3rem 0.75rem 0.3rem 0.65rem;
+          border-radius: 9999px;
+          width: fit-content;
         }
 
         .apple-amber-dot {
@@ -519,15 +561,21 @@ export default function EarlyAccessModal() {
           height: 6px;
           border-radius: 50%;
           background: #f59e0b;
-          box-shadow: 0 0 8px #f59e0b;
+          box-shadow: 0 0 10px #f59e0b;
+          animation: pulseDot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.3); }
         }
 
         .apple-headline {
-          font-size: 2.35rem;
+          font-size: 2.45rem;
           font-weight: 700;
           letter-spacing: -0.035em;
           line-height: 1.1;
-          margin-bottom: 1rem;
+          margin-bottom: 1.1rem;
         }
 
         .apple-gradient-text {
@@ -537,7 +585,7 @@ export default function EarlyAccessModal() {
         }
 
         .apple-subhead {
-          font-size: 1.02rem;
+          font-size: 0.98rem;
           line-height: 1.6;
           color: rgba(255, 255, 255, 0.65);
           margin-bottom: 2.2rem;
@@ -546,25 +594,35 @@ export default function EarlyAccessModal() {
         .apple-perks-group {
           display: flex;
           flex-direction: column;
-          gap: 0.85rem;
-          margin-bottom: 2rem;
+          gap: 0.9rem;
+          margin-bottom: 2.2rem;
+        }
+
+        .apple-perks-header {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          margin-bottom: 0.15rem;
+        }
+
+        :global(.sparkle-accent) {
+          color: #f59e0b;
         }
 
         .apple-perks-title {
-          font-size: 0.75rem;
-          font-weight: 600;
+          font-size: 0.72rem;
+          font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 0.06em;
-          color: rgba(255, 255, 255, 0.45);
-          margin-bottom: 0.3rem;
+          letter-spacing: 0.08em;
+          color: rgba(255, 255, 255, 0.5);
         }
 
         .apple-perk-item {
           display: flex;
           align-items: flex-start;
           gap: 0.65rem;
-          font-size: 0.92rem;
-          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.72);
           line-height: 1.5;
         }
 
@@ -574,8 +632,8 @@ export default function EarlyAccessModal() {
 
         .apple-perk-bullet {
           color: #f59e0b;
-          font-size: 0.85rem;
-          margin-top: 0.1rem;
+          font-size: 0.8rem;
+          margin-top: 0.12rem;
         }
 
         .apple-privacy-guarantee {
@@ -589,14 +647,14 @@ export default function EarlyAccessModal() {
           margin-top: auto;
         }
 
-        .apple-lock-icon {
+        :global(.apple-lock-icon) {
           color: rgba(255, 255, 255, 0.45);
           flex-shrink: 0;
         }
 
         /* Right Form Panel */
         .apple-form-panel {
-          padding: 3.5rem 3rem;
+          padding: 3.8rem 3.2rem;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -621,36 +679,57 @@ export default function EarlyAccessModal() {
           letter-spacing: -0.01em;
         }
 
+        .apple-field-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        :global(.apple-field-icon) {
+          position: absolute;
+          left: 1.1rem;
+          color: rgba(255, 255, 255, 0.35);
+          pointer-events: none;
+          transition: color 0.2s ease;
+        }
+
         .apple-input-field {
           width: 100%;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.045);
+          border: 1px solid rgba(255, 255, 255, 0.11);
           border-radius: 14px;
-          padding: 0.85rem 1.15rem;
+          padding: 0.85rem 1.15rem 0.85rem 2.85rem;
           font-family: var(--font-sans);
-          font-size: 0.96rem;
+          font-size: 0.95rem;
           color: #ffffff;
           outline: none;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .apple-input-field::placeholder {
           color: rgba(255, 255, 255, 0.28);
         }
 
+        .apple-field-wrap:focus-within :global(.apple-field-icon) {
+          color: #f59e0b;
+        }
+
         .apple-input-field:focus {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(192, 132, 252, 0.7);
-          box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.18);
+          background: rgba(255, 255, 255, 0.075);
+          border-color: rgba(245, 158, 11, 0.6);
+          box-shadow: 0 0 0 3.5px rgba(245, 158, 11, 0.16);
         }
 
         .apple-input-field.apple-field-error {
           border-color: #fb7185;
-          box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.15);
+          box-shadow: 0 0 0 3.5px rgba(251, 113, 133, 0.15);
         }
 
         .apple-error-text {
-          font-size: 0.75rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.76rem;
           color: #fb7185;
           margin-top: 0.2rem;
         }
@@ -659,10 +738,10 @@ export default function EarlyAccessModal() {
         .apple-line-list {
           display: flex;
           flex-direction: column;
-          background: rgba(255, 255, 255, 0.02);
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.025);
+          border-top: 1px solid rgba(255, 255, 255, 0.09);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+          border-radius: 12px;
           overflow: hidden;
         }
 
@@ -674,12 +753,10 @@ export default function EarlyAccessModal() {
           background: transparent;
           border: none;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          padding: 0.72rem 0.65rem;
+          padding: 0.78rem 0.85rem;
           font-family: var(--font-sans);
-          font-size: 0.92rem;
-          color: rgba(255, 255, 255, 0.65);
           cursor: pointer;
-          transition: background-color 0.18s ease, color 0.18s ease;
+          transition: background-color 0.18s ease;
           text-align: left;
         }
 
@@ -688,23 +765,49 @@ export default function EarlyAccessModal() {
         }
 
         .apple-line-item:hover {
-          background: rgba(255, 255, 255, 0.045);
-          color: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .apple-line-item.selected {
-          color: #ffffff;
-          font-weight: 600;
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.075);
+        }
+
+        .apple-line-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.12rem;
         }
 
         .apple-line-text {
+          font-size: 0.93rem;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.7);
           letter-spacing: -0.01em;
+          transition: color 0.18s ease;
+        }
+
+        .apple-line-item:hover .apple-line-text {
+          color: rgba(255, 255, 255, 0.95);
+        }
+
+        .apple-line-item.selected .apple-line-text {
+          color: #ffffff;
+          font-weight: 600;
+        }
+
+        .apple-line-sub {
+          font-size: 0.74rem;
+          color: rgba(255, 255, 255, 0.4);
+          letter-spacing: -0.005em;
+        }
+
+        .apple-line-item.selected .apple-line-sub {
+          color: rgba(255, 255, 255, 0.6);
         }
 
         .apple-line-check-slot {
-          width: 20px;
-          height: 20px;
+          width: 22px;
+          height: 22px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -713,11 +816,11 @@ export default function EarlyAccessModal() {
 
         :global(.apple-check-glyph) {
           color: #f59e0b;
-          animation: checkPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: checkPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes checkPop {
-          0% { transform: scale(0.5); opacity: 0; }
+          0% { transform: scale(0.4); opacity: 0; }
           100% { transform: scale(1); opacity: 1; }
         }
 
@@ -743,19 +846,19 @@ export default function EarlyAccessModal() {
           color: #000000;
           border: none;
           border-radius: 9999px;
-          padding: 0.45rem 0.55rem 0.45rem 1.6rem;
+          padding: 0.48rem 0.55rem 0.48rem 1.6rem;
           font-family: var(--font-sans);
           font-size: 0.96rem;
           font-weight: 600;
           cursor: pointer;
           margin-top: 0.5rem;
-          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.22);
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .apple-primary-cta:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(255, 255, 255, 0.38);
+          box-shadow: 0 8px 32px rgba(255, 255, 255, 0.4);
         }
 
         .apple-primary-cta:active {
@@ -804,7 +907,7 @@ export default function EarlyAccessModal() {
 
         /* Modern, Classy Success View */
         .apple-success-view {
-          padding: 4rem 3.5rem 3.8rem 3.5rem;
+          padding: 4.2rem 3.8rem 4rem 3.8rem;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -821,21 +924,21 @@ export default function EarlyAccessModal() {
 
         .badge-pulse-glow {
           position: absolute;
-          inset: -12px;
-          background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
+          inset: -14px;
+          background: radial-gradient(circle, rgba(16, 185, 129, 0.38) 0%, transparent 70%);
           border-radius: 50%;
-          filter: blur(10px);
+          filter: blur(12px);
           animation: pulseGlow 2.5s infinite ease-in-out;
         }
 
         .apple-check-ring {
           position: relative;
-          width: 72px;
-          height: 72px;
+          width: 74px;
+          height: 74px;
           border-radius: 50%;
           background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.12) 100%);
-          border: 1.5px solid rgba(16, 185, 129, 0.5);
-          box-shadow: 0 0 25px rgba(16, 185, 129, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+          border: 1.5px solid rgba(16, 185, 129, 0.55);
+          box-shadow: 0 0 25px rgba(16, 185, 129, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -863,7 +966,7 @@ export default function EarlyAccessModal() {
         }
 
         .apple-success-title {
-          font-size: 2.35rem;
+          font-size: 2.45rem;
           font-weight: 700;
           letter-spacing: -0.03em;
           margin-bottom: 0.65rem;
@@ -880,16 +983,16 @@ export default function EarlyAccessModal() {
         /* Apple Wallet Access Pass Card */
         .apple-wallet-pass {
           width: 100%;
-          max-width: 540px;
-          background: linear-gradient(145deg, rgba(30, 30, 46, 0.9) 0%, rgba(16, 16, 26, 0.95) 100%);
+          max-width: 550px;
+          background: linear-gradient(145deg, rgba(32, 32, 48, 0.92) 0%, rgba(16, 16, 26, 0.96) 100%);
           border: 1px solid rgba(255, 255, 255, 0.16);
           border-radius: 22px;
           padding: 1.75rem;
-          margin-bottom: 2rem;
+          margin-bottom: 2.2rem;
           text-align: left;
-          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 
-                      0 0 0 1px rgba(192, 132, 252, 0.15),
-                      inset 0 1px 1px rgba(255, 255, 255, 0.25);
+          box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6), 
+                      0 0 0 1px rgba(192, 132, 252, 0.18),
+                      inset 0 1px 1px rgba(255, 255, 255, 0.28);
           position: relative;
           overflow: hidden;
           animation: passSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
@@ -904,7 +1007,7 @@ export default function EarlyAccessModal() {
           background: linear-gradient(
             45deg,
             transparent 45%,
-            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.06) 50%,
             transparent 55%
           );
           pointer-events: none;
@@ -946,7 +1049,7 @@ export default function EarlyAccessModal() {
         }
 
         .wallet-brand-name {
-          font-size: 0.9rem;
+          font-size: 0.92rem;
           font-weight: 700;
           letter-spacing: 0.02em;
           color: #ffffff;
@@ -1118,8 +1221,8 @@ export default function EarlyAccessModal() {
           }
 
           .apple-sheet-card {
-            border-radius: 26px 26px 0 0;
-            max-height: 90dvh;
+            border-radius: 28px 28px 0 0;
+            max-height: 92dvh;
             width: 100vw;
             border-bottom: none;
             border-left: none;
@@ -1165,7 +1268,7 @@ export default function EarlyAccessModal() {
           }
 
           .apple-headline {
-            font-size: 1.75rem;
+            font-size: 1.8rem;
             line-height: 1.15;
             margin-bottom: 0.4rem;
           }
@@ -1198,13 +1301,20 @@ export default function EarlyAccessModal() {
 
           .apple-input-field {
             font-size: 16px; /* Prevents auto zoom on iOS */
-            padding: 0.85rem 1rem;
+            padding: 0.85rem 1rem 0.85rem 2.75rem;
             border-radius: 12px;
           }
 
           .apple-line-item {
-            padding: 0.65rem 0.45rem;
-            font-size: 0.88rem;
+            padding: 0.7rem 0.65rem;
+          }
+
+          .apple-line-text {
+            font-size: 0.9rem;
+          }
+
+          .apple-line-sub {
+            font-size: 0.7rem;
           }
 
           .apple-primary-cta {
@@ -1234,8 +1344,8 @@ export default function EarlyAccessModal() {
           }
 
           .apple-check-ring {
-            width: 62px;
-            height: 62px;
+            width: 64px;
+            height: 64px;
           }
 
           .apple-success-title {
