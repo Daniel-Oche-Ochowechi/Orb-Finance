@@ -215,10 +215,10 @@ export default function EarlyAccessModal() {
                   )}
                 </div>
 
-                {/* Classy Line-Based Role Selector (No Boxes) */}
+                {/* Apple-Grade Clean Line Selector */}
                 <div className="apple-input-container">
-                  <label className="apple-label">I am joining as:</label>
-                  <div className="classy-line-group" role="radiogroup" aria-label="I am joining as">
+                  <label className="apple-label">I am joining as</label>
+                  <div className="apple-line-list" role="radiogroup" aria-label="I am joining as">
                     {ROLES.map((r) => {
                       const isSelected = role === r.id;
                       return (
@@ -227,22 +227,15 @@ export default function EarlyAccessModal() {
                           key={r.id}
                           role="radio"
                           aria-checked={isSelected}
-                          className={`classy-line-row ${isSelected ? 'is-active' : ''}`}
+                          className={`apple-line-item ${isSelected ? 'selected' : ''}`}
                           onClick={() => setRole(r.id)}
                         >
-                          <div className="line-row-left">
-                            <span className="classy-line-radio">
-                              <span className="radio-center-glow" />
-                            </span>
-                            <span className="line-row-title">{r.label}</span>
-                          </div>
-                          {isSelected && (
-                            <span className="line-row-tag">
-                              <span className="tag-sparkle">✦</span>
-                              <span>Selected</span>
-                            </span>
-                          )}
-                          <span className="line-bottom-indicator" />
+                          <span className="apple-line-text">{r.label}</span>
+                          <span className="apple-line-check-slot">
+                            {isSelected && (
+                              <Check size={14} strokeWidth={2.6} className="apple-check-glyph" />
+                            )}
+                          </span>
                         </button>
                       );
                     })}
@@ -611,127 +604,70 @@ export default function EarlyAccessModal() {
           margin-top: 0.2rem;
         }
 
-        /* ✨ Classy Line-Based Role Selector (In lines, not boxes) */
-        .classy-line-group {
+        /* 🍎 Apple-Grade Clean Line Selector */
+        .apple-line-list {
           display: flex;
           flex-direction: column;
-          gap: 0.1rem;
-          background: transparent;
+          background: rgba(255, 255, 255, 0.02);
           border-top: 1px solid rgba(255, 255, 255, 0.08);
-          padding-top: 0.15rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 10px;
+          overflow: hidden;
         }
 
-        .classy-line-row {
+        .apple-line-item {
           width: 100%;
-          background: transparent;
-          border: none;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 0.68rem 0.3rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          cursor: pointer;
-          position: relative;
-          text-align: left;
+          background: transparent;
+          border: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 0.72rem 0.65rem;
           font-family: var(--font-sans);
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          font-size: 0.92rem;
+          color: rgba(255, 255, 255, 0.65);
+          cursor: pointer;
+          transition: background-color 0.18s ease, color 0.18s ease;
+          text-align: left;
         }
 
-        .classy-line-row:hover {
-          background: rgba(255, 255, 255, 0.03);
-          padding-left: 0.55rem;
+        .apple-line-item:last-child {
+          border-bottom: none;
         }
 
-        .line-row-left {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
+        .apple-line-item:hover {
+          background: rgba(255, 255, 255, 0.045);
+          color: rgba(255, 255, 255, 0.92);
         }
 
-        .classy-line-radio {
-          width: 15px;
-          height: 15px;
-          border-radius: 50%;
-          border: 1px solid rgba(255, 255, 255, 0.3);
+        .apple-line-item.selected {
+          color: #ffffff;
+          font-weight: 600;
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .apple-line-text {
+          letter-spacing: -0.01em;
+        }
+
+        .apple-line-check-slot {
+          width: 20px;
+          height: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           flex-shrink: 0;
         }
 
-        .radio-center-glow {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 8px #f59e0b;
-          opacity: 0;
-          transform: scale(0);
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .classy-line-row.is-active .classy-line-radio {
-          border-color: #f59e0b;
-          box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
-        }
-
-        .classy-line-row.is-active .radio-center-glow {
-          opacity: 1;
-          transform: scale(1);
-        }
-
-        .line-row-title {
-          font-size: 0.9rem;
-          font-weight: 500;
-          color: rgba(255, 255, 255, 0.6);
-          letter-spacing: -0.01em;
-          transition: color 0.2s ease, font-weight 0.2s ease;
-        }
-
-        .classy-line-row:hover .line-row-title {
-          color: rgba(255, 255, 255, 0.9);
-        }
-
-        .classy-line-row.is-active .line-row-title {
-          color: #ffffff;
-          font-weight: 600;
-        }
-
-        .line-row-tag {
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.04em;
-          color: #fbbf24;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.3rem;
-          animation: tagFade 0.25s ease;
-        }
-
-        .tag-sparkle {
+        :global(.apple-check-glyph) {
           color: #f59e0b;
-          font-size: 0.75rem;
+          animation: checkPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .line-bottom-indicator {
-          position: absolute;
-          bottom: -1px;
-          left: 0;
-          width: 0%;
-          height: 1.5px;
-          background: linear-gradient(90deg, #f59e0b 0%, #c084fc 100%);
-          box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
-          transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .classy-line-row.is-active .line-bottom-indicator {
-          width: 100%;
-        }
-
-        @keyframes tagFade {
-          from { opacity: 0; transform: translateX(5px); }
-          to { opacity: 1; transform: translateX(0); }
+        @keyframes checkPop {
+          0% { transform: scale(0.5); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
         }
 
         .apple-general-error {
@@ -1212,12 +1148,9 @@ export default function EarlyAccessModal() {
             border-radius: 12px;
           }
 
-          .classy-line-row {
-            padding: 0.62rem 0.2rem;
-          }
-
-          .line-row-title {
-            font-size: 0.86rem;
+          .apple-line-item {
+            padding: 0.65rem 0.45rem;
+            font-size: 0.88rem;
           }
 
           .apple-primary-cta {
