@@ -180,23 +180,36 @@ export default function EarlyAccessModal() {
                 Join the priority register. We will write to you before launch with your private access credentials.
               </p>
 
-              {/* What early access means list */}
-              <div className="apple-perks-group">
-                <div className="apple-perks-header">
-                  <Sparkles size={12} className="sparkle-accent" />
-                  <span className="apple-perks-title">Early Access Privileges</span>
+              {/* What early access means - bespoke technical card list */}
+              <div className="access-privileges-block">
+                <div className="privileges-title-row">
+                  <span className="privileges-mono-tag font-mono">WHAT EARLY ACCESS MEANS</span>
                 </div>
-                <div className="apple-perk-item">
-                  <span className="apple-perk-bullet">✦</span>
-                  <p><strong>First in line.</strong> Direct connection as soon as doors open.</p>
-                </div>
-                <div className="apple-perk-item">
-                  <span className="apple-perk-bullet">✦</span>
-                  <p><strong>Sandbox environment.</strong> Build and test ahead of launch.</p>
-                </div>
-                <div className="apple-perk-item">
-                  <span className="apple-perk-bullet">✦</span>
-                  <p><strong>Direct partner line.</strong> Custom integration & volume pricing review.</p>
+                
+                <div className="privileges-list">
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">01</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">First in line</h4>
+                      <p className="privilege-desc">Connect as soon as we open.</p>
+                    </div>
+                  </div>
+
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">02</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">Sandbox access</h4>
+                      <p className="privilege-desc">Build and test ahead of launch.</p>
+                    </div>
+                  </div>
+
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">03</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">A direct line to our team</h4>
+                      <p className="privilege-desc">Discuss integration and pricing before the doors open.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -591,49 +604,82 @@ export default function EarlyAccessModal() {
           margin-bottom: 2.2rem;
         }
 
-        .apple-perks-group {
+        .access-privileges-block {
           display: flex;
           flex-direction: column;
-          gap: 0.9rem;
-          margin-bottom: 2.2rem;
+          gap: 0.75rem;
+          margin-bottom: 2rem;
         }
 
-        .apple-perks-header {
+        .privileges-title-row {
           display: flex;
           align-items: center;
-          gap: 0.45rem;
-          margin-bottom: 0.15rem;
+          margin-bottom: 0.1rem;
         }
 
-        :global(.sparkle-accent) {
-          color: #f59e0b;
-        }
-
-        .apple-perks-title {
-          font-size: 0.72rem;
+        .privileges-mono-tag {
+          font-size: 0.68rem;
           font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: rgba(255, 255, 255, 0.5);
+          letter-spacing: 0.1em;
+          color: rgba(255, 255, 255, 0.42);
         }
 
-        .apple-perk-item {
+        .privileges-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.55rem;
+        }
+
+        .privilege-card {
           display: flex;
           align-items: flex-start;
-          gap: 0.65rem;
-          font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.72);
-          line-height: 1.5;
+          gap: 0.85rem;
+          padding: 0.75rem 0.9rem;
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          border-radius: 12px;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .apple-perk-item strong {
-          color: #ffffff;
+        .privilege-card:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.12);
+          transform: translateX(2px);
         }
 
-        .apple-perk-bullet {
+        .privilege-num {
+          font-size: 0.68rem;
+          font-weight: 700;
           color: #f59e0b;
+          background: rgba(245, 158, 11, 0.1);
+          border: 1px solid rgba(245, 158, 11, 0.22);
+          border-radius: 6px;
+          padding: 0.15rem 0.4rem;
+          line-height: 1;
+          margin-top: 0.15rem;
+          flex-shrink: 0;
+          letter-spacing: 0.04em;
+        }
+
+        .privilege-body {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+
+        .privilege-lead {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: #ffffff;
+          letter-spacing: -0.01em;
+          margin: 0;
+        }
+
+        .privilege-desc {
           font-size: 0.8rem;
-          margin-top: 0.12rem;
+          color: rgba(255, 255, 255, 0.58);
+          line-height: 1.4;
+          margin: 0;
         }
 
         .apple-privacy-guarantee {
@@ -1281,7 +1327,7 @@ export default function EarlyAccessModal() {
           }
 
           /* Hide long bulky perks cluster on mobile for simplicity */
-          .apple-perks-group,
+          .access-privileges-block,
           .apple-privacy-guarantee {
             display: none;
           }

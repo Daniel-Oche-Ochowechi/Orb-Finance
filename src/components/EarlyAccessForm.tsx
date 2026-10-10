@@ -127,24 +127,41 @@ export default function EarlyAccessForm() {
                 Join the list and we will write to you before launch with your access details.
               </p>
 
-              <div className="perks-cluster">
-                <h4 className="perks-heading font-mono">What early access means</h4>
-                <div className="perk-entry">
-                  <span className="perk-bullet">✦</span>
-                  <p><strong>First in line.</strong> Connect as soon as we open.</p>
+              {/* What early access means - bespoke technical card list */}
+              <div className="access-privileges-block">
+                <div className="privileges-title-row">
+                  <span className="privileges-mono-tag font-mono">WHAT EARLY ACCESS MEANS</span>
                 </div>
-                <div className="perk-entry">
-                  <span className="perk-bullet">✦</span>
-                  <p><strong>Sandbox access.</strong> Build and test ahead of launch.</p>
-                </div>
-                <div className="perk-entry">
-                  <span className="perk-bullet">✦</span>
-                  <p><strong>A direct line to our team.</strong> Discuss integration and pricing before the doors open.</p>
+                
+                <div className="privileges-list">
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">01</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">First in line</h4>
+                      <p className="privilege-desc">Connect as soon as we open.</p>
+                    </div>
+                  </div>
+
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">02</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">Sandbox access</h4>
+                      <p className="privilege-desc">Build and test ahead of launch.</p>
+                    </div>
+                  </div>
+
+                  <div className="privilege-card">
+                    <span className="privilege-num font-mono">03</span>
+                    <div className="privilege-body">
+                      <h4 className="privilege-lead">A direct line to our team</h4>
+                      <p className="privilege-desc">Discuss integration and pricing before the doors open.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div className="discreet-guarantee">
-                <Lock size={14} className="lock-glyph" />
+                <Lock size={13} className="lock-glyph" />
                 <span>Discreet by design. We will only write to you about Orb Finance.</span>
               </div>
             </div>
@@ -433,38 +450,82 @@ export default function EarlyAccessForm() {
           margin-bottom: 2rem;
         }
 
-        .perks-cluster {
+        .access-privileges-block {
           display: flex;
           flex-direction: column;
-          gap: 0.85rem;
+          gap: 0.75rem;
           margin-bottom: 2rem;
         }
 
-        .perks-heading {
-          font-size: 0.75rem;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: rgba(255, 255, 255, 0.45);
-          margin-bottom: 0.25rem;
+        .privileges-title-row {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.1rem;
         }
 
-        .perk-entry {
+        .privileges-mono-tag {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          color: rgba(255, 255, 255, 0.42);
+        }
+
+        .privileges-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.55rem;
+        }
+
+        .privilege-card {
           display: flex;
           align-items: flex-start;
-          gap: 0.65rem;
-          font-size: 0.92rem;
-          color: rgba(255, 255, 255, 0.7);
-          line-height: 1.5;
+          gap: 0.85rem;
+          padding: 0.75rem 0.9rem;
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          border-radius: 12px;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .perk-entry strong {
-          color: #ffffff;
+        .privilege-card:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.12);
+          transform: translateX(2px);
         }
 
-        .perk-bullet {
+        .privilege-num {
+          font-size: 0.68rem;
+          font-weight: 700;
           color: #f59e0b;
-          font-size: 0.85rem;
-          margin-top: 0.1rem;
+          background: rgba(245, 158, 11, 0.1);
+          border: 1px solid rgba(245, 158, 11, 0.22);
+          border-radius: 6px;
+          padding: 0.15rem 0.4rem;
+          line-height: 1;
+          margin-top: 0.15rem;
+          flex-shrink: 0;
+          letter-spacing: 0.04em;
+        }
+
+        .privilege-body {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+
+        .privilege-lead {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: #ffffff;
+          letter-spacing: -0.01em;
+          margin: 0;
+        }
+
+        .privilege-desc {
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.58);
+          line-height: 1.4;
+          margin: 0;
         }
 
         .discreet-guarantee {
