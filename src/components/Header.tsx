@@ -391,39 +391,53 @@ export default function Header() {
           display: inline-flex;
           align-items: center;
           gap: 0.85rem;
-          background: #ffffff;
-          color: #000000;
-          border: none;
+          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+          color: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.9);
           border-radius: 9999px;
-          padding: 0.45rem 0.5rem 0.45rem 1.4rem;
+          padding: 0.42rem 0.48rem 0.42rem 1.45rem;
           font-family: var(--font-sans);
           font-size: 0.92rem;
           font-weight: 600;
+          letter-spacing: -0.012em;
           cursor: pointer;
-          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 6px 18px -4px rgba(255, 255, 255, 0.15);
+          transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease;
         }
 
         .apple-pill-btn:hover {
+          background: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 6px 28px rgba(255, 255, 255, 0.35);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+                      0 10px 28px -4px rgba(255, 255, 255, 0.3),
+                      0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .apple-pill-btn:active {
+          transform: scale(0.97) translateY(0);
         }
 
         .btn-arrow-dot {
-          width: 34px;
-          height: 34px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          background: #000000;
+          background: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.2s ease, background-color 0.2s ease;
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                      background-color 0.25s ease, 
+                      color 0.25s ease, 
+                      border-color 0.25s ease;
         }
 
         .apple-pill-btn:hover .btn-arrow-dot {
-          transform: translateX(3px);
-          background: #7c3aed;
+          transform: translateX(3px) scale(1.06);
+          background: #12121c;
+          border-color: rgba(245, 158, 11, 0.45);
+          color: #f59e0b;
         }
 
         /* Mobile Trigger */

@@ -136,65 +136,84 @@ export default function ClosingCta() {
           align-items: center;
           justify-content: space-between;
           gap: 1.25rem;
-          background: #ffffff;
-          color: #000000;
-          border: none;
+          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+          color: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.9);
           border-radius: 9999px;
-          padding: 0.45rem 0.55rem 0.45rem 1.85rem;
+          padding: 0.45rem 0.52rem 0.45rem 1.85rem;
           font-family: var(--font-sans);
           font-size: 1rem;
           font-weight: 600;
+          letter-spacing: -0.015em;
           cursor: pointer;
-          box-shadow: 0 4px 25px rgba(255, 255, 255, 0.22);
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px -4px rgba(255, 255, 255, 0.18);
+          transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease;
         }
 
         .apple-closing-primary-btn:hover {
+          background: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 8px 35px rgba(255, 255, 255, 0.38);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+                      0 14px 38px -4px rgba(255, 255, 255, 0.35),
+                      0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
         .apple-closing-primary-btn:active {
-          transform: scale(0.985);
+          transform: scale(0.97) translateY(0);
         }
 
         .btn-arrow-circle {
-          width: 40px;
-          height: 40px;
+          width: 38px;
+          height: 38px;
           border-radius: 50%;
-          background: #000000;
+          background: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.2s ease, background-color 0.2s ease;
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                      background-color 0.25s ease, 
+                      color 0.25s ease, 
+                      border-color 0.25s ease;
         }
 
         .apple-closing-primary-btn:hover .btn-arrow-circle {
-          transform: translateX(3px);
-          background: #7c3aed;
+          transform: translateX(4px) scale(1.06);
+          background: #12121c;
+          border-color: rgba(245, 158, 11, 0.45);
+          color: #f59e0b;
         }
 
         .apple-closing-secondary-btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.05);
           color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.16);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           border-radius: 9999px;
           padding: 0.85rem 1.85rem;
           font-size: 0.96rem;
           font-weight: 600;
+          letter-spacing: -0.01em;
           cursor: pointer;
           backdrop-filter: blur(16px);
-          transition: all 0.2s ease;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.25);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .apple-closing-secondary-btn:hover {
           background: rgba(255, 255, 255, 0.12);
-          border-color: rgba(255, 255, 255, 0.28);
-          transform: translateY(-1px);
+          border-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-1.5px);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 
+                      0 8px 24px rgba(0, 0, 0, 0.4), 
+                      0 0 18px rgba(255, 255, 255, 0.08);
+        }
+
+        .apple-closing-secondary-btn:active {
+          transform: scale(0.975);
         }
 
         /* 📱 RESPONSIVE & MOBILE STYLING */
