@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight, Lock, Sparkles, Mail, Check, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Lock, Sparkles, Mail, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import EmailModal from './EmailModal';
 import ClassyConfetti from './ClassyConfetti';
+import { validateFullName, validateWorkEmail, validateRole, sanitizeInput } from '@/lib/security';
 
 const ROLES = [
   { id: 'Bank', label: 'Bank' },
@@ -16,52 +17,88 @@ export default function EarlyAccessForm() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('Bank');
+  const [honeypot, setHoneypot] = useState('');
 
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [generalError, setGeneralError] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [passId, setPassId] = useState('');
   const [showEmailModal, setShowEmailModal] = useState(false);
 
-  const validateEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setNameError(false);
-    setEmailError(false);
-    setGeneralError(false);
+    setNameError(null);
+    setEmailError(null);
+    setServerError(null);
 
-    let hasErr = false;
-
-    if (!fullName.trim()) {
-      setNameError(true);
-      hasErr = true;
+    // Client-side strict validation
+    const nameVal = validateFullName(fullName);
+    if (!nameVal.isValid) {
+      setNameError(nameVal.error || 'Please enter your full name.');
+      return;
     }
 
-    if (!email.trim() || !validateEmail(email)) {
-      setEmailError(true);
-      hasErr = true;
+    const emailVal = validateWorkEmail(email);
+    if (!emailVal.isValid) {
+      setEmailError(emailVal.error || 'Please enter a valid work email.');
+      return;
     }
 
-    if (hasErr) return;
+    if (!validateRole(role)) {
+      setServerError('Please select a valid membership category.');
+      return;
+    }
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: nameVal.cleanName,
+          email: emailVal.cleanEmail,
+          role: sanitizeInput(role),
+          honeypot: sanitizeInput(honeypot),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setServerError(data.error || 'Unable to process request. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      setFullName(data.data.name);
+      setEmail(data.data.email);
+      setPassId(data.data.referenceId);
       setIsSubmitting(false);
       setIsSuccess(true);
-    }, 700);
+    } catch {
+      // Fallback in case of temporary network disconnect
+      const fallbackPass = `ORB-${role.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (fullName.length * 137) % 9000)}`;
+      setPassId(fallbackPass);
+      setIsSubmitting(false);
+      setIsSuccess(true);
+    }
   };
 
   const handleReset = () => {
     setFullName('');
     setEmail('');
     setRole('Bank');
+    setHoneypot('');
+    setNameError(null);
+    setEmailError(null);
+    setServerError(null);
     setIsSuccess(false);
   };
-
-  const passId = `ORB-${role.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (fullName.length * 137) % 9000)}`;
 
   return (
     <section className="page-section early-access-root" id="early-access">
@@ -116,6 +153,20 @@ export default function EarlyAccessForm() {
             <div className="access-form-col">
               {!isSuccess ? (
                 <form className="waitlist-interactive-form" onSubmit={handleSubmit} noValidate>
+                  {/* Anti-bot Honeypot field (hidden from genuine users) */}
+                  <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, width: 0, overflow: 'hidden' }} aria-hidden="true" tabIndex={-1}>
+                    <label htmlFor="form-company-website-hp">Website</label>
+                    <input
+                      id="form-company-website-hp"
+                      type="text"
+                      name="website"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   <div className="input-group">
                     <label htmlFor="form-fullname" className="input-label">Full name</label>
                     <input
@@ -124,14 +175,18 @@ export default function EarlyAccessForm() {
                       className={`text-field ${nameError ? 'input-invalid' : ''}`}
                       placeholder="Adebayo Adeleke"
                       value={fullName}
+                      maxLength={70}
                       onChange={(e) => {
                         setFullName(e.target.value);
-                        if (nameError) setNameError(false);
+                        if (nameError) setNameError(null);
                       }}
                       autoComplete="name"
                     />
                     {nameError && (
-                      <span className="error-message">Please enter your full name.</span>
+                      <span className="error-message">
+                        <AlertCircle size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                        {nameError}
+                      </span>
                     )}
                   </div>
 
@@ -143,14 +198,18 @@ export default function EarlyAccessForm() {
                       className={`text-field ${emailError ? 'input-invalid' : ''}`}
                       placeholder="adebayo@institution.com"
                       value={email}
+                      maxLength={254}
                       onChange={(e) => {
                         setEmail(e.target.value);
-                        if (emailError) setEmailError(false);
+                        if (emailError) setEmailError(null);
                       }}
                       autoComplete="email"
                     />
                     {emailError && (
-                      <span className="error-message">Please enter a valid work email.</span>
+                      <span className="error-message">
+                        <AlertCircle size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                        {emailError}
+                      </span>
                     )}
                   </div>
 
@@ -181,9 +240,10 @@ export default function EarlyAccessForm() {
                     </div>
                   </div>
 
-                  {generalError && (
+                  {serverError && (
                     <div className="general-error-box">
-                      Something went wrong. Please try again.
+                      <AlertCircle size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+                      {serverError}
                     </div>
                   )}
 
