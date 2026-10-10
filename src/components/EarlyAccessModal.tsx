@@ -32,6 +32,18 @@ export default function EarlyAccessModal() {
     }
   }, [initialRole]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Handle ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -91,6 +103,9 @@ export default function EarlyAccessModal() {
         aria-modal="true"
         aria-labelledby="apple-modal-title"
       >
+        {/* Mobile Pull Handle Indicator */}
+        <div className="mobile-handle-bar" aria-hidden="true" />
+
         {/* Soft Ambient Apple Diffusion Light */}
         <div className="apple-specular-light" aria-hidden="true" />
 
@@ -100,7 +115,7 @@ export default function EarlyAccessModal() {
           onClick={closeEarlyAccess}
           aria-label="Close"
         >
-          <X size={15} strokeWidth={2.5} />
+          <X size={16} strokeWidth={2.5} />
         </button>
 
         {!isSuccess ? (
@@ -827,6 +842,10 @@ export default function EarlyAccessModal() {
           color: #ffffff;
         }
 
+        .mobile-handle-bar {
+          display: none;
+        }
+
         @keyframes appleFadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -835,6 +854,17 @@ export default function EarlyAccessModal() {
         @keyframes appleCardPop {
           from { opacity: 0; transform: scale(0.96) translateY(12px); }
           to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes mobileSheetSlideUp {
+          from {
+            transform: translateY(100%);
+            opacity: 0.4;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
         }
 
         @keyframes scaleUp {
@@ -846,23 +876,142 @@ export default function EarlyAccessModal() {
           to { transform: rotate(360deg); }
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 768px) {
+          .apple-modal-scrim {
+            padding: 0;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+          }
+
+          .apple-sheet-card {
+            border-radius: 28px 28px 0 0;
+            max-height: 88dvh;
+            width: 100vw;
+            border-bottom: none;
+            border-left: none;
+            border-right: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 -25px 70px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            animation: mobileSheetSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+
+          .mobile-handle-bar {
+            display: block;
+            width: 44px;
+            height: 5px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.25);
+            margin: 0.85rem auto 0.25rem auto;
+          }
+
+          .apple-dismiss-btn {
+            top: 0.95rem;
+            right: 1.15rem;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+          }
+
           .apple-sheet-layout {
             grid-template-columns: 1fr;
           }
+
           .apple-narrative-panel {
-            padding: 2.5rem 1.75rem 1.75rem 1.75rem;
+            padding: 1.4rem 1.4rem 1.25rem 1.4rem;
             border-right: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.07);
           }
+
+          .apple-headline {
+            font-size: clamp(1.85rem, 6vw, 2.2rem);
+            line-height: 1.12;
+            margin-bottom: 0.75rem;
+          }
+
+          .apple-subhead {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+          }
+
+          .apple-perks-group {
+            gap: 0.65rem;
+            margin-bottom: 1.25rem;
+          }
+
+          .apple-privacy-guarantee {
+            font-size: 0.76rem;
+          }
+
           .apple-form-panel {
-            padding: 2rem 1.75rem 2.5rem 1.75rem;
+            padding: 1.35rem 1.4rem 2.8rem 1.4rem;
           }
+
+          .apple-input-field {
+            font-size: 16px;
+            padding: 0.92rem 1.1rem;
+            border-radius: 14px;
+          }
+
+          .apple-segmented-grid {
+            gap: 0.45rem;
+            padding: 0.3rem;
+            border-radius: 14px;
+          }
+
+          .apple-segment-pill {
+            padding: 0.75rem 0.35rem;
+            font-size: 0.84rem;
+            border-radius: 10px;
+          }
+
+          .apple-primary-cta {
+            padding: 0.5rem 0.6rem 0.5rem 1.5rem;
+            font-size: 1.05rem;
+          }
+
+          .apple-cta-arrow {
+            width: 40px;
+            height: 40px;
+          }
+
           .apple-success-view {
-            padding: 3.5rem 1.75rem;
+            padding: 2.2rem 1.35rem 3rem 1.35rem;
           }
+
+          .apple-success-title {
+            font-size: 1.85rem;
+          }
+
+          .apple-success-sub {
+            font-size: 0.96rem;
+            margin-bottom: 1.6rem;
+          }
+
+          .apple-wallet-pass {
+            padding: 1.35rem;
+            border-radius: 18px;
+            margin-bottom: 1.6rem;
+          }
+
           .wallet-pass-body {
             grid-template-columns: 1fr;
+            gap: 0.85rem;
+          }
+
+          .apple-success-actions {
+            flex-direction: column;
+            width: 100%;
+          }
+
+          .apple-secondary-btn,
+          .apple-ghost-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 0.85rem;
           }
         }
       `}</style>

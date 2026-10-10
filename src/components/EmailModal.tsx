@@ -163,6 +163,35 @@ export default function EmailModal({ isOpen, onClose, userName, userEmail }: Ema
           from { opacity: 0; transform: scale(0.96); }
           to { opacity: 1; transform: scale(1); }
         }
+
+        @media (max-width: 640px) {
+          .email-modal-backdrop {
+            padding: 1rem;
+            align-items: flex-end;
+          }
+
+          .email-modal-card {
+            border-radius: 24px 24px 0 0;
+            max-height: 85dvh;
+            overflow-y: auto;
+          }
+
+          .modal-header-bar {
+            padding: 1.25rem 1.25rem;
+          }
+
+          .modal-body-content {
+            padding: 1.25rem;
+          }
+
+          .email-envelope-view {
+            padding: 1.15rem;
+          }
+
+          .modal-footer-bar {
+            padding: 0.85rem 1.25rem;
+          }
+        }
       `}</style>
     </div>
   );
