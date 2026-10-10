@@ -154,19 +154,37 @@ export default function EarlyAccessForm() {
                     )}
                   </div>
 
+                  {/* Classy Line-Based Role Selector (No Boxes) */}
                   <div className="input-group">
                     <label className="input-label">I am joining as:</label>
-                    <div className="role-options-grid">
-                      {ROLES.map((r) => (
-                        <button
-                          type="button"
-                          key={r.id}
-                          className={`role-select-btn ${role === r.id ? 'active' : ''}`}
-                          onClick={() => setRole(r.id)}
-                        >
-                          {r.label}
-                        </button>
-                      ))}
+                    <div className="classy-line-group" role="radiogroup" aria-label="I am joining as">
+                      {ROLES.map((r) => {
+                        const isSelected = role === r.id;
+                        return (
+                          <button
+                            type="button"
+                            key={r.id}
+                            role="radio"
+                            aria-checked={isSelected}
+                            className={`classy-line-row ${isSelected ? 'is-active' : ''}`}
+                            onClick={() => setRole(r.id)}
+                          >
+                            <div className="line-row-left">
+                              <span className="classy-line-radio">
+                                <span className="radio-center-glow" />
+                              </span>
+                              <span className="line-row-title">{r.label}</span>
+                            </div>
+                            {isSelected && (
+                              <span className="line-row-tag">
+                                <span className="tag-sparkle">✦</span>
+                                <span>Selected</span>
+                              </span>
+                            )}
+                            <span className="line-bottom-indicator" />
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -454,39 +472,127 @@ export default function EarlyAccessForm() {
           margin-top: 0.25rem;
         }
 
-        .role-options-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.45rem;
-          background: rgba(0, 0, 0, 0.3);
-          padding: 0.3rem;
-          border-radius: 14px;
-          border: 1px solid rgba(255, 255, 255, 0.07);
+        /* ✨ Classy Line-Based Role Selector (No Boxes) */
+        .classy-line-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+          background: transparent;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          padding-top: 0.15rem;
         }
 
-        .role-select-btn {
+        .classy-line-row {
+          width: 100%;
           background: transparent;
           border: none;
-          border-radius: 10px;
-          padding: 0.65rem 0.45rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 0.68rem 0.3rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          cursor: pointer;
+          position: relative;
+          text-align: left;
           font-family: var(--font-sans);
-          font-size: 0.82rem;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .classy-line-row:hover {
+          background: rgba(255, 255, 255, 0.03);
+          padding-left: 0.55rem;
+        }
+
+        .line-row-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .classy-line-radio {
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          flex-shrink: 0;
+        }
+
+        .radio-center-glow {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #f59e0b;
+          box-shadow: 0 0 8px #f59e0b;
+          opacity: 0;
+          transform: scale(0);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .classy-line-row.is-active .classy-line-radio {
+          border-color: #f59e0b;
+          box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .classy-line-row.is-active .radio-center-glow {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .line-row-title {
+          font-size: 0.9rem;
           font-weight: 500;
           color: rgba(255, 255, 255, 0.6);
-          cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          text-align: center;
+          letter-spacing: -0.01em;
+          transition: color 0.2s ease, font-weight 0.2s ease;
         }
 
-        .role-select-btn:hover {
-          color: #ffffff;
+        .classy-line-row:hover .line-row-title {
+          color: rgba(255, 255, 255, 0.9);
         }
 
-        .role-select-btn.active {
-          background: rgba(255, 255, 255, 0.14);
+        .classy-line-row.is-active .line-row-title {
           color: #ffffff;
           font-weight: 600;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        }
+
+        .line-row-tag {
+          font-size: 0.72rem;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          color: #fbbf24;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          animation: tagFade 0.25s ease;
+        }
+
+        .tag-sparkle {
+          color: #f59e0b;
+          font-size: 0.75rem;
+        }
+
+        .line-bottom-indicator {
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          width: 0%;
+          height: 1.5px;
+          background: linear-gradient(90deg, #f59e0b 0%, #c084fc 100%);
+          box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+          transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .classy-line-row.is-active .line-bottom-indicator {
+          width: 100%;
+        }
+
+        @keyframes tagFade {
+          from { opacity: 0; transform: translateX(5px); }
+          to { opacity: 1; transform: translateX(0); }
         }
 
         .general-error-box {
@@ -818,9 +924,12 @@ export default function EarlyAccessForm() {
             padding: 0.85rem 1rem;
           }
 
-          .role-select-btn {
-            font-size: 0.8rem;
-            padding: 0.65rem 0.25rem;
+          .classy-line-row {
+            padding: 0.62rem 0.2rem;
+          }
+
+          .line-row-title {
+            font-size: 0.86rem;
           }
 
           .submit-cta-pill {
