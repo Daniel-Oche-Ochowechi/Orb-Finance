@@ -373,44 +373,55 @@ export default function EarlyAccessTeaser() {
           display: inline-flex;
           align-items: center;
           justify-content: space-between;
-          background: #ffffff;
-          color: #000000;
-          border: none;
+          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+          color: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.9);
           border-radius: 9999px;
-          padding: 0.45rem 0.55rem 0.45rem 1.65rem;
+          padding: 0.45rem 0.5rem 0.45rem 1.65rem;
           font-family: var(--font-sans);
-          font-size: 1rem;
+          font-size: 0.98rem;
           font-weight: 600;
+          letter-spacing: -0.015em;
           cursor: pointer;
-          box-shadow: 0 4px 22px rgba(255, 255, 255, 0.22);
-          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px -4px rgba(255, 255, 255, 0.18);
+          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
           width: 100%;
         }
 
         .apple-pass-cta-btn:hover {
+          background: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 8px 32px rgba(255, 255, 255, 0.38);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+                      0 14px 36px -4px rgba(255, 255, 255, 0.35),
+                      0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
         .apple-pass-cta-btn:active {
-          transform: scale(0.985);
+          transform: scale(0.975) translateY(0);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
         }
 
         .btn-arrow-bubble {
-          width: 40px;
-          height: 40px;
+          width: 38px;
+          height: 38px;
           border-radius: 50%;
-          background: #000000;
+          background: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.2s ease, background-color 0.2s ease;
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                      background-color 0.25s ease, 
+                      color 0.25s ease, 
+                      border-color 0.25s ease;
         }
 
         .apple-pass-cta-btn:hover .btn-arrow-bubble {
-          transform: translateX(3px);
-          background: #7c3aed;
+          transform: translateX(3px) scale(1.04);
+          background: #141420;
+          border-color: rgba(245, 158, 11, 0.45);
+          color: #f59e0b;
         }
 
         .pass-discreet-footer {

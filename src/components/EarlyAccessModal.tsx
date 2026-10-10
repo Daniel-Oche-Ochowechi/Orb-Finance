@@ -519,22 +519,27 @@ export default function EarlyAccessModal() {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.07);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: rgba(255, 255, 255, 0.65);
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.55);
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 10;
         }
 
         .apple-dismiss-btn:hover {
           color: #ffffff;
-          background: rgba(255, 255, 255, 0.18);
+          background: rgba(255, 255, 255, 0.14);
           border-color: rgba(255, 255, 255, 0.25);
-          transform: scale(1.06);
+          transform: rotate(90deg) scale(1.08);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .apple-dismiss-btn:active {
+          transform: rotate(90deg) scale(0.95);
         }
 
         .apple-sheet-layout {
@@ -888,44 +893,59 @@ export default function EarlyAccessModal() {
           align-items: center;
           justify-content: space-between;
           width: 100%;
-          background: #ffffff;
-          color: #000000;
-          border: none;
+          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+          color: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.9);
           border-radius: 9999px;
-          padding: 0.48rem 0.55rem 0.48rem 1.6rem;
+          padding: 0.45rem 0.5rem 0.45rem 1.6rem;
           font-family: var(--font-sans);
-          font-size: 0.96rem;
+          font-size: 0.95rem;
           font-weight: 600;
+          letter-spacing: -0.015em;
           cursor: pointer;
           margin-top: 0.5rem;
-          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.22);
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 22px -4px rgba(255, 255, 255, 0.16);
+          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .apple-primary-cta:hover {
+          background: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 8px 32px rgba(255, 255, 255, 0.4);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+                      0 12px 34px -4px rgba(255, 255, 255, 0.32),
+                      0 4px 14px rgba(0, 0, 0, 0.3);
         }
 
         .apple-primary-cta:active {
-          transform: scale(0.985);
+          transform: scale(0.975) translateY(0);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        .apple-cta-label {
+          font-weight: 600;
         }
 
         .apple-cta-arrow {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background: #000000;
+          background: #07070d;
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.2s ease, background-color 0.2s ease;
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                      background-color 0.25s ease, 
+                      color 0.25s ease, 
+                      border-color 0.25s ease;
         }
 
         .apple-primary-cta:hover .apple-cta-arrow {
-          transform: translateX(3px);
-          background: #7c3aed;
+          transform: translateX(3px) scale(1.04);
+          background: #141420;
+          border-color: rgba(245, 158, 11, 0.45);
+          color: #f59e0b;
         }
 
         .apple-spinner-wrap {
@@ -1171,40 +1191,55 @@ export default function EarlyAccessModal() {
           display: inline-flex;
           align-items: center;
           gap: 0.55rem;
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+          background: rgba(255, 255, 255, 0.06);
           color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.18);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           border-radius: 9999px;
           padding: 0.75rem 1.45rem;
           font-family: var(--font-sans);
-          font-size: 0.9rem;
+          font-size: 0.88rem;
           font-weight: 600;
+          letter-spacing: -0.01em;
           cursor: pointer;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.25);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .apple-secondary-btn:hover {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+          background: rgba(255, 255, 255, 0.12);
           border-color: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+          transform: translateY(-1.5px);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 
+                      0 8px 24px rgba(0, 0, 0, 0.4), 
+                      0 0 18px rgba(255, 255, 255, 0.08);
+        }
+
+        .apple-secondary-btn:active {
+          transform: scale(0.975);
         }
 
         .apple-ghost-btn {
           background: transparent;
-          color: rgba(255, 255, 255, 0.55);
-          border: none;
-          padding: 0.75rem 1.2rem;
+          color: rgba(255, 255, 255, 0.52);
+          border: 1px solid transparent;
+          border-radius: 9999px;
+          padding: 0.75rem 1.25rem;
           font-family: var(--font-sans);
-          font-size: 0.9rem;
+          font-size: 0.88rem;
           font-weight: 500;
+          letter-spacing: -0.01em;
           cursor: pointer;
-          transition: color 0.2s ease;
+          transition: all 0.22s ease;
         }
 
         .apple-ghost-btn:hover {
           color: #ffffff;
+          background: rgba(255, 255, 255, 0.045);
+          border-color: rgba(255, 255, 255, 0.09);
+        }
+
+        .apple-ghost-btn:active {
+          transform: scale(0.98);
         }
 
         .mobile-handle-bar {
