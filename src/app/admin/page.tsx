@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Shield,
   Lock,
@@ -9,46 +9,32 @@ import {
   RefreshCw,
   CheckCircle2,
   Clock,
-  MessageSquare,
-  XCircle,
   Building2,
   CreditCard,
   Briefcase,
   User,
   ArrowRight,
   LogOut,
-  ExternalLink,
   Database,
   Trash2,
-  Edit3,
   X,
   Check,
   AlertCircle,
   Mail,
   Send,
-  Terminal,
-  Scale,
-  Sparkles,
   Inbox,
-  Filter,
   Copy,
-  ChevronDown,
   Layers,
   Activity,
-  Calendar,
-  Globe,
   Eye,
-  FileText,
 } from 'lucide-react';
 import {
   WaitlistSubmission,
   WaitlistStats,
   WaitlistStatus,
-  WaitlistRole,
   ContactInquiry,
   ContactStats,
   ContactStatus,
-  ContactCategory,
 } from '@/lib/supabase/types';
 
 type DashboardTab = 'waitlist' | 'contacts' | 'telemetry';
@@ -60,7 +46,6 @@ export default function AdminDashboardPage() {
   const [showPasscode, setShowPasscode] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<DashboardTab>('waitlist');
@@ -96,7 +81,7 @@ export default function AdminDashboardPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // 1. Initial Authentication Check
+  // 1. Initial Authentication Check in background
   useEffect(() => {
     let isMounted = true;
     async function checkAuth() {
@@ -109,7 +94,7 @@ export default function AdminDashboardPage() {
           }
         }
       } catch {
-        // Silently stay on login screen
+        // stay on login view
       }
     }
     checkAuth();
@@ -118,18 +103,15 @@ export default function AdminDashboardPage() {
     };
   }, []);
 
-
   // 2. Fetch All Data (Waitlist + Contacts + Stats)
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Build waitlist query params
       const waitlistParams = new URLSearchParams();
       if (selectedRole !== 'all') waitlistParams.append('role', selectedRole);
       if (selectedWaitlistStatus !== 'all') waitlistParams.append('status', selectedWaitlistStatus);
       if (waitlistSearch.trim()) waitlistParams.append('search', waitlistSearch.trim());
 
-      // Build contacts query params
       const contactParams = new URLSearchParams();
       if (selectedCategory !== 'all') contactParams.append('category', selectedCategory);
       if (selectedContactStatus !== 'all') contactParams.append('status', selectedContactStatus);
@@ -224,12 +206,9 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // ----------------------------------------------------------------------------
-  // Waitlist Actions
-  // ----------------------------------------------------------------------------
+  // Status updates
   const handleUpdateWaitlistStatus = async (id: string, newStatus: WaitlistStatus) => {
     try {
-      // Optimistic update
       setSubmissions((prev) =>
         prev.map((sub) => (sub.id === id ? { ...sub, status: newStatus } : sub))
       );
@@ -245,11 +224,10 @@ export default function AdminDashboardPage() {
 
       if (!res.ok) throw new Error('Status update failed');
       showToast(`Status updated to "${newStatus.toUpperCase()}"`);
-      // Refresh stats
       fetch('/api/admin/stats')
         .then((r) => r.json())
         .then((d) => d.success && setWaitlistStats(d.data));
-    } catch (err) {
+    } catch {
       showToast('Error updating status.');
       fetchData();
     }
@@ -271,7 +249,7 @@ export default function AdminDashboardPage() {
       );
       setActiveSubmission((prev) => (prev ? { ...prev, notes: submissionNotes } : null));
       showToast('Dossier notes preserved.');
-    } catch (err) {
+    } catch {
       showToast('Error saving dossier notes.');
     } finally {
       setIsSavingSubNotes(false);
@@ -291,17 +269,13 @@ export default function AdminDashboardPage() {
       fetch('/api/admin/stats')
         .then((r) => r.json())
         .then((d) => d.success && setWaitlistStats(d.data));
-    } catch (err) {
+    } catch {
       showToast('Error deleting candidate.');
     }
   };
 
-  // ----------------------------------------------------------------------------
-  // Contact Inquiries Actions
-  // ----------------------------------------------------------------------------
   const handleUpdateContactStatus = async (id: string, newStatus: ContactStatus) => {
     try {
-      // Optimistic update
       setContacts((prev) =>
         prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
       );
@@ -317,11 +291,10 @@ export default function AdminDashboardPage() {
 
       if (!res.ok) throw new Error('Status update failed');
       showToast(`Inquiry marked as "${newStatus.replace('_', ' ').toUpperCase()}"`);
-      // Refresh contact stats
       fetch('/api/admin/contacts/stats')
         .then((r) => r.json())
         .then((d) => d.success && setContactStats(d.data));
-    } catch (err) {
+    } catch {
       showToast('Error updating inquiry status.');
       fetchData();
     }
@@ -343,7 +316,7 @@ export default function AdminDashboardPage() {
       );
       setActiveContact((prev) => (prev ? { ...prev, notes: contactNotes } : null));
       showToast('Inquiry resolution memo saved.');
-    } catch (err) {
+    } catch {
       showToast('Error saving notes.');
     } finally {
       setIsSavingContactNotes(false);
@@ -363,12 +336,11 @@ export default function AdminDashboardPage() {
       fetch('/api/admin/contacts/stats')
         .then((r) => r.json())
         .then((d) => d.success && setContactStats(d.data));
-    } catch (err) {
+    } catch {
       showToast('Error deleting inquiry.');
     }
   };
 
-  // CSV Export Handlers
   const handleExportCsv = () => {
     if (activeTab === 'waitlist') {
       const params = new URLSearchParams();
@@ -386,13 +358,10 @@ export default function AdminDashboardPage() {
   };
 
   const copySqlSchema = () => {
-    const sql = `-- Supabase SQL Schema for Orb Finance
--- Run in Supabase SQL Editor:
--- Table: waitlist_submissions & contact_inquiries
--- Check supabase_schema.sql in project root for full scripts.`;
+    const sql = `-- Supabase SQL Schema for Orb Finance\n-- Run in Supabase SQL Editor:\n-- Check supabase_schema.sql in project root for full scripts.`;
     navigator.clipboard.writeText(sql);
     setCopiedSql(true);
-    showToast('SQL Schema snippet copied.');
+    showToast('SQL Schema copied to clipboard.');
     setTimeout(() => setCopiedSql(false), 3000);
   };
 
@@ -401,42 +370,37 @@ export default function AdminDashboardPage() {
   // ============================================================================
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#07070a] text-white flex items-center justify-center p-4 relative overflow-hidden font-sans">
-        {/* Ambient Halo */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-gradient-to-tr from-amber-500/10 via-violet-600/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
+      <div className="admin-login-wrapper">
+        <div className="admin-ambient-halo" />
 
-        <div className="relative z-10 w-full max-w-md">
-          {/* Brand Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/10 shadow-2xl mb-4 backdrop-blur-xl">
-              <Shield className="w-7 h-7 text-amber-400" strokeWidth={1.75} />
+        <div className="admin-login-box">
+          <div className="admin-login-brand">
+            <div className="admin-icon-shield">
+              <Shield size={28} color="#f59e0b" strokeWidth={1.75} />
             </div>
-            <h1 className="text-2xl font-medium tracking-tight text-white">
-              Orb Finance <span className="font-mono text-sm text-gold">Vault</span>
+            <h1 className="admin-title">
+              ORB FINANCE <span className="admin-badge-gold">VAULT</span>
             </h1>
-            <p className="text-xs text-white/50 mt-1.5 font-mono tracking-wider uppercase">
-              Administrative Control Terminal • 15 Jan 2027
+            <p className="admin-subtitle">
+              Administrative Control Terminal • 15 January 2027
             </p>
           </div>
 
-          {/* Login Card */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl p-7 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+          <div className="admin-login-card">
             {authError && (
-              <div className="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2.5">
-                <AlertCircle size={15} className="shrink-0" />
+              <div className="admin-error-banner">
+                <AlertCircle size={16} />
                 <span>{authError}</span>
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-white/60 mb-2">
-                  Security Passcode
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-white/30">
+            <form onSubmit={handleLogin} className="admin-login-form">
+              <div className="form-group">
+                <label className="input-label">Security Passcode</label>
+                <div className="input-wrapper">
+                  <span className="input-icon-left">
                     <Lock size={15} />
-                  </div>
+                  </span>
                   <input
                     type={showPasscode ? 'text' : 'password'}
                     value={passcode}
@@ -444,12 +408,12 @@ export default function AdminDashboardPage() {
                     placeholder="Enter admin passcode"
                     autoFocus
                     required
-                    className="w-full pl-10 pr-20 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/40 transition-all font-mono"
+                    className="passcode-input"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPasscode(!showPasscode)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs text-white/40 hover:text-white/80 transition-colors"
+                    className="passcode-toggle"
                   >
                     {showPasscode ? 'Hide' : 'Show'}
                   </button>
@@ -459,11 +423,11 @@ export default function AdminDashboardPage() {
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-medium text-xs tracking-wide hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50"
+                className="admin-unlock-btn"
               >
                 {isLoggingIn ? (
                   <>
-                    <RefreshCw size={14} className="animate-spin" />
+                    <RefreshCw size={14} className="spin-icon" />
                     <span>Verifying Cryptographic Session...</span>
                   </>
                 ) : (
@@ -475,119 +439,325 @@ export default function AdminDashboardPage() {
               </button>
             </form>
 
-            <div className="mt-6 pt-5 border-t border-white/5 text-center">
-              <p className="text-[11px] text-white/40 leading-relaxed">
+            <div className="admin-card-footer">
+              <p>
                 Authorized administrative personnel only. System access is audited and logged in accordance with NDPR & institutional standards.
               </p>
-              <div className="mt-3 inline-block px-2.5 py-1 rounded bg-white/[0.02] border border-white/5 text-[10px] font-mono text-white/40">
-                Default Key: <span className="text-amber-400/80">orb-admin-2027</span>
+              <div className="admin-key-hint">
+                Default Key: <code>orb-admin-2027</code>
               </div>
             </div>
           </div>
         </div>
+
+        <style jsx>{`
+          .admin-login-wrapper {
+            min-height: 100vh;
+            background: #06070a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            font-family: var(--font-sans);
+          }
+
+          .admin-ambient-halo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+          }
+
+          .admin-login-box {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+          }
+
+          .admin-login-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+          }
+
+          .admin-icon-shield {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(16px);
+          }
+
+          .admin-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          }
+
+          .admin-badge-gold {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+          }
+
+          .admin-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.4rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+          }
+
+          .admin-login-card {
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(14, 16, 26, 0.75);
+            backdrop-filter: blur(30px);
+            padding: 2rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+          }
+
+          .admin-error-banner {
+            margin-bottom: 1.25rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            color: #fb7185;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+          }
+
+          .admin-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+          }
+
+          .input-label {
+            display: block;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+          }
+
+          .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+          }
+
+          .input-icon-left {
+            position: absolute;
+            left: 0.9rem;
+            color: rgba(255, 255, 255, 0.35);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+          }
+
+          .passcode-input {
+            width: 100%;
+            padding: 0.85rem 4.5rem 0.85rem 2.6rem;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            transition: all 0.2s ease;
+          }
+
+          .passcode-input:focus {
+            outline: none;
+            border-color: rgba(245, 158, 11, 0.65);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+          }
+
+          .passcode-toggle {
+            position: absolute;
+            right: 0.9rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+          }
+
+          .passcode-toggle:hover {
+            color: #ffffff;
+          }
+
+          .admin-unlock-btn {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #07070d;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+          }
+
+          .admin-unlock-btn:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+          }
+
+          .admin-unlock-btn:active {
+            transform: scale(0.99);
+          }
+
+          .admin-card-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+          }
+
+          .admin-card-footer p {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.5;
+          }
+
+          .admin-key-hint {
+            margin-top: 0.8rem;
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            color: rgba(255, 255, 255, 0.5);
+          }
+
+          .admin-key-hint code {
+            color: #f59e0b;
+            font-weight: 600;
+          }
+
+          :global(.spin-icon) {
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
-
 
   // ============================================================================
   // Authenticated Executive Admin Dashboard
   // ============================================================================
   return (
-    <div className="min-h-screen bg-[#08080c] text-white font-sans selection:bg-amber-400/30">
+    <div className="admin-dashboard-root">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-[100] bg-black/90 border border-amber-400/30 backdrop-blur-xl px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center gap-2.5 text-white animate-in slide-in-from-bottom-2 duration-200">
-          <CheckCircle2 size={16} className="text-amber-400 shrink-0" />
+        <div className="admin-toast">
+          <CheckCircle2 size={16} color="#f59e0b" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-[#08080c]/80 backdrop-blur-xl border-b border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Brand + Status Chip */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400/20 to-white/10 border border-white/10 flex items-center justify-center">
-                <Shield size={16} className="text-amber-400" />
-              </div>
-              <span className="font-semibold tracking-tight text-sm sm:text-base">
-                ORB <span className="font-light text-white/60">Executive</span>
-              </span>
+      {/* Top Header */}
+      <header className="admin-header">
+        <div className="admin-header-container">
+          {/* Brand */}
+          <div className="admin-brand-section">
+            <div className="admin-brand-icon">
+              <Shield size={16} color="#f59e0b" />
+            </div>
+            <div className="admin-brand-text">
+              ORB <span className="admin-brand-muted">Executive</span>
             </div>
 
-            {/* Supabase Connection Chip */}
-            <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-[11px] font-mono text-white/70">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
+            <div className="supabase-status-chip">
+              <span className="pulsing-green-dot" />
               <span>
-                {waitlistStats?.isLiveSupabase ? 'Supabase PostgreSQL (Live)' : 'Local Fallback Store'}
+                {waitlistStats?.isLiveSupabase ? 'Supabase Live' : 'Local Fallback'}
               </span>
             </div>
           </div>
 
           {/* Navigation Tab Switcher */}
-          <div className="flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+          <div className="admin-tab-switcher">
             <button
               onClick={() => setActiveTab('waitlist')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeTab === 'waitlist'
-                  ? 'bg-white text-black shadow-sm font-semibold'
-                  : 'text-white/60 hover:text-white'
-              }`}
+              className={`tab-btn ${activeTab === 'waitlist' ? 'active' : ''}`}
             >
               <UsersIcon size={14} />
               <span>Waitlist</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                  activeTab === 'waitlist' ? 'bg-black/15 text-black' : 'bg-white/10 text-white/70'
-                }`}
-              >
-                {submissions.length}
-              </span>
+              <span className="tab-count">{submissions.length}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('contacts')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeTab === 'contacts'
-                  ? 'bg-white text-black shadow-sm font-semibold'
-                  : 'text-white/60 hover:text-white'
-              }`}
+              className={`tab-btn ${activeTab === 'contacts' ? 'active' : ''}`}
             >
               <Mail size={14} />
               <span>Contacts</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                  activeTab === 'contacts' ? 'bg-black/15 text-black' : 'bg-white/10 text-white/70'
-                }`}
-              >
-                {contacts.length}
-              </span>
+              <span className="tab-count">{contacts.length}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('telemetry')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeTab === 'telemetry'
-                  ? 'bg-white text-black shadow-sm font-semibold'
-                  : 'text-white/60 hover:text-white'
-              }`}
+              className={`tab-btn ${activeTab === 'telemetry' ? 'active' : ''}`}
             >
               <Activity size={14} />
               <span>Telemetry</span>
             </button>
           </div>
 
-          {/* Header Action Cluster */}
-          <div className="flex items-center gap-2">
+          {/* Action Buttons */}
+          <div className="admin-action-cluster">
             <button
               onClick={handleExportCsv}
+              className="action-btn csv-btn"
               title="Download CSV report"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-white/80 hover:text-white transition-all"
             >
               <Download size={13} />
               <span>Export CSV</span>
@@ -596,16 +766,16 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => fetchData()}
               disabled={isLoading}
+              className="action-btn icon-only"
               title="Refresh current feed"
-              className="p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/70 hover:text-white transition-all disabled:opacity-50"
             >
-              <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+              <RefreshCw size={14} className={isLoading ? 'spin-icon' : ''} />
             </button>
 
             <button
               onClick={handleLogout}
+              className="action-btn icon-only logout-btn"
               title="Sign out"
-              className="p-2 rounded-lg bg-white/[0.04] hover:bg-rose-500/20 hover:border-rose-500/30 border border-white/[0.08] text-white/70 hover:text-rose-400 transition-all"
             >
               <LogOut size={14} />
             </button>
@@ -613,533 +783,429 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* ====================================================================== */}
-        {/* TAB 1: WAITLIST SUBMISSIONS                                            */}
-        {/* ====================================================================== */}
+      {/* Main Content Area */}
+      <main className="admin-main">
+        {/* ==================================================================== */}
+        {/* TAB 1: WAITLIST SUBMISSIONS                                          */}
+        {/* ==================================================================== */}
         {activeTab === 'waitlist' && (
-          <div className="space-y-6">
-            {/* Waitlist KPI Tiles */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Total Waitlist
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-white">
+          <div className="tab-view-container">
+            {/* KPI Cards */}
+            <div className="kpi-grid">
+              <div className="kpi-card">
+                <span className="kpi-label">Total Waitlist</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value">
                     {waitlistStats?.totalSubmissions ?? submissions.length}
                   </span>
-                  <span className="text-[11px] text-emerald-400 font-mono">
+                  <span className="kpi-badge-green">
                     +{waitlistStats?.last24hCount ?? 0} today
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Banks & Institutions
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-amber-400">
+              <div className="kpi-card">
+                <span className="kpi-label">Banks & Institutions</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-gold">
                     {waitlistStats?.byRole?.bank ?? 0}
                   </span>
-                  <Building2 size={16} className="text-amber-400/40" />
+                  <Building2 size={16} color="rgba(245, 158, 11, 0.5)" />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Fintech & Payments
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-violet-400">
+              <div className="kpi-card">
+                <span className="kpi-label">Fintech & Payments</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-violet">
                     {waitlistStats?.byRole?.fintech ?? 0}
                   </span>
-                  <CreditCard size={16} className="text-violet-400/40" />
+                  <CreditCard size={16} color="rgba(139, 92, 246, 0.5)" />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Corporate Businesses
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-blue-400">
+              <div className="kpi-card">
+                <span className="kpi-label">Businesses & Treasury</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-blue">
                     {waitlistStats?.byRole?.business ?? 0}
                   </span>
-                  <Briefcase size={16} className="text-blue-400/40" />
+                  <Briefcase size={16} color="rgba(59, 130, 246, 0.5)" />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md col-span-2 lg:col-span-1">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Individual Early Access
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-white/80">
+              <div className="kpi-card">
+                <span className="kpi-label">Individual Access</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value">
                     {waitlistStats?.byRole?.individual ?? 0}
                   </span>
-                  <User size={16} className="text-white/30" />
+                  <User size={16} color="rgba(255, 255, 255, 0.3)" />
                 </div>
               </div>
             </div>
 
-            {/* Waitlist Filters & Search Bar */}
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-              <div className="relative flex-1 max-w-md">
-                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+            {/* Controls Bar */}
+            <div className="controls-bar">
+              <div className="search-box">
+                <Search size={15} className="search-icon" />
                 <input
                   type="text"
                   value={waitlistSearch}
                   onChange={(e) => setWaitlistSearch(e.target.value)}
                   placeholder="Search by name, email, or reference code..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-amber-400/60 transition-all font-mono"
+                  className="search-input"
                 />
               </div>
 
-              <div className="flex items-center gap-2.5 overflow-x-auto pb-1 sm:pb-0">
-                {/* Role Filter */}
+              <div className="filter-group">
                 <select
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white focus:outline-none focus:border-amber-400/60"
+                  className="filter-select"
                 >
-                  <option value="all" className="bg-[#101018] text-white">All Roles</option>
-                  <option value="Bank" className="bg-[#101018] text-white">Bank</option>
-                  <option value="Fintech or payments company" className="bg-[#101018] text-white">Fintech</option>
-                  <option value="Business" className="bg-[#101018] text-white">Business</option>
-                  <option value="Individual" className="bg-[#101018] text-white">Individual</option>
+                  <option value="all">All Roles</option>
+                  <option value="Bank">Bank</option>
+                  <option value="Fintech or payments company">Fintech</option>
+                  <option value="Business">Business</option>
+                  <option value="Individual">Individual</option>
                 </select>
 
-                {/* Status Filter */}
                 <select
                   value={selectedWaitlistStatus}
                   onChange={(e) => setSelectedWaitlistStatus(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white focus:outline-none focus:border-amber-400/60"
+                  className="filter-select"
                 >
-                  <option value="all" className="bg-[#101018] text-white">All Statuses</option>
-                  <option value="pending" className="bg-[#101018] text-white">Pending</option>
-                  <option value="approved" className="bg-[#101018] text-white">Approved</option>
-                  <option value="contacted" className="bg-[#101018] text-white">Contacted</option>
-                  <option value="rejected" className="bg-[#101018] text-white">Rejected</option>
+                  <option value="all">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="rejected">Rejected</option>
                 </select>
               </div>
             </div>
 
-            {/* Waitlist Table */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] overflow-hidden backdrop-blur-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-white/[0.03] text-white/50 border-b border-white/[0.06] font-mono uppercase text-[10px] tracking-wider">
+            {/* Table */}
+            <div className="table-card">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Ref ID</th>
+                    <th>Candidate</th>
+                    <th>Role</th>
+                    <th>Registration</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submissions.length === 0 ? (
                     <tr>
-                      <th className="py-3 px-4">Ref ID</th>
-                      <th className="py-3 px-4">Candidate</th>
-                      <th className="py-3 px-4">Role</th>
-                      <th className="py-3 px-4">Registration</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
+                      <td colSpan={6} className="empty-table-cell">
+                        <Inbox size={32} style={{ opacity: 0.3, marginBottom: '0.5rem' }} />
+                        <p>No waitlist submissions match your search parameters.</p>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/[0.04]">
-                    {submissions.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="py-12 text-center text-white/40">
-                          <Inbox size={32} className="mx-auto mb-2 opacity-40" />
-                          <p>No waitlist submissions match your search parameters.</p>
+                  ) : (
+                    submissions.map((sub) => (
+                      <tr
+                        key={sub.id}
+                        onClick={() => {
+                          setActiveSubmission(sub);
+                          setSubmissionNotes(sub.notes || '');
+                        }}
+                      >
+                        <td className="ref-cell">{sub.reference_id}</td>
+                        <td>
+                          <div className="candidate-name">{sub.full_name}</div>
+                          <div className="candidate-email">{sub.email}</div>
+                        </td>
+                        <td>
+                          <span className="role-tag">
+                            {sub.role}
+                          </span>
+                        </td>
+                        <td className="date-cell">
+                          {new Date(sub.created_at).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </td>
+                        <td onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={sub.status}
+                            onChange={(e) =>
+                              handleUpdateWaitlistStatus(sub.id, e.target.value as WaitlistStatus)
+                            }
+                            className={`status-select status-${sub.status}`}
+                          >
+                            <option value="pending">PENDING</option>
+                            <option value="approved">APPROVED</option>
+                            <option value="contacted">CONTACTED</option>
+                            <option value="rejected">REJECTED</option>
+                          </select>
+                        </td>
+                        <td style={{ textAlign: 'right' }} onClick={(e) => e.stopPropagation()}>
+                          <div className="row-action-btns">
+                            <button
+                              onClick={() => {
+                                setActiveSubmission(sub);
+                                setSubmissionNotes(sub.notes || '');
+                              }}
+                              className="table-action-icon"
+                              title="Inspect dossier"
+                            >
+                              <Eye size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteSubmission(sub.id, sub.reference_id)}
+                              className="table-action-icon delete-icon"
+                              title="Delete candidate"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    ) : (
-                      submissions.map((sub) => {
-                        const statusColors: Record<WaitlistStatus, string> = {
-                          pending: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-                          approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-                          contacted: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-                          rejected: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-                        };
-
-                        return (
-                          <tr
-                            key={sub.id}
-                            className="hover:bg-white/[0.03] transition-colors group cursor-pointer"
-                            onClick={() => {
-                              setActiveSubmission(sub);
-                              setSubmissionNotes(sub.notes || '');
-                            }}
-                          >
-                            <td className="py-3.5 px-4 font-mono font-semibold text-amber-400/90 whitespace-nowrap">
-                              {sub.reference_id}
-                            </td>
-
-                            <td className="py-3.5 px-4">
-                              <div className="font-medium text-white group-hover:text-amber-300 transition-colors">
-                                {sub.full_name}
-                              </div>
-                              <div className="text-[11px] text-white/40 font-mono">
-                                {sub.email}
-                              </div>
-                            </td>
-
-                            <td className="py-3.5 px-4 whitespace-nowrap">
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] bg-white/[0.05] border border-white/10 text-white/80">
-                                {sub.role === 'Bank' && <Building2 size={11} className="text-amber-400" />}
-                                {sub.role === 'Fintech or payments company' && <CreditCard size={11} className="text-violet-400" />}
-                                {sub.role === 'Business' && <Briefcase size={11} className="text-blue-400" />}
-                                {sub.role === 'Individual' && <User size={11} className="text-white/40" />}
-                                <span>{sub.role}</span>
-                              </span>
-                            </td>
-
-                            <td className="py-3.5 px-4 text-white/50 text-[11px] font-mono whitespace-nowrap">
-                              {new Date(sub.created_at).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                              })}
-                            </td>
-
-                            <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                              <select
-                                value={sub.status}
-                                onChange={(e) =>
-                                  handleUpdateWaitlistStatus(sub.id, e.target.value as WaitlistStatus)
-                                }
-                                className={`px-2.5 py-1 rounded-full text-[11px] font-mono uppercase tracking-wider border font-medium focus:outline-none transition-all cursor-pointer ${
-                                  statusColors[sub.status]
-                                }`}
-                              >
-                                <option value="pending" className="bg-[#101018] text-amber-400">PENDING</option>
-                                <option value="approved" className="bg-[#101018] text-emerald-400">APPROVED</option>
-                                <option value="contacted" className="bg-[#101018] text-blue-400">CONTACTED</option>
-                                <option value="rejected" className="bg-[#101018] text-rose-400">REJECTED</option>
-                              </select>
-                            </td>
-
-                            <td className="py-3.5 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => {
-                                    setActiveSubmission(sub);
-                                    setSubmissionNotes(sub.notes || '');
-                                  }}
-                                  title="Inspect Dossier"
-                                  className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-                                >
-                                  <Eye size={14} />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteSubmission(sub.id, sub.reference_id)}
-                                  title="Delete Entry"
-                                  className="p-1.5 rounded-lg text-white/40 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
 
-        {/* ====================================================================== */}
-        {/* TAB 2: CONTACT INQUIRIES & MESSAGES                                    */}
-        {/* ====================================================================== */}
+        {/* ==================================================================== */}
+        {/* TAB 2: CONTACT INQUIRIES & MESSAGES                                  */}
+        {/* ==================================================================== */}
         {activeTab === 'contacts' && (
-          <div className="space-y-6">
-            {/* Contact KPI Tiles */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Total Inquiries
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-white">
+          <div className="tab-view-container">
+            {/* KPI Cards */}
+            <div className="kpi-grid">
+              <div className="kpi-card">
+                <span className="kpi-label">Total Inquiries</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value">
                     {contactStats?.totalInquiries ?? contacts.length}
                   </span>
-                  <span className="text-[11px] text-emerald-400 font-mono">
+                  <span className="kpi-badge-green">
                     +{contactStats?.last24hCount ?? 0} today
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  New / Unread
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-amber-400">
+              <div className="kpi-card">
+                <span className="kpi-label">New / Unread</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-gold">
                     {contactStats?.byStatus?.new ?? 0}
                   </span>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-                  </span>
+                  <span className="pulsing-amber-dot" />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  In Progress
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-blue-400">
+              <div className="kpi-card">
+                <span className="kpi-label">In Progress</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-blue">
                     {contactStats?.byStatus?.in_progress ?? 0}
                   </span>
-                  <Clock size={16} className="text-blue-400/40" />
+                  <Clock size={16} color="rgba(59, 130, 246, 0.5)" />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-                <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider block mb-1">
-                  Responded
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-semibold tracking-tight text-emerald-400">
+              <div className="kpi-card">
+                <span className="kpi-label">Responded</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-value text-emerald">
                     {contactStats?.byStatus?.responded ?? 0}
                   </span>
-                  <CheckCircle2 size={16} className="text-emerald-400/40" />
+                  <CheckCircle2 size={16} color="rgba(16, 185, 129, 0.5)" />
                 </div>
               </div>
             </div>
 
-            {/* Contacts Filters & Search */}
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-              <div className="relative flex-1 max-w-md">
-                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+            {/* Controls Bar */}
+            <div className="controls-bar">
+              <div className="search-box">
+                <Search size={15} className="search-icon" />
                 <input
                   type="text"
                   value={contactSearch}
                   onChange={(e) => setContactSearch(e.target.value)}
                   placeholder="Search sender, company, subject, or message..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-amber-400/60 transition-all font-mono"
+                  className="search-input"
                 />
               </div>
 
-              <div className="flex items-center gap-2.5 overflow-x-auto pb-1 sm:pb-0">
-                {/* Category Filter */}
+              <div className="filter-group">
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white focus:outline-none focus:border-amber-400/60"
+                  className="filter-select"
                 >
-                  <option value="all" className="bg-[#101018] text-white">All Topics</option>
-                  <option value="Partnership" className="bg-[#101018] text-white">Partnership</option>
-                  <option value="Institutional Sandbox" className="bg-[#101018] text-white">Sandbox & APIs</option>
-                  <option value="Integration Support" className="bg-[#101018] text-white">Integration</option>
-                  <option value="Compliance" className="bg-[#101018] text-white">Compliance</option>
-                  <option value="General" className="bg-[#101018] text-white">General</option>
+                  <option value="all">All Topics</option>
+                  <option value="Partnership">Partnership</option>
+                  <option value="Institutional Sandbox">Sandbox & APIs</option>
+                  <option value="Integration Support">Integration</option>
+                  <option value="Compliance">Compliance</option>
+                  <option value="General">General</option>
                 </select>
 
-                {/* Status Filter */}
                 <select
                   value={selectedContactStatus}
                   onChange={(e) => setSelectedContactStatus(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white focus:outline-none focus:border-amber-400/60"
+                  className="filter-select"
                 >
-                  <option value="all" className="bg-[#101018] text-white">All Statuses</option>
-                  <option value="new" className="bg-[#101018] text-white">New</option>
-                  <option value="in_progress" className="bg-[#101018] text-white">In Progress</option>
-                  <option value="responded" className="bg-[#101018] text-white">Responded</option>
-                  <option value="archived" className="bg-[#101018] text-white">Archived</option>
+                  <option value="all">All Statuses</option>
+                  <option value="new">New</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="responded">Responded</option>
+                  <option value="archived">Archived</option>
                 </select>
               </div>
             </div>
 
-            {/* Contacts Table */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] overflow-hidden backdrop-blur-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-white/[0.03] text-white/50 border-b border-white/[0.06] font-mono uppercase text-[10px] tracking-wider">
+            {/* Table */}
+            <div className="table-card">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Ref Code</th>
+                    <th>Contact & Org</th>
+                    <th>Topic</th>
+                    <th>Message Snippet</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contacts.length === 0 ? (
                     <tr>
-                      <th className="py-3 px-4">Ref Code</th>
-                      <th className="py-3 px-4">Contact & Org</th>
-                      <th className="py-3 px-4">Topic</th>
-                      <th className="py-3 px-4">Message Snippet</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
+                      <td colSpan={6} className="empty-table-cell">
+                        <Inbox size={32} style={{ opacity: 0.3, marginBottom: '0.5rem' }} />
+                        <p>No contact inquiries found matching criteria.</p>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/[0.04]">
-                    {contacts.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="py-12 text-center text-white/40">
-                          <Inbox size={32} className="mx-auto mb-2 opacity-40" />
-                          <p>No contact inquiries found matching criteria.</p>
+                  ) : (
+                    contacts.map((c) => (
+                      <tr
+                        key={c.id}
+                        onClick={() => {
+                          setActiveContact(c);
+                          setContactNotes(c.notes || '');
+                        }}
+                      >
+                        <td className="ref-cell">{c.reference_id}</td>
+                        <td>
+                          <div className="candidate-name">{c.full_name}</div>
+                          <div className="candidate-email">{c.email}</div>
+                          {c.company && <div className="company-tag">🏢 {c.company}</div>}
+                        </td>
+                        <td>
+                          <span className="role-tag">{c.category}</span>
+                        </td>
+                        <td className="msg-preview-cell">
+                          <div className="msg-subj truncate">{c.subject}</div>
+                          <div className="msg-body truncate">{c.message}</div>
+                        </td>
+                        <td onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={c.status}
+                            onChange={(e) =>
+                              handleUpdateContactStatus(c.id, e.target.value as ContactStatus)
+                            }
+                            className={`status-select status-${c.status}`}
+                          >
+                            <option value="new">NEW</option>
+                            <option value="in_progress">IN PROGRESS</option>
+                            <option value="responded">RESPONDED</option>
+                            <option value="archived">ARCHIVED</option>
+                          </select>
+                        </td>
+                        <td style={{ textAlign: 'right' }} onClick={(e) => e.stopPropagation()}>
+                          <div className="row-action-btns">
+                            <a
+                              href={`mailto:${c.email}?subject=Re: Orb Finance Inquiry [${c.reference_id}]&body=Dear ${encodeURIComponent(c.full_name)},\n\nThank you for reaching out to Orb Finance regarding ${encodeURIComponent(c.category)}.\n\nBest regards,\nOrb Relations Desk`}
+                              className="table-action-icon reply-icon"
+                              title="Reply via email"
+                            >
+                              <Send size={13} />
+                            </a>
+                            <button
+                              onClick={() => {
+                                setActiveContact(c);
+                                setContactNotes(c.notes || '');
+                              }}
+                              className="table-action-icon"
+                              title="Read full inquiry"
+                            >
+                              <Eye size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteContact(c.id, c.reference_id)}
+                              className="table-action-icon delete-icon"
+                              title="Delete inquiry"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    ) : (
-                      contacts.map((c) => {
-                        const statusColors: Record<ContactStatus, string> = {
-                          new: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-                          in_progress: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-                          responded: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-                          archived: 'bg-white/10 text-white/60 border-white/20',
-                        };
-
-                        return (
-                          <tr
-                            key={c.id}
-                            className="hover:bg-white/[0.03] transition-colors group cursor-pointer"
-                            onClick={() => {
-                              setActiveContact(c);
-                              setContactNotes(c.notes || '');
-                            }}
-                          >
-                            <td className="py-3.5 px-4 font-mono font-semibold text-amber-400/90 whitespace-nowrap">
-                              {c.reference_id}
-                            </td>
-
-                            <td className="py-3.5 px-4 whitespace-nowrap">
-                              <div className="font-medium text-white group-hover:text-amber-300 transition-colors">
-                                {c.full_name}
-                              </div>
-                              <div className="text-[11px] text-white/40 font-mono">
-                                {c.email}
-                              </div>
-                              {c.company && (
-                                <div className="text-[10px] text-white/60 font-mono mt-0.5">
-                                  🏢 {c.company}
-                                </div>
-                              )}
-                            </td>
-
-                            <td className="py-3.5 px-4 whitespace-nowrap">
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] bg-white/[0.05] border border-white/10 text-white/80">
-                                <span>{c.category}</span>
-                              </span>
-                            </td>
-
-                            <td className="py-3.5 px-4 max-w-xs">
-                              <p className="font-medium text-white/90 truncate">{c.subject}</p>
-                              <p className="text-[11px] text-white/50 truncate font-light mt-0.5">
-                                {c.message}
-                              </p>
-                            </td>
-
-                            <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                              <select
-                                value={c.status}
-                                onChange={(e) =>
-                                  handleUpdateContactStatus(c.id, e.target.value as ContactStatus)
-                                }
-                                className={`px-2.5 py-1 rounded-full text-[11px] font-mono uppercase tracking-wider border font-medium focus:outline-none transition-all cursor-pointer ${
-                                  statusColors[c.status]
-                                }`}
-                              >
-                                <option value="new" className="bg-[#101018] text-amber-400">NEW</option>
-                                <option value="in_progress" className="bg-[#101018] text-blue-400">IN PROGRESS</option>
-                                <option value="responded" className="bg-[#101018] text-emerald-400">RESPONDED</option>
-                                <option value="archived" className="bg-[#101018] text-white/60">ARCHIVED</option>
-                              </select>
-                            </td>
-
-                            <td className="py-3.5 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                              <div className="flex items-center justify-end gap-1.5">
-                                <a
-                                  href={`mailto:${c.email}?subject=Re: Orb Finance Inquiry [${c.reference_id}]&body=Dear ${encodeURIComponent(c.full_name)},\n\nThank you for reaching out to Orb Finance regarding ${encodeURIComponent(c.category)}.\n\nBest regards,\nOrb Relations Desk`}
-                                  title="Reply via Email"
-                                  className="p-1.5 rounded-lg text-white/50 hover:text-amber-400 hover:bg-white/10 transition-colors"
-                                >
-                                  <Send size={14} />
-                                </a>
-                                <button
-                                  onClick={() => {
-                                    setActiveContact(c);
-                                    setContactNotes(c.notes || '');
-                                  }}
-                                  title="Read Full Inquiry"
-                                  className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-                                >
-                                  <Eye size={14} />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteContact(c.id, c.reference_id)}
-                                  title="Delete Inquiry"
-                                  className="p-1.5 rounded-lg text-white/40 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
 
-        {/* ====================================================================== */}
-        {/* TAB 3: EXECUTIVE TELEMETRY & SYSTEM HEALTH                             */}
-        {/* ====================================================================== */}
+        {/* ==================================================================== */}
+        {/* TAB 3: EXECUTIVE TELEMETRY & SYSTEM HEALTH                           */}
+        {/* ==================================================================== */}
         {activeTab === 'telemetry' && (
-          <div className="space-y-6">
-            {/* System Readiness Banner */}
-            <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-white/[0.02] to-transparent p-6 backdrop-blur-md">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider bg-gold/20 text-gold border border-gold/40">
-                      SYSTEM READINESS
-                    </span>
-                    <span className="text-xs text-white/50 font-mono">
-                      OPENING 15 JANUARY 2027
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold tracking-tight text-white">
-                    Platform Ingestion & Inquiries Pipeline
-                  </h3>
-                  <p className="text-xs text-white/60 mt-1 max-w-xl leading-relaxed">
-                    All waitlist candidates and institutional contact transmissions are securely isolated and encrypted.
-                  </p>
+          <div className="tab-view-container">
+            {/* Banner */}
+            <div className="telemetry-banner">
+              <div>
+                <div className="telemetry-badge-row">
+                  <span className="banner-tag">SYSTEM READINESS</span>
+                  <span className="banner-date">OPENING 15 JANUARY 2027</span>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setShowSqlModal(true)}
-                    className="px-3.5 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-xs font-medium text-white flex items-center gap-2 transition-all"
-                  >
-                    <Database size={14} className="text-amber-400" />
-                    <span>View Supabase SQL Schema</span>
-                  </button>
-                </div>
+                <h3 className="banner-title">Platform Ingestion & Inquiries Pipeline</h3>
+                <p className="banner-desc">
+                  All waitlist candidates and institutional contact transmissions are securely isolated and encrypted.
+                </p>
               </div>
+
+              <button onClick={() => setShowSqlModal(true)} className="schema-btn">
+                <Database size={14} color="#f59e0b" />
+                <span>View Supabase SQL Schema</span>
+              </button>
             </div>
 
-            {/* Telemetry Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Waitlist Distribution Card */}
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-md">
-                <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <Layers size={16} className="text-amber-400" />
+            {/* Distribution Charts */}
+            <div className="charts-grid">
+              <div className="chart-card">
+                <h4 className="chart-title">
+                  <Layers size={16} color="#f59e0b" />
                   <span>Waitlist Role Composition</span>
                 </h4>
 
-                <div className="space-y-3.5 text-xs">
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                <div className="bars-list">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Banks & Financial Institutions</span>
-                      <span className="font-mono">{waitlistStats?.byRole?.bank ?? 0}</span>
+                      <span className="mono-count">{waitlistStats?.byRole?.bank ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-amber-400 rounded-full transition-all duration-500"
+                        className="bar-fill gold"
                         style={{
                           width: `${
                             submissions.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(((waitlistStats?.byRole?.bank ?? 0) / submissions.length) * 100)
-                                )
+                              ? Math.min(100, Math.round(((waitlistStats?.byRole?.bank ?? 0) / submissions.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1147,23 +1213,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Fintech & Payments Infrastructure</span>
-                      <span className="font-mono">{waitlistStats?.byRole?.fintech ?? 0}</span>
+                      <span className="mono-count">{waitlistStats?.byRole?.fintech ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-violet-400 rounded-full transition-all duration-500"
+                        className="bar-fill violet"
                         style={{
                           width: `${
                             submissions.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((waitlistStats?.byRole?.fintech ?? 0) / submissions.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((waitlistStats?.byRole?.fintech ?? 0) / submissions.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1171,23 +1232,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Corporate Businesses & Treasury</span>
-                      <span className="font-mono">{waitlistStats?.byRole?.business ?? 0}</span>
+                      <span className="mono-count">{waitlistStats?.byRole?.business ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-blue-400 rounded-full transition-all duration-500"
+                        className="bar-fill blue"
                         style={{
                           width: `${
                             submissions.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((waitlistStats?.byRole?.business ?? 0) / submissions.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((waitlistStats?.byRole?.business ?? 0) / submissions.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1195,23 +1251,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Individual Early Access</span>
-                      <span className="font-mono">{waitlistStats?.byRole?.individual ?? 0}</span>
+                      <span className="mono-count">{waitlistStats?.byRole?.individual ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-white/60 rounded-full transition-all duration-500"
+                        className="bar-fill white"
                         style={{
                           width: `${
                             submissions.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((waitlistStats?.byRole?.individual ?? 0) / submissions.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((waitlistStats?.byRole?.individual ?? 0) / submissions.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1221,31 +1272,25 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Contact Inquiry Topics Breakdown */}
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-md">
-                <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <Mail size={16} className="text-violet-400" />
+              <div className="chart-card">
+                <h4 className="chart-title">
+                  <Mail size={16} color="#8b5cf6" />
                   <span>Inquiry Topics Breakdown</span>
                 </h4>
 
-                <div className="space-y-3.5 text-xs">
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                <div className="bars-list">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Institutional Partnerships</span>
-                      <span className="font-mono">{contactStats?.byCategory?.partnership ?? 0}</span>
+                      <span className="mono-count">{contactStats?.byCategory?.partnership ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-amber-400 rounded-full"
+                        className="bar-fill gold"
                         style={{
                           width: `${
                             contacts.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((contactStats?.byCategory?.partnership ?? 0) / contacts.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((contactStats?.byCategory?.partnership ?? 0) / contacts.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1253,23 +1298,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Sandbox & Developer APIs</span>
-                      <span className="font-mono">{contactStats?.byCategory?.sandbox ?? 0}</span>
+                      <span className="mono-count">{contactStats?.byCategory?.sandbox ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-emerald-400 rounded-full"
+                        className="bar-fill emerald"
                         style={{
                           width: `${
                             contacts.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((contactStats?.byCategory?.sandbox ?? 0) / contacts.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((contactStats?.byCategory?.sandbox ?? 0) / contacts.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1277,23 +1317,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Integration Support</span>
-                      <span className="font-mono">{contactStats?.byCategory?.integration ?? 0}</span>
+                      <span className="mono-count">{contactStats?.byCategory?.integration ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-blue-400 rounded-full"
+                        className="bar-fill blue"
                         style={{
                           width: `${
                             contacts.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((contactStats?.byCategory?.integration ?? 0) / contacts.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((contactStats?.byCategory?.integration ?? 0) / contacts.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1301,23 +1336,18 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-white/70 mb-1">
+                  <div className="bar-row">
+                    <div className="bar-header">
                       <span>Compliance & NDPR Review</span>
-                      <span className="font-mono">{contactStats?.byCategory?.compliance ?? 0}</span>
+                      <span className="mono-count">{contactStats?.byCategory?.compliance ?? 0}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="bar-track">
                       <div
-                        className="h-full bg-rose-400 rounded-full"
+                        className="bar-fill rose"
                         style={{
                           width: `${
                             contacts.length
-                              ? Math.min(
-                                  100,
-                                  Math.round(
-                                    ((contactStats?.byCategory?.compliance ?? 0) / contacts.length) * 100
-                                  )
-                                )
+                              ? Math.min(100, Math.round(((contactStats?.byCategory?.compliance ?? 0) / contacts.length) * 100))
                               : 0
                           }%`,
                         }}
@@ -1331,72 +1361,51 @@ export default function AdminDashboardPage() {
         )}
       </main>
 
-      {/* ====================================================================== */}
-      {/* MODAL 1: WAITLIST APPLICANT INSPECTION DOSSIER                         */}
-      {/* ====================================================================== */}
+      {/* ==================================================================== */}
+      {/* MODAL 1: WAITLIST DOSSIER                                            */}
+      {/* ==================================================================== */}
       {activeSubmission && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-          <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-md"
-            onClick={() => setActiveSubmission(null)}
-          />
-
-          <div className="relative w-full max-w-xl rounded-2xl border border-white/10 bg-[#0d0d12]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl z-10 text-white max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setActiveSubmission(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-            >
+        <div className="admin-modal-backdrop" onClick={() => setActiveSubmission(null)}>
+          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setActiveSubmission(null)} className="modal-close-btn">
               <X size={18} />
             </button>
 
-            <div className="mb-6">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold block mb-1">
-                WAITLIST DOSSIER
-              </span>
-              <h3 className="text-xl font-semibold tracking-tight text-white">
-                {activeSubmission.full_name}
-              </h3>
-              <p className="text-xs font-mono text-white/50 mt-0.5">
-                {activeSubmission.email}
-              </p>
+            <div className="modal-header">
+              <span className="modal-tag">WAITLIST DOSSIER</span>
+              <h3 className="modal-title">{activeSubmission.full_name}</h3>
+              <p className="modal-sub mono">{activeSubmission.email}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-6 p-4 rounded-xl bg-white/[0.03] border border-white/5 text-xs font-mono">
-              <div>
-                <span className="text-white/40 block text-[10px]">REFERENCE ID</span>
-                <span className="text-amber-400 font-semibold">{activeSubmission.reference_id}</span>
+            <div className="modal-meta-grid">
+              <div className="meta-item">
+                <span className="meta-label">REFERENCE ID</span>
+                <span className="meta-val gold mono">{activeSubmission.reference_id}</span>
               </div>
-              <div>
-                <span className="text-white/40 block text-[10px]">ROLE</span>
-                <span className="text-white">{activeSubmission.role}</span>
+              <div className="meta-item">
+                <span className="meta-label">ROLE</span>
+                <span className="meta-val">{activeSubmission.role}</span>
               </div>
-              <div>
-                <span className="text-white/40 block text-[10px]">REGISTERED AT</span>
-                <span className="text-white/80">
+              <div className="meta-item">
+                <span className="meta-label">REGISTERED AT</span>
+                <span className="meta-val mono">
                   {new Date(activeSubmission.created_at).toLocaleString()}
                 </span>
               </div>
-              <div>
-                <span className="text-white/40 block text-[10px]">CURRENT STATUS</span>
-                <span className="uppercase text-amber-300">{activeSubmission.status}</span>
+              <div className="meta-item">
+                <span className="meta-label">STATUS</span>
+                <span className="meta-val gold uppercase">{activeSubmission.status}</span>
               </div>
             </div>
 
-            {/* Quick Status Buttons */}
-            <div className="mb-6">
-              <label className="block text-xs font-medium text-white/60 mb-2">
-                Transition Status
-              </label>
-              <div className="grid grid-cols-4 gap-2 text-xs font-mono">
+            <div className="modal-section">
+              <label className="section-label">Transition Status</label>
+              <div className="status-btn-group">
                 {(['pending', 'approved', 'contacted', 'rejected'] as WaitlistStatus[]).map((st) => (
                   <button
                     key={st}
                     onClick={() => handleUpdateWaitlistStatus(activeSubmission.id, st)}
-                    className={`py-2 rounded-lg text-center font-medium uppercase border transition-all ${
-                      activeSubmission.status === st
-                        ? 'bg-amber-400 text-black border-amber-400 font-semibold'
-                        : 'bg-white/[0.03] border-white/10 text-white/70 hover:text-white hover:bg-white/[0.06]'
-                    }`}
+                    className={`status-toggle-btn ${activeSubmission.status === st ? 'active' : ''}`}
                   >
                     {st}
                   </button>
@@ -1404,27 +1413,26 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Internal Notes Editor */}
-            <div className="mb-6">
-              <label className="block text-xs font-medium text-white/60 mb-2 flex items-center justify-between">
-                <span>Internal Dossier Notes</span>
-                <span className="text-[10px] text-white/40">Only visible to administrators</span>
-              </label>
+            <div className="modal-section">
+              <div className="section-label-row">
+                <span className="section-label">Internal Dossier Notes</span>
+                <span className="hint-label">Only visible to administrators</span>
+              </div>
               <textarea
                 rows={4}
                 value={submissionNotes}
                 onChange={(e) => setSubmissionNotes(e.target.value)}
                 placeholder="Add meeting outcomes, corridor requirements, SLA notes..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 text-xs focus:outline-none focus:border-amber-400/60 transition-all font-mono resize-none"
+                className="notes-textarea"
               />
               <button
                 onClick={handleSaveSubNotes}
                 disabled={isSavingSubNotes}
-                className="mt-2.5 px-4 py-2 rounded-xl bg-white text-black text-xs font-semibold hover:bg-white/90 transition-all flex items-center gap-1.5 disabled:opacity-50"
+                className="save-notes-btn"
               >
                 {isSavingSubNotes ? (
                   <>
-                    <RefreshCw size={12} className="animate-spin" />
+                    <RefreshCw size={12} className="spin-icon" />
                     <span>Saving...</span>
                   </>
                 ) : (
@@ -1435,66 +1443,37 @@ export default function AdminDashboardPage() {
                 )}
               </button>
             </div>
-
-            {/* Technical Metadata */}
-            <div className="pt-4 border-t border-white/5 text-[11px] font-mono text-white/40 space-y-1">
-              <div>IP Address: {activeSubmission.ip_address || 'Not recorded'}</div>
-              <div className="truncate">Client: {activeSubmission.user_agent || 'Standard client'}</div>
-            </div>
           </div>
         </div>
       )}
 
-      {/* ====================================================================== */}
-      {/* MODAL 2: CONTACT INQUIRY DETAIL & REPLY VIEWER                         */}
-      {/* ====================================================================== */}
+      {/* ==================================================================== */}
+      {/* MODAL 2: CONTACT INQUIRY                                             */}
+      {/* ==================================================================== */}
       {activeContact && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-          <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-md"
-            onClick={() => setActiveContact(null)}
-          />
-
-          <div className="relative w-full max-w-xl rounded-2xl border border-white/10 bg-[#0d0d12]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl z-10 text-white max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setActiveContact(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-            >
+        <div className="admin-modal-backdrop" onClick={() => setActiveContact(null)}>
+          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setActiveContact(null)} className="modal-close-btn">
               <X size={18} />
             </button>
 
-            <div className="mb-5">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-gold">
-                  INQUIRY MESSAGE • {activeContact.reference_id}
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/10 text-white/80">
-                  {activeContact.category}
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold tracking-tight text-white">
-                {activeContact.subject}
-              </h3>
-              <p className="text-xs text-white/50 mt-1">
-                From <span className="text-white font-medium">{activeContact.full_name}</span>
+            <div className="modal-header">
+              <span className="modal-tag">INQUIRY • {activeContact.reference_id}</span>
+              <h3 className="modal-title">{activeContact.subject}</h3>
+              <p className="modal-sub">
+                From <strong>{activeContact.full_name}</strong>
                 {activeContact.company && ` • ${activeContact.company}`} ({activeContact.email})
               </p>
             </div>
 
-            {/* Message Body */}
-            <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white/90 leading-relaxed whitespace-pre-wrap font-sans mb-6">
+            <div className="modal-msg-body">
               {activeContact.message}
             </div>
 
-            {/* Quick Actions Bar */}
-            <div className="flex items-center gap-3 mb-6">
+            <div className="modal-actions-bar">
               <a
-                href={`mailto:${activeContact.email}?subject=Re: Orb Finance Inquiry [${activeContact.reference_id}] - ${encodeURIComponent(
-                  activeContact.subject
-                )}&body=Dear ${encodeURIComponent(
-                  activeContact.full_name
-                )},\n\nThank you for contacting Orb Finance.\n\nBest regards,\nOrb Relations Desk`}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-semibold text-xs text-center flex items-center justify-center gap-2 hover:brightness-105 transition-all shadow-md shadow-amber-500/10"
+                href={`mailto:${activeContact.email}?subject=Re: Orb Finance Inquiry [${activeContact.reference_id}] - ${encodeURIComponent(activeContact.subject)}&body=Dear ${encodeURIComponent(activeContact.full_name)},\n\nThank you for contacting Orb Finance.\n\nBest regards,\nOrb Relations Desk`}
+                className="reply-email-btn"
               >
                 <Send size={13} />
                 <span>Reply via Email Client</span>
@@ -1505,36 +1484,35 @@ export default function AdminDashboardPage() {
                 onChange={(e) =>
                   handleUpdateContactStatus(activeContact.id, e.target.value as ContactStatus)
                 }
-                className="py-2.5 px-3 rounded-xl bg-white/[0.05] border border-white/10 text-xs font-mono uppercase text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                className="modal-status-select"
               >
-                <option value="new" className="bg-[#101018] text-amber-400">Status: NEW</option>
-                <option value="in_progress" className="bg-[#101018] text-blue-400">Status: IN PROGRESS</option>
-                <option value="responded" className="bg-[#101018] text-emerald-400">Status: RESPONDED</option>
-                <option value="archived" className="bg-[#101018] text-white/60">Status: ARCHIVED</option>
+                <option value="new">Status: NEW</option>
+                <option value="in_progress">Status: IN PROGRESS</option>
+                <option value="responded">Status: RESPONDED</option>
+                <option value="archived">Status: ARCHIVED</option>
               </select>
             </div>
 
-            {/* Internal Admin Resolution Memo */}
-            <div className="mb-6">
-              <label className="block text-xs font-medium text-white/60 mb-2 flex items-center justify-between">
-                <span>Internal Follow-Up & Resolution Memo</span>
-                <span className="text-[10px] text-white/40">Private admin note</span>
-              </label>
+            <div className="modal-section">
+              <div className="section-label-row">
+                <span className="section-label">Follow-Up & Resolution Memo</span>
+                <span className="hint-label">Private admin note</span>
+              </div>
               <textarea
                 rows={3}
                 value={contactNotes}
                 onChange={(e) => setContactNotes(e.target.value)}
                 placeholder="Log internal action taken, assigned representative, or follow-up date..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/20 text-xs focus:outline-none focus:border-amber-400/60 transition-all font-mono resize-none"
+                className="notes-textarea"
               />
               <button
                 onClick={handleSaveContactNotes}
                 disabled={isSavingContactNotes}
-                className="mt-2.5 px-4 py-2 rounded-xl bg-white text-black text-xs font-semibold hover:bg-white/90 transition-all flex items-center gap-1.5 disabled:opacity-50"
+                className="save-notes-btn"
               >
                 {isSavingContactNotes ? (
                   <>
-                    <RefreshCw size={12} className="animate-spin" />
+                    <RefreshCw size={12} className="spin-icon" />
                     <span>Saving...</span>
                   </>
                 ) : (
@@ -1545,47 +1523,29 @@ export default function AdminDashboardPage() {
                 )}
               </button>
             </div>
-
-            {/* Audit trail */}
-            <div className="pt-4 border-t border-white/5 text-[11px] font-mono text-white/40 flex justify-between">
-              <span>Received: {new Date(activeContact.created_at).toLocaleString()}</span>
-              <span>IP: {activeContact.ip_address || 'Logged'}</span>
-            </div>
           </div>
         </div>
       )}
 
-      {/* ====================================================================== */}
-      {/* MODAL 3: SUPABASE SQL SCHEMA VIEWER                                    */}
-      {/* ====================================================================== */}
+      {/* ==================================================================== */}
+      {/* MODAL 3: SQL SCHEMA VIEWER                                           */}
+      {/* ==================================================================== */}
       {showSqlModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-          <div
-            className="fixed inset-0 bg-black/85 backdrop-blur-md"
-            onClick={() => setShowSqlModal(false)}
-          />
-
-          <div className="relative w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0d0d12]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl z-10 text-white max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowSqlModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-            >
+        <div className="admin-modal-backdrop" onClick={() => setShowSqlModal(false)}>
+          <div className="admin-modal-card sql-modal" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowSqlModal(false)} className="modal-close-btn">
               <X size={18} />
             </button>
 
-            <div className="mb-4">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold block mb-1">
-                SUPABASE POSTGRESQL ARCHITECTURE
-              </span>
-              <h3 className="text-xl font-semibold tracking-tight text-white">
-                Database Schema & Security
-              </h3>
-              <p className="text-xs text-white/60 mt-1">
-                Run this SQL script in your Supabase Dashboard (SQL Editor) to provision the tables and RLS security policies.
+            <div className="modal-header">
+              <span className="modal-tag">SUPABASE POSTGRESQL ARCHITECTURE</span>
+              <h3 className="modal-title">Database Schema & Security</h3>
+              <p className="modal-sub">
+                Run this SQL script in your Supabase Dashboard SQL Editor to provision the tables and RLS security policies.
               </p>
             </div>
 
-            <div className="relative rounded-xl bg-black/60 border border-white/10 p-4 font-mono text-[11px] text-white/80 overflow-x-auto max-h-80">
+            <div className="sql-code-box">
               <pre>{`-- 1. WAITLIST SUBMISSIONS TABLE
 CREATE TABLE IF NOT EXISTS public.waitlist_submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1617,31 +1577,1007 @@ CREATE TABLE IF NOT EXISTS public.contact_inquiries (
 ALTER TABLE public.waitlist_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_inquiries ENABLE ROW LEVEL SECURITY;
 
--- Allow public insert only; service_role has full admin access
 CREATE POLICY "Public insert waitlist" ON public.waitlist_submissions FOR INSERT TO anon, authenticated WITH CHECK (true);
 CREATE POLICY "Public insert contact" ON public.contact_inquiries FOR INSERT TO anon, authenticated WITH CHECK (true);
 CREATE POLICY "Admin full waitlist" ON public.waitlist_submissions FOR ALL TO service_role USING (true);
 CREATE POLICY "Admin full contact" ON public.contact_inquiries FOR ALL TO service_role USING (true);`}</pre>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-xs text-white/40">File: supabase_schema.sql</span>
-              <button
-                onClick={copySqlSchema}
-                className="px-4 py-2 rounded-xl bg-amber-400 text-black text-xs font-semibold hover:bg-amber-300 transition-all flex items-center gap-1.5"
-              >
+            <div className="sql-modal-footer">
+              <span className="file-hint">File: supabase_schema.sql</span>
+              <button onClick={copySqlSchema} className="copy-sql-btn">
                 {copiedSql ? <Check size={14} /> : <Copy size={14} />}
-                <span>{copiedSql ? 'Copied to Clipboard' : 'Copy SQL Schema'}</span>
+                <span>{copiedSql ? 'Copied' : 'Copy SQL Schema'}</span>
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Complete Dedicated Dashboard Stylesheet */}
+      <style jsx>{`
+        .admin-dashboard-root {
+          min-height: 100vh;
+          background: #08080c;
+          color: #f8fafc;
+          font-family: var(--font-sans);
+          padding-bottom: 5rem;
+        }
+
+        .admin-toast {
+          position: fixed;
+          bottom: 1.5rem;
+          right: 1.5rem;
+          z-index: 100;
+          background: rgba(10, 10, 15, 0.95);
+          border: 1px solid rgba(245, 158, 11, 0.35);
+          backdrop-filter: blur(20px);
+          padding: 0.85rem 1.25rem;
+          border-radius: 14px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+
+        /* Header */
+        .admin-header {
+          position: sticky;
+          top: 0;
+          z-index: 40;
+          background: rgba(8, 8, 12, 0.85);
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .admin-header-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          height: 64px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+        }
+
+        .admin-brand-section {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .admin-brand-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: rgba(245, 158, 11, 0.12);
+          border: 1px solid rgba(245, 158, 11, 0.25);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .admin-brand-text {
+          font-weight: 700;
+          font-size: 0.95rem;
+          letter-spacing: -0.01em;
+        }
+
+        .admin-brand-muted {
+          font-weight: 400;
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        .supabase-status-chip {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.2rem 0.6rem;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 0.7rem;
+          font-family: var(--font-mono);
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .pulsing-green-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 8px #10b981;
+        }
+
+        .pulsing-amber-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #f59e0b;
+          box-shadow: 0 0 8px #f59e0b;
+        }
+
+        /* Tab Switcher */
+        .admin-tab-switcher {
+          display: flex;
+          align-items: center;
+          padding: 3px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tab-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.45rem 0.85rem;
+          border-radius: 9px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.6);
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+          color: #ffffff;
+        }
+
+        .tab-btn.active {
+          background: #ffffff;
+          color: #07070d;
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-count {
+          font-size: 0.7rem;
+          padding: 0.1rem 0.4rem;
+          border-radius: 9999px;
+          background: rgba(0, 0, 0, 0.15);
+          font-family: var(--font-mono);
+        }
+
+        .tab-btn.active .tab-count {
+          background: rgba(0, 0, 0, 0.12);
+          color: #07070d;
+        }
+
+        /* Action Cluster */
+        .admin-action-cluster {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .action-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.45rem 0.75rem;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.78rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: #ffffff;
+        }
+
+        .action-btn.icon-only {
+          padding: 0.5rem;
+        }
+
+        .logout-btn:hover {
+          background: rgba(244, 63, 94, 0.15);
+          border-color: rgba(244, 63, 94, 0.3);
+          color: #fb7185;
+        }
+
+        /* Main Area */
+        .admin-main {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 2rem 1.5rem;
+        }
+
+        .tab-view-container {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+        }
+
+        .kpi-card {
+          padding: 1.25rem;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(12px);
+        }
+
+        .kpi-label {
+          display: block;
+          font-size: 0.7rem;
+          font-family: var(--font-mono);
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: rgba(255, 255, 255, 0.45);
+          margin-bottom: 0.5rem;
+        }
+
+        .kpi-value-row {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+        }
+
+        .kpi-value {
+          font-size: 1.6rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: #ffffff;
+        }
+
+        .kpi-badge-green {
+          font-size: 0.7rem;
+          color: #10b981;
+          font-family: var(--font-mono);
+        }
+
+        .text-gold { color: #f59e0b; }
+        .text-violet { color: #8b5cf6; }
+        .text-blue { color: #3b82f6; }
+        .text-emerald { color: #10b981; }
+
+        /* Controls */
+        .controls-bar {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+        }
+
+        .search-box {
+          position: relative;
+          flex: 1;
+          min-width: 260px;
+          max-width: 480px;
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 0.85rem;
+          top: 50%;
+          transform: translate(0, -50%);
+          color: rgba(255, 255, 255, 0.4);
+          pointer-events: none;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 0.65rem 1rem 0.65rem 2.4rem;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          font-size: 0.8rem;
+          font-family: var(--font-mono);
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+          border-color: rgba(245, 158, 11, 0.6);
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-group {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+
+        .filter-select {
+          padding: 0.65rem 0.9rem;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          font-size: 0.8rem;
+          outline: none;
+          cursor: pointer;
+        }
+
+        .filter-select option {
+          background: #10121d;
+          color: #ffffff;
+        }
+
+        /* Table Card */
+        .table-card {
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(16px);
+          overflow-x: auto;
+        }
+
+        .admin-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+          font-size: 0.8rem;
+        }
+
+        .admin-table thead {
+          background: rgba(255, 255, 255, 0.03);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .admin-table th {
+          padding: 0.85rem 1.25rem;
+          font-size: 0.68rem;
+          font-family: var(--font-mono);
+          text-transform: uppercase;
+          letter-spacing: 0.07em;
+          color: rgba(255, 255, 255, 0.5);
+          font-weight: 500;
+        }
+
+        .admin-table tbody tr {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          cursor: pointer;
+          transition: background 0.15s ease;
+        }
+
+        .admin-table tbody tr:hover {
+          background: rgba(255, 255, 255, 0.035);
+        }
+
+        .admin-table td {
+          padding: 1rem 1.25rem;
+          vertical-align: middle;
+        }
+
+        .ref-cell {
+          font-family: var(--font-mono);
+          font-weight: 600;
+          color: #f59e0b;
+          white-space: nowrap;
+        }
+
+        .candidate-name {
+          font-weight: 600;
+          color: #ffffff;
+        }
+
+        .candidate-email {
+          font-size: 0.72rem;
+          color: rgba(255, 255, 255, 0.45);
+          font-family: var(--font-mono);
+          margin-top: 0.15rem;
+        }
+
+        .company-tag {
+          font-size: 0.7rem;
+          color: rgba(255, 255, 255, 0.6);
+          margin-top: 0.2rem;
+        }
+
+        .role-tag {
+          display: inline-block;
+          padding: 0.2rem 0.6rem;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.72rem;
+          white-space: nowrap;
+        }
+
+        .date-cell {
+          font-size: 0.75rem;
+          font-family: var(--font-mono);
+          color: rgba(255, 255, 255, 0.5);
+          white-space: nowrap;
+        }
+
+        .msg-preview-cell {
+          max-width: 260px;
+        }
+
+        .msg-subj {
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .msg-body {
+          font-size: 0.72rem;
+          color: rgba(255, 255, 255, 0.45);
+          margin-top: 0.15rem;
+        }
+
+        .truncate {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* Status Select */
+        .status-select {
+          padding: 0.25rem 0.65rem;
+          border-radius: 9999px;
+          font-size: 0.7rem;
+          font-family: var(--font-mono);
+          font-weight: 600;
+          border: 1px solid transparent;
+          cursor: pointer;
+          outline: none;
+        }
+
+        .status-select option {
+          background: #0f111a;
+          color: #ffffff;
+        }
+
+        .status-pending, .status-new {
+          background: rgba(245, 158, 11, 0.12);
+          border-color: rgba(245, 158, 11, 0.35);
+          color: #f59e0b;
+        }
+
+        .status-approved, .status-responded {
+          background: rgba(16, 185, 129, 0.12);
+          border-color: rgba(16, 185, 129, 0.35);
+          color: #10b981;
+        }
+
+        .status-contacted, .status-in_progress {
+          background: rgba(59, 130, 246, 0.12);
+          border-color: rgba(59, 130, 246, 0.35);
+          color: #3b82f6;
+        }
+
+        .status-rejected, .status-archived {
+          background: rgba(244, 63, 94, 0.12);
+          border-color: rgba(244, 63, 94, 0.35);
+          color: #fb7185;
+        }
+
+        .row-action-btns {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 0.4rem;
+        }
+
+        .table-action-icon {
+          padding: 0.45rem;
+          border-radius: 8px;
+          background: none;
+          border: none;
+          color: rgba(255, 255, 255, 0.5);
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .table-action-icon:hover {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .table-action-icon.delete-icon:hover {
+          color: #fb7185;
+          background: rgba(244, 63, 94, 0.15);
+        }
+
+        .table-action-icon.reply-icon {
+          color: rgba(245, 158, 11, 0.7);
+        }
+
+        .table-action-icon.reply-icon:hover {
+          color: #f59e0b;
+          background: rgba(245, 158, 11, 0.15);
+        }
+
+        .empty-table-cell {
+          text-align: center;
+          padding: 3rem 1rem;
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Telemetry Tab */
+        .telemetry-banner {
+          padding: 1.5rem 1.75rem;
+          border-radius: 20px;
+          background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(255, 255, 255, 0.02) 60%);
+          border: 1px solid rgba(245, 158, 11, 0.25);
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+        }
+
+        .telemetry-badge-row {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          margin-bottom: 0.4rem;
+        }
+
+        .banner-tag {
+          font-size: 0.65rem;
+          font-family: var(--font-mono);
+          padding: 0.15rem 0.55rem;
+          border-radius: 9999px;
+          background: rgba(245, 158, 11, 0.18);
+          border: 1px solid rgba(245, 158, 11, 0.35);
+          color: #f59e0b;
+          letter-spacing: 0.05em;
+        }
+
+        .banner-date {
+          font-size: 0.72rem;
+          font-family: var(--font-mono);
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        .banner-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #ffffff;
+        }
+
+        .banner-desc {
+          font-size: 0.78rem;
+          color: rgba(255, 255, 255, 0.6);
+          margin-top: 0.3rem;
+          max-width: 600px;
+        }
+
+        .schema-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.65rem 1.1rem;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          font-size: 0.8rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .schema-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .charts-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+          gap: 1.25rem;
+        }
+
+        .chart-card {
+          padding: 1.5rem;
+          border-radius: 20px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(16px);
+        }
+
+        .chart-title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #ffffff;
+          margin-bottom: 1.25rem;
+        }
+
+        .bars-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .bar-header {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.7);
+          margin-bottom: 0.35rem;
+        }
+
+        .mono-count {
+          font-family: var(--font-mono);
+          color: #ffffff;
+        }
+
+        .bar-track {
+          width: 100%;
+          height: 8px;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.08);
+          overflow: hidden;
+        }
+
+        .bar-fill {
+          height: 100%;
+          border-radius: 9999px;
+          transition: width 0.5s ease;
+        }
+
+        .bar-fill.gold { background: #f59e0b; }
+        .bar-fill.violet { background: #8b5cf6; }
+        .bar-fill.blue { background: #3b82f6; }
+        .bar-fill.white { background: rgba(255, 255, 255, 0.7); }
+        .bar-fill.emerald { background: #10b981; }
+        .bar-fill.rose { background: #fb7185; }
+
+        /* Modals */
+        .admin-modal-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 50;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem;
+        }
+
+        .admin-modal-card {
+          position: relative;
+          width: 100%;
+          max-width: 560px;
+          border-radius: 24px;
+          background: #0d0f19;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
+          padding: 2rem;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .admin-modal-card.sql-modal {
+          max-width: 680px;
+        }
+
+        .modal-close-btn {
+          position: absolute;
+          top: 1.25rem;
+          right: 1.25rem;
+          background: none;
+          border: none;
+          color: rgba(255, 255, 255, 0.5);
+          cursor: pointer;
+          padding: 0.4rem;
+          border-radius: 50%;
+        }
+
+        .modal-close-btn:hover {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-header {
+          margin-bottom: 1.5rem;
+        }
+
+        .modal-tag {
+          font-size: 0.68rem;
+          font-family: var(--font-mono);
+          text-transform: uppercase;
+          color: #f59e0b;
+          letter-spacing: 0.08em;
+          display: block;
+          margin-bottom: 0.3rem;
+        }
+
+        .modal-title {
+          font-size: 1.4rem;
+          font-weight: 600;
+          letter-spacing: -0.01em;
+          color: #ffffff;
+        }
+
+        .modal-sub {
+          font-size: 0.78rem;
+          color: rgba(255, 255, 255, 0.5);
+          margin-top: 0.3rem;
+        }
+
+        .modal-sub.mono {
+          font-family: var(--font-mono);
+        }
+
+        .modal-meta-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+          padding: 1rem;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .meta-label {
+          font-size: 0.65rem;
+          font-family: var(--font-mono);
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .meta-val {
+          font-size: 0.8rem;
+          color: #ffffff;
+        }
+
+        .meta-val.gold { color: #f59e0b; }
+        .meta-val.mono { font-family: var(--font-mono); }
+        .meta-val.uppercase { text-transform: uppercase; }
+
+        .modal-section {
+          margin-bottom: 1.5rem;
+        }
+
+        .section-label {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.7);
+          margin-bottom: 0.5rem;
+          display: block;
+        }
+
+        .section-label-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .hint-label {
+          font-size: 0.68rem;
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .status-btn-group {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.5rem;
+        }
+
+        .status-toggle-btn {
+          padding: 0.5rem 0.25rem;
+          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.72rem;
+          font-family: var(--font-mono);
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .status-toggle-btn:hover {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .status-toggle-btn.active {
+          background: #f59e0b;
+          border-color: #f59e0b;
+          color: #07070d;
+          font-weight: 700;
+        }
+
+        .notes-textarea {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border-radius: 12px;
+          background: rgba(0, 0, 0, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ffffff;
+          font-size: 0.8rem;
+          font-family: var(--font-mono);
+          outline: none;
+          resize: none;
+          box-sizing: border-box;
+        }
+
+        .notes-textarea:focus {
+          border-color: rgba(245, 158, 11, 0.6);
+        }
+
+        .save-notes-btn {
+          margin-top: 0.6rem;
+          padding: 0.55rem 1rem;
+          border-radius: 10px;
+          background: #ffffff;
+          border: none;
+          color: #07070d;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
+        .save-notes-btn:hover {
+          background: #f1f5f9;
+        }
+
+        .modal-msg-body {
+          padding: 1.25rem;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.95);
+          margin-bottom: 1.25rem;
+          white-space: pre-wrap;
+        }
+
+        .modal-actions-bar {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .reply-email-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.45rem;
+          padding: 0.65rem 1rem;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+          color: #07070d;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        .reply-email-btn:hover {
+          filter: brightness(1.05);
+        }
+
+        .modal-status-select {
+          padding: 0.65rem 0.85rem;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ffffff;
+          font-size: 0.78rem;
+          font-family: var(--font-mono);
+          outline: none;
+          cursor: pointer;
+        }
+
+        .modal-status-select option {
+          background: #0f111a;
+          color: #ffffff;
+        }
+
+        .sql-code-box {
+          border-radius: 14px;
+          background: #000000;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 1rem;
+          font-family: var(--font-mono);
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.85);
+          max-height: 320px;
+          overflow: auto;
+          margin: 1.25rem 0;
+        }
+
+        .sql-modal-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .file-hint {
+          font-size: 0.72rem;
+          font-family: var(--font-mono);
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .copy-sql-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.55rem 1rem;
+          border-radius: 10px;
+          background: #f59e0b;
+          border: none;
+          color: #07070d;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .copy-sql-btn:hover {
+          background: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+          .admin-header-container {
+            height: auto;
+            padding: 0.75rem 1rem;
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .admin-brand-section {
+            justify-content: space-between;
+          }
+
+          .supabase-status-chip {
+            display: none;
+          }
+
+          .admin-tab-switcher {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .admin-action-cluster {
+            justify-content: flex-end;
+          }
+
+          .csv-btn {
+            display: none;
+          }
+
+          .status-btn-group {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+      `}</style>
     </div>
   );
 }
 
-// Icon Helper
 function UsersIcon({ size }: { size: number }) {
   return (
     <svg
