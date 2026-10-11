@@ -101,3 +101,92 @@ SELECT
   count(*) FILTER (WHERE status = 'contacted')::integer AS contacted_count,
   count(*) FILTER (WHERE created_at >= (now() - INTERVAL '24 hours'))::integer AS last_24h_count
 FROM public.waitlist_submissions;
+
+-- ==============================================================================
+-- Contact Inquiries & Direct Messages
+-- ==============================================================================
+-- Custom Enum for Contact Inquiry Status
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'contact_status') THEN
+    CREATE TYPE contact_status AS ENUM ('new', 'in_progress', 'responded', 'archived');
+  END IF;
+END $$;
+
+-- Create the Contact Inquiries Table
+CREATE TABLE IF NOT EXISTS public.contact_inquiries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT,
+  category TEXT NOT NULL DEFAULT 'General',
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  reference_id TEXT NOT NULL UNIQUE,
+  status contact_status NOT NULL DEFAULT 'new',
+  notes TEXT,
+  ip_address TEXT,
+  user_agent TEXT,
+  metadata JSONB DEFAULT '{}'::jsonb
+);
+
+-- Performance Indexes for Contact Inquiries
+CREATE INDEX IF NOT EXISTS idx_contact_inquiries_email 
+ON public.contact_inquiries (LOWER(email));
+
+CREATE INDEX IF NOT EXISTS idx_contact_inquiries_category 
+ON public.contact_inquiries (category);
+
+CREATE INDEX IF NOT EXISTS idx_contact_inquiries_status 
+ON public.contact_inquiries (status);
+
+CREATE INDEX IF NOT EXISTS idx_contact_inquiries_created_at 
+ON public.contact_inquiries (created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_contact_inquiries_reference_id 
+ON public.contact_inquiries (reference_id);
+
+-- Auto-update updated_at trigger for contacts
+DROP TRIGGER IF EXISTS set_contacts_updated_at ON public.contact_inquiries;
+CREATE TRIGGER set_contacts_updated_at
+BEFORE UPDATE ON public.contact_inquiries
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_updated_at();
+
+-- Enable RLS for contact inquiries
+ALTER TABLE public.contact_inquiries ENABLE ROW LEVEL SECURITY;
+
+-- 1. Allow public anon key to INSERT inquiries only
+CREATE POLICY "Allow public insert to contact_inquiries"
+ON public.contact_inquiries
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (
+  length(trim(full_name)) >= 2 AND
+  length(trim(email)) >= 5 AND
+  length(trim(message)) >= 5
+);
+
+-- 2. Restrict SELECT, UPDATE, DELETE to Service Role (Admin backend only)
+CREATE POLICY "Allow service role full access to contact_inquiries"
+ON public.contact_inquiries
+FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);
+
+-- Helpful Contact Metrics Summary View
+CREATE OR REPLACE VIEW public.contact_metrics_summary AS
+SELECT
+  count(*)::integer AS total_inquiries,
+  count(*) FILTER (WHERE status = 'new')::integer AS new_count,
+  count(*) FILTER (WHERE status = 'in_progress')::integer AS in_progress_count,
+  count(*) FILTER (WHERE status = 'responded')::integer AS responded_count,
+  count(*) FILTER (WHERE status = 'archived')::integer AS archived_count,
+  count(*) FILTER (WHERE category = 'Partnership')::integer AS partnership_count,
+  count(*) FILTER (WHERE category = 'Institutional Sandbox')::integer AS sandbox_count,
+  count(*) FILTER (WHERE category = 'Integration Support')::integer AS integration_count,
+  count(*) FILTER (WHERE created_at >= (now() - INTERVAL '24 hours'))::integer AS last_24h_count
+FROM public.contact_inquiries;

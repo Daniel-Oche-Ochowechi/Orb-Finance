@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
 
 export default function Footer() {
-  const { openEarlyAccess } = useEarlyAccess();
+  const { openEarlyAccess, openContact } = useEarlyAccess();
 
   return (
     <footer className="footer-root">
@@ -49,8 +49,17 @@ export default function Footer() {
                     Request Early Access
                   </button>
                 </li>
+                <li>
+                  <button
+                    onClick={() => openContact('Partnership')}
+                    className="footer-link-btn"
+                  >
+                    Contact Desk
+                  </button>
+                </li>
               </ul>
             </div>
+
 
             <div className="footer-col">
               <h5 className="col-header font-mono">Compliance & Trust</h5>

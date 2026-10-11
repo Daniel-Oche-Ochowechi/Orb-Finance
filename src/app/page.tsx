@@ -7,6 +7,7 @@ import Institutions from '@/components/Institutions';
 import Principles from '@/components/Principles';
 import EarlyAccessTeaser from '@/components/EarlyAccessTeaser';
 import EarlyAccessModal from '@/components/EarlyAccessModal';
+import ContactModal from '@/components/ContactModal';
 import FaqSection from '@/components/FaqSection';
 import TrustCompliance from '@/components/TrustCompliance';
 import ClosingCta from '@/components/ClosingCta';
@@ -51,8 +52,12 @@ export default function HomePage() {
 
           {/* Global Classy Early Access Popup Modal */}
           <EarlyAccessModal />
+
+          {/* Global Classy Direct Contact Modal */}
+          <ContactModal />
         </div>
       </ScrollRevealProvider>
     </EarlyAccessProvider>
   );
 }
+

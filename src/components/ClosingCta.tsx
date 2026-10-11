@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
 
 export default function ClosingCta() {
-  const { openEarlyAccess } = useEarlyAccess();
+  const { openEarlyAccess, openContact } = useEarlyAccess();
 
   return (
     <section className="closing-cta-root" id="closing-cta">
@@ -39,7 +39,7 @@ export default function ClosingCta() {
           </button>
           
           <button
-            onClick={() => openEarlyAccess('Business')}
+            onClick={() => openContact('Partnership')}
             className="apple-closing-secondary-btn"
             type="button"
           >

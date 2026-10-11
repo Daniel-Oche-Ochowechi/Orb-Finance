@@ -7,6 +7,10 @@ interface EarlyAccessContextType {
   initialRole: string;
   openEarlyAccess: (role?: string) => void;
   closeEarlyAccess: () => void;
+  isContactOpen: boolean;
+  initialContactCategory: string;
+  openContact: (category?: string) => void;
+  closeContact: () => void;
 }
 
 const EarlyAccessContext = createContext<EarlyAccessContextType | undefined>(undefined);
@@ -14,6 +18,9 @@ const EarlyAccessContext = createContext<EarlyAccessContextType | undefined>(und
 export function EarlyAccessProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [initialRole, setInitialRole] = useState('Bank');
+
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [initialContactCategory, setInitialContactCategory] = useState('Partnership');
 
   const openEarlyAccess = (role = 'Bank') => {
     setInitialRole(role);
@@ -24,6 +31,15 @@ export function EarlyAccessProvider({ children }: { children: ReactNode }) {
     setIsOpen(false);
   };
 
+  const openContact = (category = 'Partnership') => {
+    setInitialContactCategory(category);
+    setIsContactOpen(true);
+  };
+
+  const closeContact = () => {
+    setIsContactOpen(false);
+  };
+
   return (
     <EarlyAccessContext.Provider
       value={{
@@ -31,6 +47,10 @@ export function EarlyAccessProvider({ children }: { children: ReactNode }) {
         initialRole,
         openEarlyAccess,
         closeEarlyAccess,
+        isContactOpen,
+        initialContactCategory,
+        openContact,
+        closeContact,
       }}
     >
       {children}
@@ -45,3 +65,4 @@ export function useEarlyAccess() {
   }
   return context;
 }
+
