@@ -55,11 +55,12 @@ type DashboardTab = 'waitlist' | 'contacts' | 'telemetry';
 
 export default function AdminDashboardPage() {
   // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [passcode, setPasscode] = useState('');
   const [showPasscode, setShowPasscode] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<DashboardTab>('waitlist');
@@ -97,17 +98,26 @@ export default function AdminDashboardPage() {
 
   // 1. Initial Authentication Check
   useEffect(() => {
+    let isMounted = true;
     async function checkAuth() {
       try {
-        const res = await fetch('/api/admin/auth');
-        const data = await res.json();
-        setIsAuthenticated(Boolean(data.authenticated));
+        const res = await fetch('/api/admin/auth', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && data && data.authenticated) {
+            setIsAuthenticated(true);
+          }
+        }
       } catch {
-        setIsAuthenticated(false);
+        // Silently stay on login screen
       }
     }
     checkAuth();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
 
   // 2. Fetch All Data (Waitlist + Contacts + Stats)
   const fetchData = useCallback(async () => {
@@ -389,7 +399,7 @@ export default function AdminDashboardPage() {
   // ============================================================================
   // Unauthenticated: Master Passcode Login Screen
   // ============================================================================
-  if (isAuthenticated === false) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#07070a] text-white flex items-center justify-center p-4 relative overflow-hidden font-sans">
         {/* Ambient Halo */}
@@ -479,19 +489,6 @@ export default function AdminDashboardPage() {
     );
   }
 
-  // ----------------------------------------------------------------------------
-  // Loading State
-  // ----------------------------------------------------------------------------
-  if (isAuthenticated === null) {
-    return (
-      <div className="min-h-screen bg-[#07070a] text-white flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 rounded-full border-2 border-amber-400/30 border-t-amber-400 animate-spin" />
-        <span className="text-xs font-mono text-white/50 tracking-wider">
-          ESTABLISHING SECURE ADMIN SESSION...
-        </span>
-      </div>
-    );
-  }
 
   // ============================================================================
   // Authenticated Executive Admin Dashboard
