@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
 
@@ -25,45 +26,101 @@ export default function Header() {
 
   const { openEarlyAccess } = useEarlyAccess();
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  // Throttled scroll state (zero layout reads per scroll frame)
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 20);
+    let rafId = 0;
 
-      // Active Section Spy
-      const sections = NAV_ITEMS.map((item) => document.getElementById(item.id));
-      const scrollPosition = currentScrollY + 160;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section) {
-          const top = section.offsetTop;
-          const height = section.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(NAV_ITEMS[i].id);
-            break;
-          }
-        }
-      }
-
-      if (currentScrollY < 150) {
-        setActiveSection('');
+    const syncScrollState = () => {
+      rafId = 0;
+      const y = window.scrollY;
+      setIsScrolled((prev) => {
+        const next = y > 24;
+        return prev === next ? prev : next;
+      });
+      if (y < 140) {
+        setActiveSection((prev) => (prev === '' ? prev : ''));
       }
     };
 
+    const handleScroll = () => {
+      if (rafId !== 0) return;
+      rafId = window.requestAnimationFrame(syncScrollState);
+    };
+
+    syncScrollState();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId !== 0) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Section Spy via IntersectionObserver (no forced reflows during scroll)
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    const sections = NAV_ITEMS.map((item) => document.getElementById(item.id)).filter(
+      (el): el is HTMLElement => Boolean(el)
+    );
+    if (sections.length === 0) return;
+
+    const ratios = new Map<string, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          ratios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        }
+
+        if (window.scrollY < 140) {
+          setActiveSection('');
+          return;
+        }
+
+        let bestId = '';
+        let bestRatio = 0;
+        for (const item of NAV_ITEMS) {
+          const ratio = ratios.get(item.id) ?? 0;
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestId = item.id;
+          }
+        }
+        if (bestId) {
+          setActiveSection(bestId);
+        }
+      },
+      {
+        rootMargin: '-28% 0px -52% 0px',
+        threshold: [0, 0.15, 0.35, 0.6],
+      }
+    );
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
+  }, []);
+
+  // Lock body scroll & support Escape key when mobile menu is open
+  useEffect(() => {
+    if (!mobileOpen) {
       document.body.style.overflow = '';
+      return;
     }
+
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [mobileOpen]);
 
@@ -92,7 +149,7 @@ export default function Header() {
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className={`top-announcement-bar ${isScrolled ? 'faded' : ''}`}>
+      <div className="top-announcement-bar">
         <div className="announcement-content font-mono">
           <span className="announcement-beacon" />
           <span>Orb Finance opens <strong>15 January 2027</strong>.</span>
@@ -127,7 +184,14 @@ export default function Header() {
                   className={`unboxed-nav-link ${isActive ? 'is-active' : ''}`}
                 >
                   <span>{item.label}</span>
-                  {isActive && <span className="nav-active-dot" aria-hidden="true" />}
+                  {isActive && (
+                    <motion.span
+                      layoutId="headerNavDot"
+                      className="nav-active-dot"
+                      transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+                      aria-hidden="true"
+                    />
+                  )}
                 </a>
               );
             })}
@@ -157,103 +221,120 @@ export default function Header() {
             </button>
           </div>
         </div>
+
+        {/* Hairline Scroll Progress */}
+        <motion.div
+          className="nav-scroll-progress"
+          style={{ scaleX, transformOrigin: '0% 50%' }}
+          aria-hidden="true"
+        />
       </header>
 
       {/* Full-Screen Mobile Navigation Overlay */}
-      {mobileOpen && (
-        <div className="fullscreen-mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-          {/* Top Bar inside Fullscreen Overlay */}
-          <div className="mobile-menu-header">
-            <a
-              href="#"
-              onClick={(e) => {
-                setMobileOpen(false);
-                scrollToTop(e);
-              }}
-              className="mobile-brand"
-            >
-              <span>ORB</span>
-            </a>
-            <button
-              className="mobile-close-btn"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close navigation menu"
-              type="button"
-            >
-              <X size={26} />
-            </button>
-          </div>
-
-          {/* Main Navigation Stack */}
-          <div className="mobile-menu-body">
-            <div className="mobile-eyebrow font-mono">
-              <span className="mobile-pulse-dot" />
-              <span>NAVIGATION</span>
-            </div>
-
-            <nav className="mobile-fullscreen-nav">
-              {NAV_ITEMS.map((item, idx) => {
-                const isActive = activeSection === item.id;
-                return (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
-                    className={`mobile-fullscreen-link ${isActive ? 'active' : ''}`}
-                    style={{ animationDelay: `${0.04 * (idx + 1)}s` }}
-                  >
-                    <span className="link-idx font-mono">0{idx + 1}</span>
-                    <span className="link-title">{item.label}</span>
-                    <ArrowRight className="link-arrow" size={20} />
-                  </a>
-                );
-              })}
-            </nav>
-
-            {/* Bottom Footer Actions */}
-            <div className="mobile-menu-footer">
-              <div className="mobile-launch-tag font-mono">
-                <span>LAUNCHING 15 JANUARY 2027</span>
-              </div>
-              <button
-                className="mobile-cta-fullwidth"
-                onClick={() => {
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="fullscreen-mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation"
+            initial={{ opacity: 0, y: -10, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.985 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Top Bar inside Fullscreen Overlay */}
+            <div className="mobile-menu-header">
+              <a
+                href="#"
+                onClick={(e) => {
                   setMobileOpen(false);
-                  openEarlyAccess();
+                  scrollToTop(e);
                 }}
+                className="mobile-brand"
+              >
+                <span>ORB</span>
+              </a>
+              <button
+                className="mobile-close-btn"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close navigation menu"
                 type="button"
               >
-                <span>Request early access</span>
-                <span className="mobile-cta-arrow">
-                  <ArrowRight size={16} strokeWidth={2.5} />
-                </span>
+                <X size={26} />
               </button>
             </div>
-          </div>
-        </div>
-      )}
+
+            {/* Main Navigation Stack */}
+            <div className="mobile-menu-body">
+              <div className="mobile-eyebrow font-mono">
+                <span className="mobile-pulse-dot" />
+                <span>NAVIGATION</span>
+              </div>
+
+              <nav className="mobile-fullscreen-nav">
+                {NAV_ITEMS.map((item, idx) => {
+                  const isActive = activeSection === item.id;
+                  return (
+                    <motion.a
+                      key={item.id}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className={`mobile-fullscreen-link ${isActive ? 'active' : ''}`}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.04 * idx + 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <span className="link-idx font-mono">0{idx + 1}</span>
+                      <span className="link-title">{item.label}</span>
+                      <ArrowRight className="link-arrow" size={20} />
+                    </motion.a>
+                  );
+                })}
+              </nav>
+
+              {/* Bottom Footer Actions */}
+              <div className="mobile-menu-footer">
+                <div className="mobile-launch-tag font-mono">
+                  <span>LAUNCHING 15 JANUARY 2027</span>
+                </div>
+                <button
+                  className="mobile-cta-fullwidth"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openEarlyAccess();
+                  }}
+                  type="button"
+                >
+                  <span>Request early access</span>
+                  <span className="mobile-cta-arrow">
+                    <ArrowRight size={16} strokeWidth={2.5} />
+                  </span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style jsx>{`
         /* Top Announcement */
         .top-announcement-bar {
           background: rgba(12, 14, 24, 0.95);
           border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 0.55rem 1.5rem;
+          padding: 0.55rem clamp(1rem, 3vw, 1.5rem);
           text-align: center;
           position: relative;
           z-index: 101;
-          transition: transform 0.3s ease, opacity 0.3s ease, height 0.3s ease;
-        }
-
-        .top-announcement-bar.faded {
-          display: none;
         }
 
         .announcement-content {
           display: inline-flex;
           align-items: center;
-          gap: 0.75rem;
-          font-size: 0.8rem;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 0.35rem 0.75rem;
+          font-size: clamp(0.72rem, 1.6vw, 0.8rem);
           color: rgba(255, 255, 255, 0.75);
         }
 
@@ -300,11 +381,11 @@ export default function Header() {
           right: 0;
           z-index: 100;
           width: 100%;
-          background: rgba(6, 6, 10, 0.75);
-          backdrop-filter: blur(28px) saturate(180%);
-          -webkit-backdrop-filter: blur(28px) saturate(180%);
+          background: rgba(6, 6, 10, 0.72);
+          backdrop-filter: blur(20px) saturate(165%);
+          -webkit-backdrop-filter: blur(20px) saturate(165%);
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+          transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
         }
 
         .sticky-nav-header.is-scrolled {
@@ -313,10 +394,21 @@ export default function Header() {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
+        .nav-scroll-progress {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -1px;
+          height: 1.5px;
+          background: linear-gradient(90deg, rgba(245, 158, 11, 0.85) 0%, #fbbf24 55%, rgba(192, 132, 252, 0.85) 100%);
+          pointer-events: none;
+          will-change: transform;
+        }
+
         .nav-container {
           max-width: 1220px;
           margin: 0 auto;
-          padding: 1.1rem 2rem;
+          padding: clamp(0.8rem, 1.8vw, 1.08rem) clamp(1.1rem, 4vw, 2rem);
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -325,7 +417,7 @@ export default function Header() {
         /* Brand Wordmark */
         .nav-brand-wordmark {
           font-family: var(--font-sans);
-          font-size: 1.6rem;
+          font-size: clamp(1.35rem, 2.2vw, 1.6rem);
           font-weight: 800;
           letter-spacing: -0.05em;
           color: #ffffff;
@@ -342,7 +434,7 @@ export default function Header() {
         .nav-links-deck {
           display: flex;
           align-items: center;
-          gap: 2.4rem;
+          gap: clamp(1.35rem, 2.6vw, 2.4rem);
         }
 
         .unboxed-nav-link {
@@ -465,25 +557,14 @@ export default function Header() {
           width: 100vw;
           height: 100dvh;
           z-index: 9999;
-          background: rgba(6, 6, 10, 0.97);
-          backdrop-filter: blur(40px) saturate(200%);
-          -webkit-backdrop-filter: blur(40px) saturate(200%);
+          background: rgba(6, 6, 10, 0.96);
+          backdrop-filter: blur(22px) saturate(165%);
+          -webkit-backdrop-filter: blur(22px) saturate(165%);
           display: flex;
           flex-direction: column;
-          padding: 1.2rem 1.75rem 2.5rem;
-          animation: mobileFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          padding: 1.2rem clamp(1.25rem, 5vw, 1.75rem) 2.5rem;
           overflow-y: auto;
-        }
-
-        @keyframes mobileFadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+          will-change: transform, opacity;
         }
 
         .mobile-menu-header {

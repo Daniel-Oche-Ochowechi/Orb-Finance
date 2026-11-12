@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, Terminal, Play, ArrowRight, ShieldCheck, Zap, Layers } from 'lucide-react';
 
 const CODE_EXAMPLES = {
@@ -182,16 +183,29 @@ export default function HowItWorks() {
                 <span className="dot green" />
               </div>
               <div className="language-tabs font-mono">
-                {(['curl', 'node', 'python', 'webhook'] as const).map((lang) => (
-                  <button
-                    key={lang}
-                    className={`lang-tab-btn ${activeLang === lang ? 'active' : ''}`}
-                    onClick={() => setActiveLang(lang)}
-                    type="button"
-                  >
-                    {lang === 'webhook' ? 'Signed Webhook' : lang.toUpperCase()}
-                  </button>
-                ))}
+                {(['curl', 'node', 'python', 'webhook'] as const).map((lang) => {
+                  const isActive = activeLang === lang;
+                  return (
+                    <button
+                      key={lang}
+                      className={`lang-tab-btn ${isActive ? 'active' : ''}`}
+                      onClick={() => setActiveLang(lang)}
+                      type="button"
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="howItWorksLangPill"
+                          className="lang-tab-pill"
+                          transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span className="lang-tab-label">
+                        {lang === 'webhook' ? 'Signed Webhook' : lang.toUpperCase()}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -205,9 +219,18 @@ export default function HowItWorks() {
           </div>
 
           <div className="terminal-code-body">
-            <pre className="font-mono text-sm leading-relaxed text-slate-200">
-              <code>{CODE_EXAMPLES[activeLang]}</code>
-            </pre>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.pre
+                key={activeLang}
+                className="font-mono text-sm leading-relaxed text-slate-200"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <code>{CODE_EXAMPLES[activeLang]}</code>
+              </motion.pre>
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -215,7 +238,7 @@ export default function HowItWorks() {
       <style jsx>{`
         .section-header-center {
           text-align: center;
-          margin-bottom: 4.5rem;
+          margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
         }
 
         .section-header-center .section-subtext {
@@ -226,17 +249,23 @@ export default function HowItWorks() {
         .steps-cards-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
-          margin-bottom: 4rem;
+          gap: clamp(1.25rem, 2.5vw, 2rem);
+          margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
         }
 
         .step-box {
           position: relative;
-          padding: 2.8rem 2.2rem;
-          border-radius: 26px;
+          padding: clamp(1.75rem, 3.2vw, 2.8rem) clamp(1.35rem, 2.6vw, 2.2rem);
+          border-radius: clamp(20px, 2.2vw, 26px);
           overflow: hidden;
           display: flex;
           flex-direction: column;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+        }
+
+        .step-box:hover {
+          transform: translateY(-4px);
+          border-color: rgba(255, 255, 255, 0.18);
         }
 
         .step-card-specular {
@@ -323,17 +352,20 @@ export default function HowItWorks() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0.85rem 1.4rem;
+          padding: clamp(0.75rem, 1.8vw, 0.9rem) clamp(1rem, 2.6vw, 1.4rem);
           background: rgba(255, 255, 255, 0.025);
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           flex-wrap: wrap;
-          gap: 1rem;
+          gap: 0.75rem 1rem;
         }
 
         .terminal-left-meta {
           display: flex;
           align-items: center;
-          gap: 1.25rem;
+          gap: clamp(0.75rem, 2vw, 1.25rem);
+          max-width: 100%;
+          min-width: 0;
+          flex-wrap: wrap;
         }
 
         .mac-traffic-dots {
@@ -352,24 +384,36 @@ export default function HowItWorks() {
         .dot.green { background: #10b981; }
 
         .language-tabs {
+          position: relative;
           display: flex;
           background: rgba(0, 0, 0, 0.4);
-          padding: 0.2rem;
+          padding: 0.22rem;
           border-radius: 9999px;
           border: 1px solid rgba(255, 255, 255, 0.05);
-          gap: 0.25rem;
+          gap: 0.2rem;
+          overflow-x: auto;
+          max-width: 100%;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .language-tabs::-webkit-scrollbar {
+          display: none;
         }
 
         .lang-tab-btn {
+          position: relative;
           background: transparent;
           border: none;
-          padding: 0.3rem 0.75rem;
+          padding: 0.34rem 0.78rem;
           border-radius: 9999px;
           font-size: 0.72rem;
           font-weight: 600;
-          color: rgba(255, 255, 255, 0.45);
+          color: rgba(255, 255, 255, 0.5);
           cursor: pointer;
-          transition: all 0.2s ease;
+          white-space: nowrap;
+          flex-shrink: 0;
+          transition: color 0.22s ease;
         }
 
         .lang-tab-btn:hover {
@@ -377,15 +421,28 @@ export default function HowItWorks() {
         }
 
         .lang-tab-btn.active {
-          background: rgba(255, 255, 255, 0.12);
           color: #ffffff;
+        }
+
+        .lang-tab-pill {
+          position: absolute;
+          inset: 0;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.14);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-tab-label {
+          position: relative;
+          z-index: 1;
         }
 
         .terminal-actions {
           display: flex;
           align-items: center;
-          gap: 0.85rem;
+          gap: 0.75rem;
+          flex-wrap: wrap;
         }
 
         .endpoint-pill {
@@ -395,6 +452,10 @@ export default function HowItWorks() {
           padding: 0.25rem 0.75rem;
           border-radius: 9999px;
           border: 1px solid rgba(245, 158, 11, 0.2);
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .copy-code-btn {
@@ -420,14 +481,16 @@ export default function HowItWorks() {
         .text-emerald { color: #34d399; }
 
         .terminal-code-body {
-          padding: 1.8rem;
+          padding: clamp(1.1rem, 2.8vw, 1.8rem);
           overflow-x: auto;
           background: rgba(0, 0, 0, 0.45);
+          min-height: 220px;
         }
 
         .terminal-code-body pre {
           margin: 0;
           line-height: 1.7;
+          font-size: clamp(0.76rem, 1.4vw, 0.875rem);
         }
 
         @media (max-width: 992px) {

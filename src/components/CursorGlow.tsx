@@ -9,34 +9,50 @@ export default function CursorGlow() {
     const glow = glowRef.current;
     if (!glow) return;
 
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!isFinePointer || prefersReducedMotion) {
+      glow.style.display = 'none';
+      return;
+    }
+
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let currentX = mouseX;
     let currentY = mouseY;
-    let animationId: number;
+    let animationId = 0;
+
+    const animate = () => {
+      const dx = mouseX - currentX;
+      const dy = mouseY - currentY;
+
+      currentX += dx * 0.1;
+      currentY += dy * 0.1;
+
+      glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+
+      // Sleep RAF loop once cursor halo settles so idle CPU/GPU usage drops to zero
+      if (Math.abs(dx) > 0.25 || Math.abs(dy) > 0.25) {
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = 0;
+      }
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    const animate = () => {
-      currentX += (mouseX - currentX) * 0.08;
-      currentY += (mouseY - currentY) * 0.08;
-
-      if (glow) {
-        glow.style.transform = `translate(${currentX}px, ${currentY}px) translate(-50%, -50%)`;
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
       }
-      animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationId);
+      if (animationId) cancelAnimationFrame(animationId);
     };
   }, []);
 
@@ -47,14 +63,16 @@ export default function CursorGlow() {
       aria-hidden="true"
       style={{
         position: 'fixed',
-        width: '580px',
-        height: '580px',
+        top: 0,
+        left: 0,
+        width: '560px',
+        height: '560px',
         borderRadius: '50%',
         background:
-          'radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, rgba(245, 158, 11, 0.06) 40%, transparent 70%)',
+          'radial-gradient(circle, rgba(147, 51, 234, 0.11) 0%, rgba(245, 158, 11, 0.055) 40%, transparent 70%)',
         pointerEvents: 'none',
         zIndex: 1,
-        transition: 'opacity 0.3s ease',
+        willChange: 'transform',
         opacity: 0.75,
       }}
     />

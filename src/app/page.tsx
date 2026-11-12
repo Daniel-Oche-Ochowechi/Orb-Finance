@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <EarlyAccessProvider>
       <ScrollRevealProvider>
-        <div className="relative min-h-screen bg-deep overflow-hidden">
+        <div className="site-shell relative min-h-screen bg-deep">
           {/* Dynamic Ambient Background Canvas & Cursor Follower */}
           <AmbientCanvas />
           <CursorGlow />

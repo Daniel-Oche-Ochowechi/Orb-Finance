@@ -25,6 +25,9 @@ export default function EarlyAccessForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [passId, setPassId] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [sentAt, setSentAt] = useState('');
   const [showEmailModal, setShowEmailModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,15 +80,16 @@ export default function EarlyAccessForm() {
 
       setFullName(data.data.name);
       setEmail(data.data.email);
+      setRole(data.data.role || role);
       setPassId(data.data.referenceId);
+      setEmailSent(Boolean(data.emailSent));
+      setIsDuplicate(Boolean(data.isDuplicate));
+      setSentAt(data.data.timestamp || '');
       setIsSubmitting(false);
       setIsSuccess(true);
     } catch {
-      // Fallback in case of temporary network disconnect
-      const fallbackPass = `ORB-${role.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (fullName.length * 137) % 9000)}`;
-      setPassId(fallbackPass);
+      setServerError('Unable to reach the server. Please check your connection and try again.');
       setIsSubmitting(false);
-      setIsSuccess(true);
     }
   };
 
@@ -97,6 +101,9 @@ export default function EarlyAccessForm() {
     setNameError(null);
     setEmailError(null);
     setServerError(null);
+    setEmailSent(false);
+    setIsDuplicate(false);
+    setSentAt('');
     setIsSuccess(false);
   };
 
@@ -318,7 +325,19 @@ export default function EarlyAccessForm() {
                   </h3>
                   
                   <p className="success-body-message">
-                    Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for our launch on <strong>15 January 2027</strong>.
+                    {isDuplicate ? (
+                      <>
+                        Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already confirmed for our launch on <strong>15 January 2027</strong>.
+                      </>
+                    ) : emailSent ? (
+                      <>
+                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for <strong>15 January 2027</strong> — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
+                      </>
+                    ) : (
+                      <>
+                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for our launch on <strong>15 January 2027</strong>.
+                      </>
+                    )}
                   </p>
 
                   {/* VIP Access Pass */}
@@ -364,7 +383,7 @@ export default function EarlyAccessForm() {
                       onClick={() => setShowEmailModal(true)}
                     >
                       <Mail size={15} strokeWidth={2} />
-                      <span>Preview Confirmation Email</span>
+                      <span>{emailSent ? 'View Sent Confirmation' : 'Preview Confirmation Email'}</span>
                     </button>
                     <button
                       className="reset-ghost-btn"
@@ -385,6 +404,10 @@ export default function EarlyAccessForm() {
         onClose={() => setShowEmailModal(false)}
         userName={fullName}
         userEmail={email}
+        role={role}
+        referenceId={passId}
+        emailSent={emailSent}
+        sentAt={sentAt}
       />
 
       <style jsx>{`

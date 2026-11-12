@@ -86,7 +86,9 @@ export default function FaqSection() {
 
                 <div className="faq-drawer">
                   <div className="faq-drawer-inner">
-                    <p className="faq-answer-copy">{item.a}</p>
+                    <div className="faq-answer-pad">
+                      <p className="faq-answer-copy">{item.a}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -97,7 +99,7 @@ export default function FaqSection() {
 
       <style jsx>{`
         .faq-apple-root {
-          padding: 8.5rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
           position: relative;
           z-index: 2;
         }
@@ -108,7 +110,7 @@ export default function FaqSection() {
 
         .faq-header {
           text-align: center;
-          margin-bottom: 4.5rem;
+          margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
         }
 
         .faq-eyebrow {
@@ -169,19 +171,19 @@ export default function FaqSection() {
           width: 100%;
           background: transparent;
           border: none;
-          padding: 2rem 0.5rem;
+          padding: clamp(1.35rem, 2.8vw, 2rem) 0.5rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
           text-align: left;
           cursor: pointer;
-          gap: 1.5rem;
+          gap: clamp(0.85rem, 2.2vw, 1.5rem);
         }
 
         .faq-q-cluster {
           display: flex;
           align-items: baseline;
-          gap: 2rem;
+          gap: clamp(1rem, 2.5vw, 2rem);
           flex: 1;
         }
 
@@ -249,39 +251,33 @@ export default function FaqSection() {
 
         /* Drawer */
         .faq-drawer {
-          max-height: 0;
-          overflow: hidden;
-          transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          display: grid;
+          grid-template-rows: 0fr;
+          opacity: 0;
+          transition: grid-template-rows 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .faq-row-item.is-expanded .faq-drawer {
-          max-height: 250px;
+          grid-template-rows: 1fr;
+          opacity: 1;
         }
 
         .faq-drawer-inner {
-          padding: 0 0.5rem 2rem 3.4rem;
+          overflow: hidden;
+          min-height: 0;
+        }
+
+        .faq-answer-pad {
+          padding: 0 0.5rem clamp(1.35rem, 2.8vw, 2rem) clamp(2.15rem, 4.8vw, 3.4rem);
         }
 
         .faq-answer-copy {
-          font-size: 1.08rem;
+          font-size: clamp(0.98rem, 1.8vw, 1.08rem);
           line-height: 1.75;
           color: rgba(255, 255, 255, 0.68);
           max-width: 680px;
-        }
-
-        @media (max-width: 640px) {
-          .faq-trigger {
-            padding: 1.6rem 0;
-          }
-
-          .faq-q-cluster {
-            gap: 1.2rem;
-          }
-
-          .faq-drawer-inner {
-            padding-left: 2.3rem;
-            padding-bottom: 1.6rem;
-          }
+          margin: 0;
         }
       `}</style>
     </section>

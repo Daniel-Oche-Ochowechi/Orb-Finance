@@ -50,7 +50,7 @@ export default function ClosingCta() {
 
       <style jsx>{`
         .closing-cta-root {
-          padding: 8.5rem 0 9.5rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0 clamp(5.5rem, 9.5vw, 9.5rem) 0;
           position: relative;
           overflow: hidden;
           z-index: 2;
@@ -103,19 +103,19 @@ export default function ClosingCta() {
         }
 
         .closing-headline {
-          font-size: clamp(2.8rem, 6.5vw, 5.4rem);
+          font-size: clamp(2.15rem, 6.2vw, 5.4rem);
           font-weight: 700;
           letter-spacing: -0.04em;
-          line-height: 1.05;
-          margin-bottom: 1.25rem;
+          line-height: 1.06;
+          margin-bottom: clamp(0.95rem, 1.8vw, 1.25rem);
           color: #ffffff;
         }
 
         .closing-sub {
-          font-size: clamp(1.05rem, 2vw, 1.3rem);
+          font-size: clamp(0.98rem, 2vw, 1.3rem);
           color: rgba(255, 255, 255, 0.7);
           max-width: 580px;
-          margin: 0 auto 3rem auto;
+          margin: 0 auto clamp(2rem, 3.5vw, 3rem) auto;
           line-height: 1.6;
         }
 
@@ -218,19 +218,7 @@ export default function ClosingCta() {
 
         /* 📱 RESPONSIVE & MOBILE STYLING */
         @media (max-width: 768px) {
-          .closing-cta-root {
-            padding: 5rem 0 6rem 0;
-          }
-
-          .closing-headline {
-            font-size: clamp(2.1rem, 8.5vw, 2.75rem);
-            line-height: 1.1;
-            margin-bottom: 1rem;
-          }
-
           .closing-sub {
-            font-size: 1rem;
-            margin-bottom: 2.2rem;
             padding: 0 0.5rem;
           }
 

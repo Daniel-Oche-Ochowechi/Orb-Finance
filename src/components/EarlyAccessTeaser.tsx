@@ -108,7 +108,7 @@ export default function EarlyAccessTeaser() {
 
       <style jsx>{`
         .early-teaser-root {
-          padding: 8rem 0;
+          padding: clamp(4rem, 8vw, 8rem) 0;
           position: relative;
           z-index: 2;
         }
@@ -117,8 +117,8 @@ export default function EarlyAccessTeaser() {
           position: relative;
           background: linear-gradient(155deg, rgba(20, 22, 34, 0.85) 0%, rgba(10, 11, 18, 0.95) 100%);
           border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 32px;
-          padding: 4.5rem 4rem;
+          border-radius: clamp(22px, 2.8vw, 32px);
+          padding: clamp(1.85rem, 4.8vw, 4.5rem) clamp(1.25rem, 4.2vw, 4rem);
           overflow: hidden;
           box-shadow: 0 35px 80px rgba(0, 0, 0, 0.65), 
                       0 0 0 1px rgba(255, 255, 255, 0.06),
@@ -153,7 +153,7 @@ export default function EarlyAccessTeaser() {
         .teaser-layout-grid {
           display: grid;
           grid-template-columns: 1.15fr 1fr;
-          gap: 4.5rem;
+          gap: clamp(2rem, 4.5vw, 4.5rem);
           align-items: center;
           position: relative;
           z-index: 2;
@@ -189,11 +189,11 @@ export default function EarlyAccessTeaser() {
         }
 
         .teaser-headline {
-          font-size: clamp(2.3rem, 4.2vw, 3.6rem);
+          font-size: clamp(1.85rem, 4.2vw, 3.6rem);
           font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 1.1;
-          margin-bottom: 1.25rem;
+          margin-bottom: clamp(0.85rem, 1.5vw, 1.25rem);
           color: #ffffff;
         }
 
@@ -204,10 +204,10 @@ export default function EarlyAccessTeaser() {
         }
 
         .teaser-lead {
-          font-size: 1.12rem;
-          line-height: 1.68;
+          font-size: clamp(0.96rem, 1.5vw, 1.12rem);
+          line-height: 1.65;
           color: rgba(255, 255, 255, 0.7);
-          margin-bottom: 2.8rem;
+          margin-bottom: clamp(1.75rem, 3vw, 2.8rem);
           max-width: 520px;
         }
 
@@ -438,48 +438,18 @@ export default function EarlyAccessTeaser() {
 
         /* 📱 RESPONSIVE & MOBILE STYLING */
         @media (max-width: 992px) {
-          .early-teaser-root {
-            padding: 5.5rem 0;
-          }
-
           .teaser-layout-grid {
             grid-template-columns: 1fr;
-            gap: 2.75rem;
-          }
-
-          .teaser-glass-card {
-            padding: 2.75rem 1.75rem;
-            border-radius: 26px;
+            gap: clamp(1.75rem, 4.5vw, 2.75rem);
           }
 
           .pass-container {
-            padding: 2.2rem 1.6rem;
+            padding: clamp(1.5rem, 3.5vw, 2.2rem) clamp(1.25rem, 3vw, 1.6rem);
             border-radius: 20px;
           }
         }
 
         @media (max-width: 768px) {
-          .early-teaser-root {
-            padding: 4rem 0;
-          }
-
-          .teaser-glass-card {
-            padding: 2rem 1.25rem;
-            border-radius: 22px;
-          }
-
-          .teaser-headline {
-            font-size: 1.85rem;
-            line-height: 1.15;
-            margin-bottom: 0.85rem;
-          }
-
-          .teaser-lead {
-            font-size: 0.98rem;
-            line-height: 1.55;
-            margin-bottom: 2rem;
-          }
-
           .teaser-perks-stack {
             padding-top: 1.35rem;
             gap: 0.9rem;
@@ -498,13 +468,11 @@ export default function EarlyAccessTeaser() {
           }
 
           .pass-container {
-            padding: 1.75rem 1.25rem;
-            border-radius: 18px;
             gap: 1.35rem;
           }
 
           .pass-date-val {
-            font-size: 1.75rem;
+            font-size: clamp(1.5rem, 5vw, 1.85rem);
           }
 
           .pass-note {

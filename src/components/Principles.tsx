@@ -57,7 +57,7 @@ export default function Principles() {
       <style jsx>{`
         .section-header-center {
           text-align: center;
-          margin-bottom: 4.5rem;
+          margin-bottom: clamp(2.5rem, 4.8vw, 4.5rem);
         }
 
         .section-label {
@@ -72,7 +72,7 @@ export default function Principles() {
         }
 
         .section-headline {
-          font-size: clamp(2.5rem, 5vw, 4rem);
+          font-size: clamp(2.2rem, 5vw, 4rem);
           font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 1.08;
@@ -82,13 +82,13 @@ export default function Principles() {
         .principles-2x2-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 2rem;
+          gap: clamp(1.25rem, 2.4vw, 2rem);
         }
 
         .principle-card {
           position: relative;
-          padding: 3rem 2.6rem;
-          border-radius: 26px;
+          padding: clamp(1.85rem, 3.2vw, 3rem) clamp(1.45rem, 2.8vw, 2.6rem);
+          border-radius: clamp(20px, 2.2vw, 26px);
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -140,10 +140,6 @@ export default function Principles() {
         @media (max-width: 860px) {
           .principles-2x2-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-          .principle-card {
-            padding: 2.2rem 1.8rem;
           }
         }
       `}</style>

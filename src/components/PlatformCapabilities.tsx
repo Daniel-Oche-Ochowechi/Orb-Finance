@@ -97,7 +97,7 @@ export default function PlatformCapabilities() {
 
       <style jsx>{`
         .apple-platform-root {
-          padding: 8.5rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
           position: relative;
           z-index: 2;
         }
@@ -105,7 +105,7 @@ export default function PlatformCapabilities() {
         .platform-header-wrap {
           text-align: center;
           max-width: 780px;
-          margin: 0 auto 5.5rem auto;
+          margin: 0 auto clamp(2.75rem, 5.5vw, 5.5rem) auto;
         }
 
         .platform-eyebrow {
@@ -143,15 +143,15 @@ export default function PlatformCapabilities() {
         .platform-grand-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 2.2rem;
+          gap: clamp(1.4rem, 2.4vw, 2.2rem);
         }
 
         .grand-bento-card {
           position: relative;
           background: #090a12;
           border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 36px;
-          height: 650px;
+          border-radius: clamp(24px, 2.8vw, 36px);
+          height: clamp(440px, 44vw, 620px);
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
@@ -162,7 +162,7 @@ export default function PlatformCapabilities() {
         }
 
         .grand-bento-card:hover {
-          transform: translateY(-10px) scale(1.02);
+          transform: translateY(-8px) scale(1.015);
           border-color: rgba(255, 255, 255, 0.3);
           box-shadow: 0 45px 100px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.35);
         }
@@ -312,10 +312,10 @@ export default function PlatformCapabilities() {
         @media (max-width: 1024px) {
           .platform-grand-grid {
             grid-template-columns: 1fr;
-            gap: 2.8rem;
+            gap: clamp(1.5rem, 4vw, 2.5rem);
           }
           .grand-bento-card {
-            height: 580px;
+            height: clamp(400px, 95vw, 520px);
           }
         }
       `}</style>

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import {
   validateFullName,
   validateWorkEmail,
@@ -7,6 +8,14 @@ import {
   sanitizeInput,
 } from '@/lib/security';
 import { createWaitlistEntry } from '@/lib/supabase/server';
+import {
+  sendWaitlistConfirmationEmail,
+  EmailDeliveryStatus,
+} from '@/lib/email/mailer';
+import { decodeStoredInput } from '@/lib/email/waitlistTemplate';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
@@ -91,7 +100,7 @@ export async function POST(req: NextRequest) {
     const cleanName = nameValidation.cleanName;
     const cleanEmail = emailValidation.cleanEmail;
     const cleanRole = sanitizeInput(role) as any;
-    const generatedRefId = `ORB-${cleanRole.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (cleanName.length * 137) % 9000)}`;
+    const generatedRefId = `ORB-${cleanRole.slice(0, 3).toUpperCase()}-${crypto.randomInt(1000, 10000)}`;
 
     const userAgent = req.headers.get('user-agent') || 'Unknown';
 
@@ -104,13 +113,36 @@ export async function POST(req: NextRequest) {
       userAgent: userAgent,
     });
 
+    // 6. Dispatch waitlist confirmation email on new registration
+    let emailSent = false;
+    let emailStatus: EmailDeliveryStatus = 'skipped_duplicate';
+
+    if (!isDuplicate) {
+      const emailResult = await sendWaitlistConfirmationEmail({
+        fullName: submission.full_name,
+        email: submission.email,
+        role: submission.role,
+        referenceId: submission.reference_id,
+        launchDate: '15 January 2027',
+      });
+
+      emailSent = emailResult.sent;
+      emailStatus = emailResult.status;
+
+      if (emailResult.status === 'failed') {
+        console.error('[Waitlist Email Dispatch Failed]:', emailResult.error);
+      }
+    }
+
     return NextResponse.json(
       {
         success: true,
         isDuplicate,
+        emailSent,
+        emailStatus,
         data: {
           id: submission.id,
-          name: submission.full_name,
+          name: decodeStoredInput(submission.full_name),
           email: submission.email,
           role: submission.role,
           referenceId: submission.reference_id,

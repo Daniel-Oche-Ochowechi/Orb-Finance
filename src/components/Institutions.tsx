@@ -95,7 +95,7 @@ export default function Institutions() {
 
       <style jsx>{`
         .apple-inst-root {
-          padding: 8.5rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
           position: relative;
           z-index: 2;
           overflow: hidden;
@@ -117,7 +117,7 @@ export default function Institutions() {
         .apple-inst-header {
           text-align: center;
           max-width: 840px;
-          margin: 0 auto 5rem;
+          margin: 0 auto clamp(2.75rem, 5vw, 5rem);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -136,7 +136,7 @@ export default function Institutions() {
         }
 
         .inst-headline {
-          font-size: clamp(2.5rem, 5vw, 4rem);
+          font-size: clamp(2.2rem, 5vw, 4rem);
           font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 1.08;
@@ -153,24 +153,24 @@ export default function Institutions() {
         .inst-pillars-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 2rem;
-          margin-bottom: 4.5rem;
+          gap: clamp(1.25rem, 2.4vw, 2rem);
+          margin-bottom: clamp(2.75rem, 4.5vw, 4.5rem);
           position: relative;
           z-index: 1;
         }
 
         .inst-pillar-card {
           position: relative;
-          padding: 3.2rem 2.8rem;
-          border-radius: 28px;
+          padding: clamp(1.85rem, 3.4vw, 3.2rem) clamp(1.45rem, 3vw, 2.8rem);
+          border-radius: clamp(22px, 2.4vw, 28px);
           background: rgba(15, 17, 28, 0.72);
           border: 1px solid rgba(255, 255, 255, 0.11);
-          backdrop-filter: blur(35px) saturate(180%);
-          -webkit-backdrop-filter: blur(35px) saturate(180%);
+          backdrop-filter: blur(20px) saturate(165%);
+          -webkit-backdrop-filter: blur(20px) saturate(165%);
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15);
           display: flex;
           flex-direction: column;
-          gap: 1.8rem;
+          gap: clamp(1.2rem, 2vw, 1.8rem);
           overflow: hidden;
           transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
         }
@@ -319,10 +319,6 @@ export default function Institutions() {
         @media (max-width: 900px) {
           .inst-pillars-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-          .inst-pillar-card {
-            padding: 2.2rem 1.8rem;
           }
         }
       `}</style>

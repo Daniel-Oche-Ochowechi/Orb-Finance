@@ -69,7 +69,7 @@ export default function TrustCompliance() {
 
       <style jsx>{`
         .apple-trust-root {
-          padding: 8.5rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
           position: relative;
           z-index: 2;
         }
@@ -77,7 +77,7 @@ export default function TrustCompliance() {
         .trust-header-center {
           text-align: center;
           max-width: 800px;
-          margin: 0 auto 5rem auto;
+          margin: 0 auto clamp(2.75rem, 5vw, 5rem) auto;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -96,7 +96,7 @@ export default function TrustCompliance() {
         }
 
         .trust-headline {
-          font-size: clamp(2.5rem, 5vw, 4rem);
+          font-size: clamp(2.2rem, 5vw, 4rem);
           font-weight: 700;
           letter-spacing: -0.04em;
           line-height: 1.08;
@@ -111,7 +111,7 @@ export default function TrustCompliance() {
         }
 
         .trust-lead-text {
-          font-size: 1.15rem;
+          font-size: clamp(1rem, 1.8vw, 1.15rem);
           line-height: 1.7;
           color: rgba(255, 255, 255, 0.68);
           max-width: 680px;
@@ -121,23 +121,23 @@ export default function TrustCompliance() {
         .trust-pillars-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
+          gap: clamp(1.25rem, 2.4vw, 2rem);
           position: relative;
           z-index: 1;
         }
 
         .trust-bento-card {
           position: relative;
-          padding: 3.2rem 2.4rem;
-          border-radius: 28px;
+          padding: clamp(1.85rem, 3.4vw, 3.2rem) clamp(1.45rem, 2.8vw, 2.4rem);
+          border-radius: clamp(22px, 2.4vw, 28px);
           background: rgba(14, 16, 26, 0.72);
           border: 1px solid rgba(255, 255, 255, 0.11);
-          backdrop-filter: blur(35px) saturate(180%);
-          -webkit-backdrop-filter: blur(35px) saturate(180%);
+          backdrop-filter: blur(20px) saturate(165%);
+          -webkit-backdrop-filter: blur(20px) saturate(165%);
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.16);
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: clamp(1.25rem, 2.2vw, 2rem);
           overflow: hidden;
           transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
         }
@@ -213,10 +213,6 @@ export default function TrustCompliance() {
         @media (max-width: 992px) {
           .trust-pillars-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-          .trust-bento-card {
-            padding: 2.2rem 1.8rem;
           }
         }
       `}</style>

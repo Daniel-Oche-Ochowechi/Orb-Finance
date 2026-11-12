@@ -132,8 +132,8 @@ export default function Hero() {
       <style jsx>{`
         .apple-hero-root {
           position: relative;
-          padding-top: 5.5rem;
-          padding-bottom: 8.5rem;
+          padding-top: clamp(2.5rem, 6vw, 5.5rem);
+          padding-bottom: clamp(4.25rem, 9vw, 8.5rem);
           overflow: hidden;
           z-index: 2;
         }
@@ -194,7 +194,7 @@ export default function Hero() {
           border: 1px solid rgba(255, 255, 255, 0.1);
           padding: 0.38rem 1rem;
           border-radius: 9999px;
-          margin-bottom: 2.2rem;
+          margin-bottom: clamp(1.35rem, 2.5vw, 2.2rem);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
         }
@@ -217,11 +217,11 @@ export default function Hero() {
 
         /* Monumental Headline */
         .hero-monumental-heading {
-          font-size: clamp(3.2rem, 7vw, 6.4rem);
+          font-size: clamp(2.5rem, 6.8vw, 6.2rem);
           font-weight: 700;
-          line-height: 1.04;
+          line-height: 1.02;
           letter-spacing: -0.04em;
-          margin-bottom: 1.8rem;
+          margin-bottom: clamp(1.35rem, 2.4vw, 1.8rem);
           display: flex;
           flex-direction: column;
           gap: 0.4rem;
@@ -271,11 +271,11 @@ export default function Hero() {
 
         /* Subtitle Text */
         .hero-editorial-text {
-          font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+          font-size: clamp(1.02rem, 1.8vw, 1.35rem);
           line-height: 1.6;
           max-width: 680px;
           color: rgba(255, 255, 255, 0.7);
-          margin-bottom: 3.2rem;
+          margin-bottom: clamp(2rem, 3.8vw, 3.2rem);
           font-weight: 400;
         }
 
@@ -285,7 +285,7 @@ export default function Hero() {
           align-items: center;
           gap: 1.25rem;
           flex-wrap: wrap;
-          margin-bottom: 4.5rem;
+          margin-bottom: clamp(2.8rem, 5vw, 4.5rem);
         }
 
         .apple-hero-primary-btn {
@@ -376,10 +376,10 @@ export default function Hero() {
           position: relative;
           background: rgba(14, 16, 26, 0.72);
           border: 1px solid rgba(255, 255, 255, 0.11);
-          border-radius: 26px;
-          padding: 1.8rem 2.4rem;
-          backdrop-filter: blur(35px) saturate(180%);
-          -webkit-backdrop-filter: blur(35px) saturate(180%);
+          border-radius: clamp(20px, 2.5vw, 26px);
+          padding: clamp(1.25rem, 2.5vw, 1.8rem) clamp(1.35rem, 3vw, 2.4rem);
+          backdrop-filter: blur(20px) saturate(165%);
+          -webkit-backdrop-filter: blur(20px) saturate(165%);
           max-width: 620px;
           width: 100%;
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15);
@@ -442,25 +442,25 @@ export default function Hero() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          min-width: 65px;
+          min-width: clamp(44px, 8vw, 65px);
         }
 
         .time-num {
-          font-size: clamp(2rem, 3.4vw, 2.75rem);
+          font-size: clamp(1.85rem, 3.6vw, 2.75rem);
           font-weight: 700;
           color: #ffffff;
           line-height: 1;
         }
 
         .time-caption {
-          font-size: 0.65rem;
+          font-size: clamp(0.56rem, 1.1vw, 0.65rem);
           letter-spacing: 0.14em;
           color: rgba(255, 255, 255, 0.45);
           margin-top: 0.5rem;
         }
 
         .time-colon {
-          font-size: 1.8rem;
+          font-size: clamp(1.35rem, 2.5vw, 1.8rem);
           color: rgba(255, 255, 255, 0.22);
           margin-bottom: 1.1rem;
         }
@@ -482,34 +482,11 @@ export default function Hero() {
         }
 
         @media (max-width: 768px) {
-          .apple-hero-root {
-            padding-top: 2.75rem;
-            padding-bottom: 4.5rem;
-          }
-
-          .hero-status-pill {
-            margin-bottom: 1.6rem;
-          }
-
-          .hero-monumental-heading {
-            font-size: clamp(3.4rem, 12vw, 4.4rem);
-            line-height: 0.98;
-            letter-spacing: -0.045em;
-            margin-bottom: 1.5rem;
-          }
-
-          .hero-editorial-text {
-            font-size: 1.15rem;
-            line-height: 1.55;
-            margin-bottom: 2.4rem;
-          }
-
           .hero-cta-button-group {
             flex-direction: column;
             align-items: stretch;
             width: 100%;
             gap: 0.85rem;
-            margin-bottom: 3.2rem;
           }
 
           .apple-hero-primary-btn {
@@ -543,21 +520,7 @@ export default function Hero() {
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           }
 
-          .time-pod {
-            min-width: 44px;
-          }
-
-          .time-num {
-            font-size: 2.2rem;
-          }
-
-          .time-caption {
-            font-size: 0.58rem;
-            letter-spacing: 0.12em;
-          }
-
           .time-colon {
-            font-size: 1.5rem;
             margin-bottom: 0.9rem;
           }
         }

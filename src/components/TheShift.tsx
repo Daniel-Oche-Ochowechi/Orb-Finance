@@ -77,7 +77,7 @@ export default function TheShift() {
 
       <style jsx>{`
         .apple-shift-root {
-          padding: 9rem 0;
+          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
           position: relative;
           z-index: 2;
           background: transparent;
@@ -86,7 +86,7 @@ export default function TheShift() {
         .apple-shift-grid {
           display: grid;
           grid-template-columns: 1.15fr 1fr;
-          gap: 5rem;
+          gap: clamp(2.25rem, 5vw, 5rem);
           align-items: center;
         }
 
@@ -178,7 +178,8 @@ export default function TheShift() {
         .shift-invariants-row {
           display: flex;
           align-items: center;
-          gap: 1.8rem;
+          flex-wrap: wrap;
+          gap: clamp(0.85rem, 3vw, 1.8rem);
           padding-top: 1.5rem;
           border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -243,7 +244,7 @@ export default function TheShift() {
         .image-viewport {
           position: relative;
           width: 100%;
-          height: 560px;
+          height: clamp(360px, 50vw, 560px);
           overflow: hidden;
         }
 
@@ -274,15 +275,15 @@ export default function TheShift() {
         /* Lower-Third Glass Caption */
         .frame-caption-glass {
           position: absolute;
-          bottom: 1.5rem;
-          left: 1.5rem;
-          right: 1.5rem;
+          bottom: clamp(0.85rem, 2vw, 1.5rem);
+          left: clamp(0.85rem, 2vw, 1.5rem);
+          right: clamp(0.85rem, 2vw, 1.5rem);
           background: rgba(14, 16, 26, 0.82);
           border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 20px;
-          padding: 1.25rem 1.4rem;
-          backdrop-filter: blur(30px);
-          -webkit-backdrop-filter: blur(30px);
+          border-radius: clamp(16px, 2vw, 20px);
+          padding: clamp(0.95rem, 2vw, 1.25rem) clamp(1rem, 2.2vw, 1.4rem);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
           z-index: 3;
           display: flex;
@@ -298,7 +299,7 @@ export default function TheShift() {
         }
 
         .caption-headline {
-          font-size: 0.98rem;
+          font-size: clamp(0.88rem, 1.4vw, 0.98rem);
           font-weight: 600;
           color: #ffffff;
           line-height: 1.45;
@@ -307,7 +308,7 @@ export default function TheShift() {
         @media (max-width: 992px) {
           .apple-shift-grid {
             grid-template-columns: 1fr;
-            gap: 3.5rem;
+            gap: clamp(2.25rem, 5vw, 3.5rem);
           }
           .shift-frame-container {
             max-width: 100%;

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   Send,
@@ -70,7 +71,15 @@ export default function ContactModal() {
     };
   }, [isContactOpen]);
 
-  if (!isContactOpen) return null;
+  // Handle ESC key when contact modal open
+  useEffect(() => {
+    if (!isContactOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeContact();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isContactOpen, closeContact]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,42 +134,77 @@ export default function ContactModal() {
   };
 
   return (
-    <div className="contact-modal-backdrop" onClick={closeContact}>
-      <div className="contact-modal-card" onClick={(e) => e.stopPropagation()}>
-        <div className="ambient-gold-glow" />
-        <div className="ambient-violet-glow" />
+    <>
+      <AnimatePresence>
+        {isContactOpen && (
+          <motion.div
+            className="contact-modal-backdrop"
+            onClick={closeContact}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="contact-modal-card"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Contact Orb Institutional Desk"
+              initial={{ opacity: 0, y: 20, scale: 0.965 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.965 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
+            >
+              <div className="ambient-gold-glow" />
+              <div className="ambient-violet-glow" />
 
-        <button onClick={closeContact} className="modal-close-icon" aria-label="Close modal">
-          <X size={18} />
-        </button>
+              <button onClick={closeContact} className="modal-close-icon" aria-label="Close modal" type="button">
+                <X size={18} />
+              </button>
 
-        {successData ? (
-          <div className="success-view">
-            <div className="success-icon-ring">
-              <CheckCircle2 size={32} />
-            </div>
+              <AnimatePresence mode="wait" initial={false}>
+                {successData ? (
+                  <motion.div
+                    key="contact-success"
+                    className="success-view"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <div className="success-icon-ring">
+                      <CheckCircle2 size={32} />
+                    </div>
 
-            <div className="success-header">
-              <span className="success-tag">TRANSMISSION LOGGED</span>
-              <h3 className="success-title">Inquiry Dispatched</h3>
-              <p className="success-desc">{successData.message}</p>
-            </div>
+                    <div className="success-header">
+                      <span className="success-tag">TRANSMISSION LOGGED</span>
+                      <h3 className="success-title">Inquiry Dispatched</h3>
+                      <p className="success-desc">{successData.message}</p>
+                    </div>
 
-            <div className="ref-display-card">
-              <span className="ref-title">Institutional Reference ID</span>
-              <span className="ref-code">{successData.referenceId}</span>
-            </div>
+                    <div className="ref-display-card">
+                      <span className="ref-title">Institutional Reference ID</span>
+                      <span className="ref-code">{successData.referenceId}</span>
+                    </div>
 
-            <p className="success-note">
-              A copy has been routed to our global partnerships desk. Our team typically responds within 24 business hours.
-            </p>
+                    <p className="success-note">
+                      A copy has been routed to our global partnerships desk. Our team typically responds within 24 business hours.
+                    </p>
 
-            <button onClick={closeContact} className="success-done-btn">
-              Done
-            </button>
-          </div>
-        ) : (
-          <div className="form-view">
+                    <button onClick={closeContact} className="success-done-btn" type="button">
+                      Done
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="contact-form"
+                    className="form-view"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  >
             <div className="form-header">
               <div className="header-chips">
                 <span className="tag-direct">DIRECT LINE</span>
@@ -279,29 +323,34 @@ export default function ContactModal() {
                 </button>
               </div>
 
-              <div className="footer-notice">
-                <div className="security-notice">
-                  <ShieldCheck size={13} color="#10b981" />
-                  <span>NDPR & Bank-grade encrypted transmission</span>
+                <div className="footer-notice">
+                  <div className="security-notice">
+                    <ShieldCheck size={13} color="#10b981" />
+                    <span>NDPR & Bank-grade encrypted transmission</span>
+                  </div>
+                  <span className="ref-tag">Ref: ORB-DIRECT</span>
                 </div>
-                <span className="ref-tag">Ref: ORB-DIRECT</span>
-              </div>
-            </form>
-          </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
       <style jsx>{`
         .contact-modal-backdrop {
           position: fixed;
           inset: 0;
           z-index: 999;
-          background: rgba(0, 0, 0, 0.85);
-          backdrop-filter: blur(14px);
+          background: rgba(0, 0, 0, 0.82);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.25rem;
+          padding: clamp(0.75rem, 3vw, 1.25rem);
           font-family: var(--font-sans);
         }
 
@@ -313,11 +362,12 @@ export default function ContactModal() {
           background: #0d0e17;
           border: 1px solid rgba(255, 255, 255, 0.12);
           box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-          padding: 2rem;
+          padding: clamp(1.4rem, 3.5vw, 2rem);
           color: #ffffff;
           overflow: hidden;
           max-height: 92vh;
           overflow-y: auto;
+          will-change: transform, opacity;
         }
 
         .ambient-gold-glow {
@@ -679,6 +729,6 @@ export default function ContactModal() {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }

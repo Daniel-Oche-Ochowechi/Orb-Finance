@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEarlyAccess } from '@/context/EarlyAccessContext';
 import { X, Check, Lock, Mail, ArrowRight, Sparkles, ShieldCheck, AlertCircle, User, AtSign } from 'lucide-react';
 import EmailModal from './EmailModal';
@@ -28,6 +29,9 @@ export default function EarlyAccessModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [passId, setPassId] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [sentAt, setSentAt] = useState('');
   const [showEmailModal, setShowEmailModal] = useState(false);
 
   useEffect(() => {
@@ -58,8 +62,6 @@ export default function EarlyAccessModal() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, closeEarlyAccess]);
-
-  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,15 +113,16 @@ export default function EarlyAccessModal() {
 
       setFullName(data.data.name);
       setEmail(data.data.email);
+      setRole(data.data.role || role);
       setPassId(data.data.referenceId);
+      setEmailSent(Boolean(data.emailSent));
+      setIsDuplicate(Boolean(data.isDuplicate));
+      setSentAt(data.data.timestamp || '');
       setIsSubmitting(false);
       setIsSuccess(true);
     } catch {
-      // Fallback in case of temporary network disconnect
-      const fallbackPass = `ORB-${role.slice(0, 3).toUpperCase()}-${Math.floor(1000 + (fullName.length * 137) % 9000)}`;
-      setPassId(fallbackPass);
+      setServerError('Unable to reach the server. Please check your connection and try again.');
       setIsSubmitting(false);
-      setIsSuccess(true);
     }
   };
 
@@ -131,39 +134,65 @@ export default function EarlyAccessModal() {
     setNameError(null);
     setEmailError(null);
     setServerError(null);
+    setEmailSent(false);
+    setIsDuplicate(false);
+    setSentAt('');
     setIsSuccess(false);
   };
 
   return (
-    <div className="apple-modal-scrim" onClick={closeEarlyAccess}>
-      <div
-        className="apple-sheet-card"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="apple-modal-title"
-      >
-        {/* Confetti Celebration on Confirmation */}
-        {isSuccess && <ClassyConfetti duration={4800} />}
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="apple-modal-scrim"
+            onClick={closeEarlyAccess}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="apple-sheet-card"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="apple-modal-title"
+              initial={{ opacity: 0, y: 24, scale: 0.965 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.965 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
+            >
+              {/* Confetti Celebration on Confirmation */}
+              {isSuccess && <ClassyConfetti duration={4800} />}
 
-        {/* Mobile Pull Handle Indicator */}
-        <div className="mobile-handle-bar" aria-hidden="true" />
+              {/* Mobile Pull Handle Indicator */}
+              <div className="mobile-handle-bar" aria-hidden="true" />
 
-        {/* Ambient Specular Highlights */}
-        <div className="apple-specular-top-light" aria-hidden="true" />
-        <div className="apple-specular-bottom-light" aria-hidden="true" />
+              {/* Ambient Specular Highlights */}
+              <div className="apple-specular-top-light" aria-hidden="true" />
+              <div className="apple-specular-bottom-light" aria-hidden="true" />
 
-        {/* Minimalist Glass Dismiss Button */}
-        <button
-          className="apple-dismiss-btn"
-          onClick={closeEarlyAccess}
-          aria-label="Close modal"
-        >
-          <X size={15} strokeWidth={2.4} />
-        </button>
+              {/* Minimalist Glass Dismiss Button */}
+              <button
+                className="apple-dismiss-btn"
+                onClick={closeEarlyAccess}
+                aria-label="Close modal"
+                type="button"
+              >
+                <X size={15} strokeWidth={2.4} />
+              </button>
 
-        {!isSuccess ? (
-          <div className="apple-sheet-layout">
+              <AnimatePresence mode="wait" initial={false}>
+                {!isSuccess ? (
+                  <motion.div
+                    key="early-access-form"
+                    className="apple-sheet-layout"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  >
             {/* Left Narrative Column */}
             <div className="apple-narrative-panel">
               <div className="apple-status-eyebrow">
@@ -359,10 +388,17 @@ export default function EarlyAccessModal() {
                 </div>
               </form>
             </div>
-          </div>
+          </motion.div>
         ) : (
           /* Modern, Classy, Smooth Confirmation Popup */
-          <div className="apple-success-view">
+          <motion.div
+            key="early-access-success"
+            className="apple-success-view"
+            initial={{ opacity: 0, y: 10, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.985 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          >
             {/* Pulsing Glowing Checkmark Badge */}
             <div className="apple-pass-icon-badge">
               <div className="badge-pulse-glow" aria-hidden="true" />
@@ -381,7 +417,19 @@ export default function EarlyAccessModal() {
             </h3>
             
             <p className="apple-success-sub">
-              Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for our launch on <strong>15 January 2027</strong>.
+              {isDuplicate ? (
+                <>
+                  Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already locked for our launch on <strong>15 January 2027</strong>.
+                </>
+              ) : emailSent ? (
+                <>
+                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for <strong>15 January 2027</strong> — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
+                </>
+              ) : (
+                <>
+                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for our launch on <strong>15 January 2027</strong>.
+                </>
+              )}
             </p>
 
             {/* Luxury VIP Orbit Protocol Access Pass */}
@@ -429,7 +477,7 @@ export default function EarlyAccessModal() {
                 onClick={() => setShowEmailModal(true)}
               >
                 <Mail size={15} strokeWidth={2} />
-                <span>Preview Confirmation Email</span>
+                <span>{emailSent ? 'View Sent Confirmation' : 'Preview Confirmation Email'}</span>
               </button>
               <button
                 className="apple-ghost-btn"
@@ -438,30 +486,37 @@ export default function EarlyAccessModal() {
                 <span>Submit another inquiry</span>
               </button>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
+    </motion.div>
+  </motion.div>
+        )}
+      </AnimatePresence>
 
       <EmailModal
         isOpen={showEmailModal}
         onClose={() => setShowEmailModal(false)}
         userName={fullName}
         userEmail={email}
+        role={role}
+        referenceId={passId}
+        emailSent={emailSent}
+        sentAt={sentAt}
       />
 
       <style jsx>{`
         .apple-modal-scrim {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.78);
-          backdrop-filter: blur(48px) saturate(190%);
-          -webkit-backdrop-filter: blur(48px) saturate(190%);
+          background: rgba(0, 0, 0, 0.76);
+          backdrop-filter: blur(22px) saturate(165%);
+          -webkit-backdrop-filter: blur(22px) saturate(165%);
           z-index: 100;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem;
-          animation: appleFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: clamp(0.75rem, 2.5vw, 1.5rem);
         }
 
         .apple-sheet-card {
@@ -476,7 +531,7 @@ export default function EarlyAccessModal() {
                       inset 0 1px 1px rgba(255, 255, 255, 0.25),
                       inset 0 0 40px rgba(255, 255, 255, 0.015);
           overflow: hidden;
-          animation: appleCardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform, opacity;
         }
 
         .apple-specular-top-light {
@@ -1246,27 +1301,6 @@ export default function EarlyAccessModal() {
           display: none;
         }
 
-        @keyframes appleFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes appleCardPop {
-          from { opacity: 0; transform: scale(0.96) translateY(12px); }
-          to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes mobileSheetSlideUp {
-          from {
-            transform: translateY(100%);
-            opacity: 0.4;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
         @keyframes successEntrance {
           from { opacity: 0; transform: scale(0.97); }
           to { opacity: 1; transform: scale(1); }
@@ -1311,7 +1345,6 @@ export default function EarlyAccessModal() {
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             box-shadow: 0 -25px 70px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-            animation: mobileSheetSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           }
 
           .mobile-handle-bar {
@@ -1476,6 +1509,6 @@ export default function EarlyAccessModal() {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }
