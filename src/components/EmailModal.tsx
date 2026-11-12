@@ -33,7 +33,7 @@ export default function EmailModal({
         email: userEmail || 'adebayo@institution.com',
         role,
         referenceId,
-        launchDate: '15 January 2027',
+        launchDate: '15 April 2027 (Q2)',
       }),
     [userName, userEmail, role, referenceId]
   );
@@ -165,7 +165,7 @@ export default function EmailModal({
                 <p className="sheet-prose">{emailCopy.networkParagraph}</p>
                 <p className="sheet-prose">{emailCopy.nextStepsParagraph}</p>
 
-                {/* Ledger Confirmation Slip */}
+                {/* Ledger Confirmation Table */}
                 <div className="ledger-slip">
                   <div className="ledger-slip-head">
                     <span className="ledger-slip-title font-mono">RECORD OF REGISTRATION</span>
@@ -182,19 +182,19 @@ export default function EmailModal({
                     </div>
                     <div className="ledger-row">
                       <span className="ledger-key font-mono">CATEGORY</span>
-                      <span className="ledger-val">{emailCopy.roleLabel}</span>
+                      <span className="ledger-role-chip">{emailCopy.roleLabel}</span>
                     </div>
-                    <div className="ledger-row">
+                    <div className="ledger-row ledger-row-last">
                       <span className="ledger-key font-mono">OPENING DATE</span>
                       <span className="ledger-val">{emailCopy.launchDate}</span>
                     </div>
-                    <div className="ledger-row ledger-row-last">
-                      <span className="ledger-key font-mono">STATUS</span>
-                      <span className="ledger-val ledger-val-status">
-                        <span className="status-dot-green" aria-hidden="true" />
-                        Confirmed &middot; Priority Queue
-                      </span>
-                    </div>
+                  </div>
+                  <div className="ledger-slip-foot">
+                    <span className="ledger-key font-mono">STATUS</span>
+                    <span className="ledger-val-status">
+                      <span className="status-dot-green" aria-hidden="true" />
+                      Confirmed &middot; Priority Queue
+                    </span>
                   </div>
                 </div>
 
@@ -444,38 +444,45 @@ export default function EmailModal({
         }
 
         .ledger-slip {
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
-          margin: 1.5rem 0;
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          border-radius: 10px;
+          margin: 1.65rem 0;
           overflow: hidden;
+          box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
         }
 
         .ledger-slip-head {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0.7rem 1.1rem;
-          background: #f1f5f9;
-          border-bottom: 1px solid #e2e8f0;
+          padding: 0.85rem 1.25rem;
+          background: linear-gradient(180deg, #131722 0%, #0b0d13 100%);
+          border-bottom: 1px solid #1e293b;
         }
 
         .ledger-slip-title {
           font-size: 0.62rem;
           font-weight: 600;
-          letter-spacing: 0.14em;
-          color: #64748b;
+          letter-spacing: 0.16em;
+          color: #94a3b8;
         }
 
         .ledger-slip-ref {
+          display: inline-block;
+          padding: 0.24rem 0.62rem;
+          background: #161c28;
+          border: 1px solid #334155;
+          border-radius: 5px;
           font-size: 0.68rem;
           font-weight: 600;
-          letter-spacing: 0.06em;
-          color: #0b0d13;
+          letter-spacing: 0.08em;
+          color: #f8fafc;
         }
 
         .ledger-slip-rows {
-          padding: 0.2rem 1.1rem;
+          padding: 0.15rem 1.25rem;
+          background: #ffffff;
         }
 
         .ledger-row {
@@ -483,8 +490,8 @@ export default function EmailModal({
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
-          padding: 0.62rem 0;
-          border-bottom: 1px solid #e2e8f0;
+          padding: 0.85rem 0;
+          border-bottom: 1px solid #f1f5f9;
         }
 
         .ledger-row-last {
@@ -492,14 +499,15 @@ export default function EmailModal({
         }
 
         .ledger-key {
-          font-size: 0.64rem;
-          letter-spacing: 0.08em;
+          font-size: 0.62rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
           color: #64748b;
           flex-shrink: 0;
         }
 
         .ledger-val {
-          font-size: 0.82rem;
+          font-size: 0.84rem;
           font-weight: 600;
           color: #0b0d13;
           text-align: right;
@@ -507,22 +515,49 @@ export default function EmailModal({
 
         .ledger-val-break {
           font-weight: 500;
-          color: #1e293b;
+          color: #334155;
           word-break: break-all;
+        }
+
+        .ledger-role-chip {
+          display: inline-block;
+          padding: 0.2rem 0.62rem;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: #0f172a;
+        }
+
+        .ledger-slip-foot {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          padding: 0.78rem 1.25rem;
+          background: #f8fafc;
+          border-top: 1px solid #e2e8f0;
         }
 
         .ledger-val-status {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
-          color: #15803d;
+          gap: 0.42rem;
+          padding: 0.24rem 0.7rem;
+          background: #ecfdf5;
+          border: 1px solid #bbf7d0;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #166534;
         }
 
         .status-dot-green {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #15803d;
+          background: #16a34a;
           display: inline-block;
         }
 
@@ -639,10 +674,21 @@ export default function EmailModal({
             padding-right: 1.25rem;
           }
 
-          .ledger-row {
+          .ledger-row,
+          .ledger-slip-foot {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.2rem;
+            gap: 0.3rem;
+          }
+
+          .ledger-slip-head {
+            padding: 0.8rem 1rem;
+          }
+
+          .ledger-slip-rows,
+          .ledger-slip-foot {
+            padding-left: 1rem;
+            padding-right: 1rem;
           }
 
           .ledger-val {

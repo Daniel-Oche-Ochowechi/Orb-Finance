@@ -323,7 +323,7 @@ export default function Header() {
         <div className="announcement-content font-mono">
           <span className="announcement-beacon" />
           <span>
-            Orb Finance opens <strong>15 January 2027</strong>.
+            Orb Finance opens <strong>Q2 (15 April 2027)</strong>.
           </span>
           <button
             onClick={() => openEarlyAccess()}
@@ -605,7 +605,7 @@ export default function Header() {
                     <div className="mobile-fs-inner">
                       <div className="mobile-panel-top">
                         <span className="mobile-eyebrow font-mono">NAVIGATION</span>
-                        <span className="mobile-date-tag font-mono">15 JAN 2027</span>
+                        <span className="mobile-date-tag font-mono">Q2 · 15 APR 2027</span>
                       </div>
 
                       <nav className="mobile-nav-list" aria-label="Mobile sections">

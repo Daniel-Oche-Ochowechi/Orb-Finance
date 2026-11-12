@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
         email: submission.email,
         role: submission.role,
         referenceId: submission.reference_id,
-        launchDate: '15 January 2027',
+        launchDate: '15 April 2027 (Q2)',
       });
 
       emailSent = emailResult.sent;
@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
           role: submission.role,
           referenceId: submission.reference_id,
           status: submission.status,
-          launchDate: '15 January 2027',
+          launchDate: '15 April 2027 (Q2)',
           timestamp: submission.created_at,
         },
       },

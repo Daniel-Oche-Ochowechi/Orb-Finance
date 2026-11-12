@@ -22,7 +22,7 @@ export default function ClosingCta() {
       <div className="container text-center">
         <div className="closing-badge-row font-mono">
           <span className="closing-beacon-dot" />
-          <span>OPENING 15 JANUARY 2027</span>
+          <span>OPENING Q2 · 15 APRIL 2027</span>
         </div>
 
         <h2 className="closing-headline">
@@ -30,7 +30,7 @@ export default function ClosingCta() {
         </h2>
         
         <p className="closing-sub">
-          Orb Finance opens <strong>15 January 2027</strong>. Connect as soon as we launch.
+          Orb Finance opens <strong>Q2 (15 April 2027)</strong>. Connect as soon as we launch.
         </p>
 
         <div className="closing-buttons-cluster">

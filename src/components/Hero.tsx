@@ -15,7 +15,7 @@ export default function Hero() {
   });
 
   useEffect(() => {
-    const target = new Date('2027-01-15T00:00:00Z').getTime();
+    const target = new Date('2027-04-15T00:00:00Z').getTime();
 
     const calculateTime = () => {
       const now = new Date().getTime();
@@ -60,7 +60,7 @@ export default function Hero() {
         {/* Status Eyebrow */}
         <div className="hero-status-pill">
           <span className="status-beacon-dot" />
-          <span className="status-label font-mono">Opening 15 January 2027</span>
+          <span className="status-label font-mono">Opening Q2 (15 April 2027)</span>
         </div>
 
         {/* Hero Main Headline */}
@@ -100,7 +100,7 @@ export default function Hero() {
 
           <div className="countdown-top-header">
             <span className="countdown-header-tag">COUNTDOWN TO LAUNCH</span>
-            <span className="countdown-target-date">15 January 2027</span>
+            <span className="countdown-target-date">Q2 • 15 April 2027</span>
           </div>
 
           <div className="countdown-digit-deck">

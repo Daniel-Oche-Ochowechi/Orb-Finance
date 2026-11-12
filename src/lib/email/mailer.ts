@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import nodemailer, { Transporter } from 'nodemailer';
 import {
   renderWaitlistConfirmationEmail,
@@ -20,12 +22,19 @@ export interface SendEmailResult {
   error?: string;
 }
 
+interface InlineLogoAsset {
+  filename: string;
+  contentId: string;
+  content: Buffer;
+}
+
 interface EmailDispatchPayload {
   to: string;
   subject: string;
   html: string;
   text: string;
   replyTo?: string;
+  inlineAssets?: InlineLogoAsset[];
 }
 
 let cachedSmtpKey: string | null = null;
@@ -69,14 +78,14 @@ function resolveSenderAddresses(provider: EmailProvider): {
   const envReplyTo = process.env.EMAIL_REPLY_TO?.trim();
   const smtpUser = process.env.SMTP_USER?.trim();
 
-  let from = 'Orb Finance <hello@orbfinance.com>';
+  let from = 'Orb Finance <hello@orbfinance.co>';
   if (envFrom && !isPlaceholderValue(envFrom)) {
     from = envFrom;
   } else if (provider === 'smtp' && smtpUser && smtpUser.includes('@')) {
     from = `Orb Finance <${smtpUser}>`;
   }
 
-  let replyTo = 'hello@orbfinance.com';
+  let replyTo = 'hello@orbfinance.co';
   if (envReplyTo && !isPlaceholderValue(envReplyTo)) {
     replyTo = envReplyTo;
   } else if (provider === 'smtp' && smtpUser && smtpUser.includes('@')) {
@@ -84,6 +93,30 @@ function resolveSenderAddresses(provider: EmailProvider): {
   }
 
   return { from, replyTo };
+}
+
+function loadInlineLogoAssets(): InlineLogoAsset[] {
+  const candidates: Array<{ file: string; contentId: string }> = [
+    { file: 'orb-logo-white.png', contentId: 'orb-logo-white' },
+    { file: 'orb-logo-black.png', contentId: 'orb-logo-black' },
+  ];
+
+  const assets: InlineLogoAsset[] = [];
+  for (const item of candidates) {
+    try {
+      const fullPath = path.join(process.cwd(), 'public', 'images', item.file);
+      if (fs.existsSync(fullPath)) {
+        assets.push({
+          filename: item.file,
+          contentId: item.contentId,
+          content: fs.readFileSync(fullPath),
+        });
+      }
+    } catch {
+      // Fall back gracefully if filesystem logo assets cannot be read
+    }
+  }
+  return assets;
 }
 
 function getSmtpTransporter(): Transporter {
@@ -148,6 +181,16 @@ async function sendViaResend(
         subject: payload.subject,
         html: payload.html,
         text: payload.text,
+        ...(payload.inlineAssets && payload.inlineAssets.length > 0
+          ? {
+              attachments: payload.inlineAssets.map((asset) => ({
+                filename: asset.filename,
+                content: asset.content.toString('base64'),
+                content_type: 'image/png',
+                content_id: asset.contentId,
+              })),
+            }
+          : {}),
       }),
       signal: AbortSignal.timeout(10000),
     });
@@ -198,6 +241,16 @@ async function sendViaSmtp(
       subject: payload.subject,
       html: payload.html,
       text: payload.text,
+      ...(payload.inlineAssets && payload.inlineAssets.length > 0
+        ? {
+            attachments: payload.inlineAssets.map((asset) => ({
+              filename: asset.filename,
+              content: asset.content,
+              contentType: 'image/png',
+              cid: asset.contentId,
+            })),
+          }
+        : {}),
     });
 
     return {
@@ -244,12 +297,17 @@ export async function dispatchTransactionalEmail(
 export async function sendWaitlistConfirmationEmail(
   params: WaitlistEmailParams
 ): Promise<SendEmailResult> {
-  const rendered = renderWaitlistConfirmationEmail(params);
+  const inlineAssets = loadInlineLogoAssets();
+  const rendered = renderWaitlistConfirmationEmail({
+    ...params,
+    useCidImages: inlineAssets.length === 2,
+  });
 
   return dispatchTransactionalEmail({
     to: rendered.copy.email,
     subject: rendered.subject,
     html: rendered.html,
     text: rendered.text,
+    inlineAssets,
   });
 }

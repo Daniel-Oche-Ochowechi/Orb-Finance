@@ -32,7 +32,7 @@ export default function Footer() {
 
             <div className="footer-status-capsule font-mono">
               <span className="footer-status-dot" aria-hidden="true" />
-              <span>LAUNCHING 15 JANUARY 2027</span>
+              <span>LAUNCHING Q2 · 15 APRIL 2027</span>
             </div>
 
             <button

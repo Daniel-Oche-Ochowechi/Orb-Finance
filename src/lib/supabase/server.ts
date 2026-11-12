@@ -48,7 +48,7 @@ const fallbackSubmissions: WaitlistSubmission[] = [
     role: 'Bank',
     reference_id: 'ORB-BAN-8291',
     status: 'approved',
-    notes: 'Institutional liquidity integration requested for Q1 2027.',
+    notes: 'Institutional liquidity integration requested for Q2 2027.',
     ip_address: '102.89.43.12',
     user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
   },
@@ -92,12 +92,20 @@ export async function createWaitlistEntry(params: {
   const supabase = getSupabaseServerClient();
 
   if (supabase) {
-    // 1. Check for existing submission by email
-    const { data: existing } = await supabase
+    const normalizedEmail = params.email.trim().toLowerCase();
+    const cleanFullName = params.fullName.trim();
+
+    // 1. Check for existing submission by normalized email
+    const { data: existing, error: lookupError } = await supabase
       .from('waitlist_submissions')
       .select('*')
-      .ilike('email', params.email.trim())
-      .single();
+      .eq('email', normalizedEmail)
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error('[Supabase Waitlist Lookup Error]:', lookupError);
+      throw new Error(lookupError.message || 'Database lookup failed');
+    }
 
     if (existing) {
       return {
@@ -110,8 +118,8 @@ export async function createWaitlistEntry(params: {
     const { data, error } = await supabase
       .from('waitlist_submissions')
       .insert({
-        full_name: params.fullName.trim(),
-        email: params.email.trim().toLowerCase(),
+        full_name: cleanFullName,
+        email: normalizedEmail,
         role: params.role,
         reference_id: params.referenceId,
         status: 'pending',
@@ -122,6 +130,22 @@ export async function createWaitlistEntry(params: {
       .single();
 
     if (error) {
+      // Gracefully handle concurrent duplicate email inserts via unique index violation (23505)
+      if (error.code === '23505') {
+        const { data: conflictRow } = await supabase
+          .from('waitlist_submissions')
+          .select('*')
+          .eq('email', normalizedEmail)
+          .maybeSingle();
+
+        if (conflictRow) {
+          return {
+            submission: conflictRow as WaitlistSubmission,
+            isDuplicate: true,
+          };
+        }
+      }
+
       console.error('[Supabase Waitlist Insert Error]:', error);
       throw new Error(error.message || 'Database insert failed');
     }
@@ -320,7 +344,7 @@ const fallbackContacts: ContactInquiry[] = [
     company: 'Citadel FX Liquidity',
     category: 'Partnership',
     subject: 'Institutional FX Corridor Integration & Volume Settlement',
-    message: 'We are looking to integrate our institutional liquidity pool with Orb Finance ahead of the 15 January 2027 launch. Can we schedule a partner review call with your treasury team?',
+    message: 'We are looking to integrate our institutional liquidity pool with Orb Finance ahead of the Q2 (15 April 2027) launch. Can we schedule a partner review call with your treasury team?',
     reference_id: 'ORB-INQ-7102',
     status: 'new',
     notes: 'High-priority institutional partner lead. Tier-1 FX provider.',

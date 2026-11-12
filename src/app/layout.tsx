@@ -33,11 +33,11 @@ export const metadata: Metadata = {
     ],
   },
   description:
-    'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
+    'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens Q2 (15 April 2027). Request early access.',
   openGraph: {
     title: 'Orb Finance — Every currency. One orbit.',
     description:
-      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
+      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens Q2 (15 April 2027). Request early access.',
     url: 'https://orbfinance.com',
     siteName: 'Orb Finance',
     locale: 'en_US',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Orb Finance — Every currency. One orbit.',
     description:
-      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027.',
+      'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens Q2 (15 April 2027).',
   },
 };
 

@@ -43,7 +43,7 @@ export default function EarlyAccessTeaser() {
               </h2>
 
               <p className="teaser-lead">
-                Orb Finance opens <strong>15 January 2027</strong>. Join the list and we will write to you before launch with your access details.
+                Orb Finance opens <strong>Q2 (15 April 2027)</strong>. Join the list and we will write to you before launch with your access details.
               </p>
 
               {/* What Early Access Means Deck */}
@@ -79,7 +79,7 @@ export default function EarlyAccessTeaser() {
 
                 <div className="pass-main-block">
                   <span className="pass-label font-mono">LAUNCH DATE</span>
-                  <div className="pass-date-val font-mono">15 January 2027</div>
+                  <div className="pass-date-val font-mono">Q2 · 15 April 2027</div>
                   <p className="pass-note">
                     Early access members receive sandbox credentials and private integration keys before general availability.
                   </p>

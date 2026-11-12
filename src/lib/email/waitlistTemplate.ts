@@ -4,6 +4,7 @@ export interface WaitlistEmailParams {
   role: string;
   referenceId: string;
   launchDate?: string;
+  useCidImages?: boolean;
 }
 
 export interface WaitlistEmailCopy {
@@ -87,7 +88,7 @@ export function buildWaitlistEmailCopy(params: WaitlistEmailParams): WaitlistEma
   const cleanEmail = decodeStoredInput(params.email);
   const cleanRole = decodeStoredInput(params.role) || 'Member';
   const cleanReferenceId = decodeStoredInput(params.referenceId) || 'ORB-REG-0001';
-  const launchDate = params.launchDate?.trim() || '15 January 2027';
+  const launchDate = params.launchDate?.trim() || '15 April 2027 (Q2)';
 
   const firstName = getFirstName(cleanFullName);
   const roleLabel = ROLE_DISPLAY_LABELS[cleanRole] || cleanRole;
@@ -138,10 +139,15 @@ export function renderWaitlistConfirmationEmail(
     "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
 
   const siteBaseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://orbfinance.com'
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    (typeof window !== 'undefined' ? window.location.origin : 'https://orbfinance.co')
   ).replace(/\/+$/, '');
-  const whiteLogoUrl = `${siteBaseUrl}/images/orb-logo-white.png`;
-  const blackLogoUrl = `${siteBaseUrl}/images/orb-logo-black.png`;
+  const whiteLogoUrl = params.useCidImages
+    ? 'cid:orb-logo-white'
+    : `${siteBaseUrl}/images/orb-logo-white.png`;
+  const blackLogoUrl = params.useCidImages
+    ? 'cid:orb-logo-black'
+    : `${siteBaseUrl}/images/orb-logo-black.png`;
 
   const html = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -240,63 +246,75 @@ export function renderWaitlistConfirmationEmail(
                 ${escapedNextSteps}
               </p>
 
-              <!-- Ledger Confirmation Slip -->
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:28px;">
+              <!-- Ledger Confirmation Table -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;margin-bottom:28px;border-collapse:separate;">
                 <tr>
-                  <td class="orb-slip-head" style="padding:12px 20px;background-color:#f1f5f9;border-bottom:1px solid #e2e8f0;">
+                  <td class="orb-slip-head" style="padding:14px 22px;background-color:#0b0d13;background-image:linear-gradient(180deg,#131722 0%,#0b0d13 100%);border-bottom:1px solid #1e293b;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td align="left" style="font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.14em;color:#64748b;text-transform:uppercase;">
+                        <td align="left" valign="middle" style="font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.16em;color:#94a3b8;text-transform:uppercase;">
                           RECORD OF REGISTRATION
                         </td>
-                        <td align="right" style="font-family:${fontMono};font-size:11px;font-weight:600;letter-spacing:0.06em;color:#0b0d13;">
-                          ${safeReferenceId}
+                        <td align="right" valign="middle">
+                          <span style="display:inline-block;padding:4px 10px;background-color:#161c28;border:1px solid #334155;border-radius:5px;font-family:${fontMono};font-size:11px;font-weight:600;letter-spacing:0.08em;color:#f8fafc;">
+                            ${safeReferenceId}
+                          </span>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
-                  <td class="orb-slip-body" style="padding:4px 20px;">
+                  <td class="orb-slip-body" style="padding:2px 22px;background-color:#ffffff;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td class="orb-row-label" width="38%" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;">
+                        <td class="orb-row-label" width="36%" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;">
                           Applicant
                         </td>
-                        <td class="orb-row-val" align="right" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontSans};font-size:13.5px;font-weight:600;color:#0b0d13;">
+                        <td class="orb-row-val" align="right" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontSans};font-size:13.5px;font-weight:600;color:#0b0d13;">
                           ${safeFullName}
                         </td>
                       </tr>
                       <tr>
-                        <td class="orb-row-label" width="38%" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;">
+                        <td class="orb-row-label" width="36%" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;">
                           Email
                         </td>
-                        <td class="orb-row-val" align="right" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontSans};font-size:13.5px;font-weight:500;color:#1e293b;word-break:break-all;">
+                        <td class="orb-row-val" align="right" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontSans};font-size:13.5px;font-weight:500;color:#334155;word-break:break-all;">
                           ${safeEmail}
                         </td>
                       </tr>
                       <tr>
-                        <td class="orb-row-label" width="38%" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;">
+                        <td class="orb-row-label" width="36%" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;">
                           Category
                         </td>
-                        <td class="orb-row-val" align="right" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontSans};font-size:13.5px;font-weight:600;color:#0b0d13;">
-                          ${safeRole}
+                        <td class="orb-row-val" align="right" style="padding:14px 0;border-bottom:1px solid #f1f5f9;font-family:${fontSans};font-size:12.5px;font-weight:600;color:#0f172a;">
+                          <span style="display:inline-block;padding:3px 10px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;color:#0f172a;">
+                            ${safeRole}
+                          </span>
                         </td>
                       </tr>
                       <tr>
-                        <td class="orb-row-label" width="38%" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;">
+                        <td class="orb-row-label" width="36%" style="padding:14px 0;font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;">
                           Opening Date
                         </td>
-                        <td class="orb-row-val" align="right" style="padding:11px 0;border-bottom:1px solid #e2e8f0;font-family:${fontSans};font-size:13.5px;font-weight:600;color:#0b0d13;">
+                        <td class="orb-row-val" align="right" style="padding:14px 0;font-family:${fontSans};font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:#0b0d13;">
                           ${safeLaunchDate}
                         </td>
                       </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="orb-slip-head" style="padding:12px 22px;background-color:#f8fafc;border-top:1px solid #e2e8f0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td class="orb-row-label" width="38%" style="padding:11px 0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;">
+                        <td class="orb-row-label" align="left" valign="middle" style="font-family:${fontMono};font-size:10px;font-weight:600;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;">
                           Status
                         </td>
-                        <td class="orb-row-val" align="right" style="padding:11px 0;font-family:${fontSans};font-size:13.5px;font-weight:600;color:#15803d;">
-                          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background-color:#15803d;vertical-align:middle;margin-right:6px;"></span>Confirmed &middot; Priority Queue
+                        <td class="orb-row-val" align="right" valign="middle">
+                          <span style="display:inline-block;padding:4px 11px;background-color:#ecfdf5;border:1px solid #bbf7d0;border-radius:999px;font-family:${fontSans};font-size:12px;font-weight:600;color:#166534;">
+                            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background-color:#16a34a;vertical-align:middle;margin-right:6px;"></span>Confirmed &middot; Priority Queue
+                          </span>
                         </td>
                       </tr>
                     </table>

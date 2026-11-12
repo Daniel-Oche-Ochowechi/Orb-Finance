@@ -216,7 +216,7 @@ export default function ContactModal() {
             <div className="form-header">
               <div className="header-chips">
                 <span className="tag-direct">DIRECT LINE</span>
-                <span className="tag-date">LAUNCHING 15 JAN 2027</span>
+                <span className="tag-date">LAUNCHING Q2 · 15 APR 2027</span>
               </div>
               <h3 className="modal-heading">Contact Orb Institutional Desk</h3>
               <p className="modal-subheading">
@@ -310,7 +310,7 @@ export default function ContactModal() {
                   rows={4}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Detail your request, estimated transfer corridors, or questions ahead of our January 15, 2027 opening..."
+                  placeholder="Detail your request, estimated transfer corridors, or questions ahead of our Q2 (April 15, 2027) opening..."
                   className="modal-textarea"
                 />
               </div>

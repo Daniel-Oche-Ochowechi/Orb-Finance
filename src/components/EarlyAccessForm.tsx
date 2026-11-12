@@ -122,7 +122,7 @@ export default function EarlyAccessForm() {
             <div className="access-narrative-col">
               <div className="access-status-eyebrow">
                 <span className="amber-glow-dot" />
-                <span>Opening 15 January 2027</span>
+                <span>Opening Q2 (15 April 2027)</span>
               </div>
               
               <h2 className="access-main-title">
@@ -316,7 +316,7 @@ export default function EarlyAccessForm() {
                   </div>
 
                   <div className="success-status-pill">
-                    <Sparkles size={13} className="text-gold" />
+                    <span className="success-status-dot" aria-hidden="true" />
                     <span>EARLY ACCESS CONFIRMED</span>
                   </div>
 
@@ -327,27 +327,32 @@ export default function EarlyAccessForm() {
                   <p className="success-body-message">
                     {isDuplicate ? (
                       <>
-                        Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already confirmed for our launch on <strong>15 January 2027</strong>.
+                        Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already confirmed for our launch on <strong>15 April 2027</strong> (Q2).
                       </>
                     ) : emailSent ? (
                       <>
-                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for <strong>15 January 2027</strong> — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
+                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for <strong>15 April 2027</strong> (Q2) — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
                       </>
                     ) : (
                       <>
-                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for our launch on <strong>15 January 2027</strong>.
+                        Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is confirmed for our launch on <strong>15 April 2027</strong> (Q2).
                       </>
                     )}
                   </p>
 
-                  {/* VIP Access Pass */}
+                  {/* Sterling & Obsidian Credential Pass */}
                   <div className="vip-access-pass">
                     <div className="pass-specular-sheen" aria-hidden="true" />
                     
                     <div className="vip-pass-top">
                       <div className="pass-brand">
-                        <span className="amber-glow-dot" />
-                        <span className="pass-brand-text">Orb Finance</span>
+                        <img
+                          src="/images/orb-logo-white.png"
+                          alt="Orb Finance"
+                          className="pass-brand-logo"
+                        />
+                        <span className="pass-brand-divider" aria-hidden="true" />
+                        <span className="pass-brand-text">PRIORITY REGISTER</span>
                       </div>
                       <div className="pass-tier-badge">
                         <span>{role}</span>
@@ -366,14 +371,20 @@ export default function EarlyAccessForm() {
                       </div>
                       <div className="pass-cell">
                         <span className="cell-label">LAUNCH DATE</span>
-                        <span className="cell-value text-gold">15 January 2027</span>
+                        <span className="cell-value text-gold">Q2 · 15 April 2027</span>
                       </div>
                       <div className="pass-cell">
                         <span className="cell-label">PROTOCOL ACCESS</span>
-                        <span className="cell-value text-emerald flex items-center gap-1">
-                          <ShieldCheck size={14} /> Priority Queue
+                        <span className="pass-status-pill">
+                          <span className="pass-status-dot" aria-hidden="true" />
+                          <span>Priority Queue</span>
                         </span>
                       </div>
+                    </div>
+
+                    <div className="vip-pass-footer">
+                      <span><ShieldCheck size={12} /> ORB SETTLEMENT NETWORK</span>
+                      <span>2027 LAUNCH</span>
                     </div>
                   </div>
 
@@ -834,42 +845,55 @@ export default function EarlyAccessForm() {
 
         .badge-halo {
           position: absolute;
-          inset: -10px;
-          background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
+          inset: -14px;
+          background: radial-gradient(circle, rgba(226, 232, 240, 0.22) 0%, transparent 70%);
           border-radius: 50%;
           filter: blur(10px);
         }
 
         .badge-ring {
           position: relative;
-          width: 68px;
-          height: 68px;
+          width: 64px;
+          height: 64px;
           border-radius: 50%;
-          background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
-          border: 1.5px solid rgba(16, 185, 129, 0.5);
-          box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+          background: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(148, 163, 184, 0.06) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.26);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.32);
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .text-emerald {
-          color: #34d399;
+          color: #f8fafc;
         }
 
         .text-gold {
-          color: #e2e8f0;
+          color: #f8fafc;
         }
 
         .success-status-pill {
           display: inline-flex;
           align-items: center;
-          gap: 0.45rem;
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          color: #cbd5e1;
-          margin-bottom: 0.5rem;
+          gap: 0.48rem;
+          padding: 0.28rem 0.8rem;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.16em;
+          color: #e2e8f0;
+          margin-bottom: 0.7rem;
+        }
+
+        .success-status-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #34d399;
+          box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
         }
 
         .success-statement-title {
@@ -882,20 +906,22 @@ export default function EarlyAccessForm() {
         .success-body-message {
           font-size: 0.98rem;
           line-height: 1.6;
-          color: rgba(255, 255, 255, 0.65);
+          color: rgba(255, 255, 255, 0.68);
           margin-bottom: 1.75rem;
         }
 
-        /* VIP Access Pass */
+        /* Sterling & Obsidian Credential Pass */
         .vip-access-pass {
           width: 100%;
-          background: linear-gradient(145deg, rgba(28, 28, 42, 0.9) 0%, rgba(14, 14, 22, 0.95) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 20px;
-          padding: 1.5rem;
+          background:
+            radial-gradient(ellipse at top right, rgba(226, 232, 240, 0.08) 0%, transparent 55%),
+            linear-gradient(155deg, #151924 0%, #0b0d13 64%, #07090d 100%);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 18px;
+          padding: 0;
           margin-bottom: 1.75rem;
           text-align: left;
-          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          box-shadow: 0 22px 48px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
           position: relative;
           overflow: hidden;
         }
@@ -908,24 +934,40 @@ export default function EarlyAccessForm() {
         }
 
         .vip-pass-top {
+          position: relative;
+          z-index: 1;
           display: flex;
           align-items: center;
           justify-content: space-between;
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding-bottom: 0.85rem;
-          margin-bottom: 1.15rem;
+          background: rgba(255, 255, 255, 0.02);
+          padding: 1rem 1.35rem;
         }
 
         .pass-brand {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.6rem;
+        }
+
+        .pass-brand-logo {
+          height: 17px;
+          width: auto;
+          display: block;
+        }
+
+        .pass-brand-divider {
+          width: 1px;
+          height: 13px;
+          background: rgba(255, 255, 255, 0.16);
         }
 
         .pass-brand-text {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: #ffffff;
+          font-family: var(--font-mono);
+          font-size: 0.58rem;
+          font-weight: 600;
+          letter-spacing: 0.15em;
+          color: rgba(203, 213, 225, 0.78);
         }
 
         .pass-tier-badge {
@@ -935,24 +977,75 @@ export default function EarlyAccessForm() {
         }
 
         .pass-tier-badge span:first-child {
-          font-size: 0.7rem;
+          font-size: 0.68rem;
           font-weight: 600;
-          background: rgba(255, 255, 255, 0.1);
-          padding: 0.2rem 0.55rem;
+          background: rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(255, 255, 255, 0.13);
+          padding: 0.2rem 0.6rem;
           border-radius: 9999px;
-          color: #ffffff;
+          color: #f8fafc;
         }
 
         .pass-code-mono {
-          font-family: monospace;
+          font-family: var(--font-mono);
           font-size: 0.65rem;
-          color: rgba(255, 255, 255, 0.45);
+          font-weight: 600;
+          color: #e2e8f0;
+          padding: 0.2rem 0.5rem;
+          border-radius: 6px;
+          background: rgba(0, 0, 0, 0.35);
+          border: 1px solid rgba(255, 255, 255, 0.09);
         }
 
         .vip-pass-grid {
+          position: relative;
+          z-index: 1;
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 1.15rem;
+          padding: 1.25rem 1.35rem;
+        }
+
+        .pass-status-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.42rem;
+          align-self: flex-start;
+          padding: 0.2rem 0.6rem;
+          border-radius: 9999px;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(52, 211, 153, 0.26);
+          font-size: 0.76rem;
+          font-weight: 600;
+          color: #6ee7b7;
+        }
+
+        .pass-status-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #34d399;
+        }
+
+        .vip-pass-footer {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.68rem 1.35rem;
+          background: rgba(255, 255, 255, 0.025);
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
+          font-family: var(--font-mono);
+          font-size: 0.56rem;
+          letter-spacing: 0.11em;
+          color: rgba(148, 163, 184, 0.68);
+        }
+
+        .vip-pass-footer span:first-child {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.38rem;
         }
 
         .pass-cell {

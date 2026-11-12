@@ -207,7 +207,7 @@ export default function EarlyAccessModal() {
             <div className="apple-narrative-panel">
               <div className="apple-status-eyebrow">
                 <span className="apple-amber-dot" />
-                <span className="apple-status-text">Opening 15 January 2027</span>
+                <span className="apple-status-text">Opening Q2 (15 April 2027)</span>
               </div>
 
               <h2 id="apple-modal-title" className="apple-headline">
@@ -410,16 +410,17 @@ export default function EarlyAccessModal() {
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="apple-success-view">
-            {/* Pulsing Glowing Checkmark Badge */}
+            {/* Orbital Sterling Confirmation Seal */}
             <div className="apple-pass-icon-badge">
+              <div className="badge-orbit-halo" aria-hidden="true" />
               <div className="badge-pulse-glow" aria-hidden="true" />
               <div className="apple-check-ring">
-                <Check size={28} strokeWidth={3} className="check-icon-svg" />
+                <Check size={24} strokeWidth={2.5} className="check-icon-svg" />
               </div>
             </div>
 
             <div className="success-eyebrow">
-              <Sparkles size={13} className="sparkle-gold" />
+              <span className="success-eyebrow-dot" aria-hidden="true" />
               <span>EARLY ACCESS CONFIRMED</span>
             </div>
 
@@ -430,28 +431,33 @@ export default function EarlyAccessModal() {
             <p className="apple-success-sub">
               {isDuplicate ? (
                 <>
-                  Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already locked for our launch on <strong>15 January 2027</strong>.
+                  Welcome back, <strong className="text-white">{fullName}</strong>. Your reservation for <strong className="text-white">{email}</strong> is already locked for our launch on <strong>15 April 2027</strong> (Q2).
                 </>
               ) : emailSent ? (
                 <>
-                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for <strong>15 January 2027</strong> — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
+                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for <strong>15 April 2027</strong> (Q2) — we have sent a confirmation directly to <strong className="text-white">{email}</strong>.
                 </>
               ) : (
                 <>
-                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for our launch on <strong>15 January 2027</strong>.
+                  Thank you, <strong className="text-white">{fullName}</strong>. Your reservation is locked for our launch on <strong>15 April 2027</strong> (Q2).
                 </>
               )}
             </p>
 
-            {/* Luxury VIP Orbit Protocol Access Pass */}
+            {/* Classy Obsidian & Sterling Silver Priority Credential */}
             <div className="apple-wallet-pass">
               <div className="pass-specular-glare" aria-hidden="true" />
               <div className="pass-watermark-orb" aria-hidden="true" />
               
               <div className="wallet-pass-header">
                 <div className="wallet-brand">
-                  <span className="wallet-brand-symbol" />
-                  <span className="wallet-brand-name">Orb Finance</span>
+                  <img
+                    src="/images/orb-logo-white.png"
+                    alt="Orb Finance"
+                    className="wallet-brand-logo"
+                  />
+                  <span className="wallet-brand-divider" aria-hidden="true" />
+                  <span className="wallet-brand-register">PRIORITY REGISTER</span>
                 </div>
                 <div className="wallet-pass-badge-wrap">
                   <span className="wallet-pass-tier">{role}</span>
@@ -466,18 +472,26 @@ export default function EarlyAccessModal() {
                 </div>
                 <div className="wallet-info-item">
                   <span className="wallet-label">REGISTERED EMAIL</span>
-                  <span className="wallet-value truncate">{email}</span>
+                  <span className="wallet-value truncate wallet-value-muted">{email}</span>
                 </div>
                 <div className="wallet-info-item">
                   <span className="wallet-label">LAUNCH DATE</span>
-                  <span className="wallet-value text-gold">15 January 2027</span>
+                  <span className="wallet-value text-silver">Q2 · 15 April 2027</span>
                 </div>
                 <div className="wallet-info-item">
                   <span className="wallet-label">PROTOCOL ACCESS</span>
-                  <span className="wallet-value text-emerald flex items-center gap-1">
-                    <ShieldCheck size={14} /> Priority Queue
+                  <span className="wallet-status-chip">
+                    <span className="wallet-status-dot" aria-hidden="true" />
+                    <span>Priority Queue</span>
                   </span>
                 </div>
+              </div>
+
+              <div className="wallet-pass-footer">
+                <span className="wallet-pass-foot-text">
+                  <ShieldCheck size={12} /> ORB SETTLEMENT NETWORK • PRIVATE CREDENTIAL
+                </span>
+                <span className="wallet-pass-foot-tier">2027 LAUNCH</span>
               </div>
             </div>
 
@@ -1014,9 +1028,9 @@ export default function EarlyAccessModal() {
           display: none;
         }
 
-        /* Modern, Classy Success View */
+        /* Modern, Classy Obsidian & Sterling Confirmation View */
         .apple-success-view {
-          padding: 4.2rem 3.8rem 4rem 3.8rem;
+          padding: 3.6rem 3.4rem 3.4rem 3.4rem;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -1028,26 +1042,38 @@ export default function EarlyAccessModal() {
 
         .apple-pass-icon-badge {
           position: relative;
-          margin-bottom: 1.25rem;
+          margin-bottom: 1.35rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .badge-orbit-halo {
+          position: absolute;
+          inset: -11px;
+          border-radius: 50%;
+          border: 1px solid rgba(226, 232, 240, 0.14);
+          background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 72%);
+          pointer-events: none;
         }
 
         .badge-pulse-glow {
           position: absolute;
-          inset: -14px;
-          background: radial-gradient(circle, rgba(16, 185, 129, 0.38) 0%, transparent 70%);
+          inset: -16px;
+          background: radial-gradient(circle, rgba(226, 232, 240, 0.24) 0%, transparent 68%);
           border-radius: 50%;
           filter: blur(12px);
-          animation: pulseGlow 2.5s infinite ease-in-out;
+          animation: pulseGlow 3.2s infinite ease-in-out;
         }
 
         .apple-check-ring {
           position: relative;
-          width: 74px;
-          height: 74px;
+          width: 66px;
+          height: 66px;
           border-radius: 50%;
-          background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.12) 100%);
-          border: 1.5px solid rgba(16, 185, 129, 0.55);
-          box-shadow: 0 0 25px rgba(16, 185, 129, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+          background: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(148, 163, 184, 0.06) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1055,53 +1081,66 @@ export default function EarlyAccessModal() {
         }
 
         :global(.check-icon-svg) {
-          color: #34d399;
-          filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.6));
+          color: #f8fafc;
+          filter: drop-shadow(0 0 10px rgba(226, 232, 240, 0.45));
         }
 
         .success-eyebrow {
           display: inline-flex;
           align-items: center;
-          gap: 0.45rem;
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          color: #cbd5e1;
-          margin-bottom: 0.6rem;
+          gap: 0.5rem;
+          padding: 0.3rem 0.85rem;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          color: #e2e8f0;
+          margin-bottom: 0.9rem;
         }
 
-        :global(.sparkle-gold) {
-          color: #e2e8f0;
+        .success-eyebrow-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #34d399;
+          box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
         }
 
         .apple-success-title {
-          font-size: 2.45rem;
-          font-weight: 700;
-          letter-spacing: -0.03em;
-          margin-bottom: 0.65rem;
+          font-size: 2.55rem;
+          font-weight: 600;
+          letter-spacing: -0.035em;
+          line-height: 1.1;
+          color: #ffffff;
+          margin-bottom: 0.7rem;
         }
 
         .apple-success-sub {
-          font-size: 1.02rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.68);
-          max-width: 520px;
+          font-size: 0.98rem;
+          line-height: 1.65;
+          color: rgba(226, 232, 240, 0.72);
+          max-width: 500px;
           margin-bottom: 2rem;
         }
 
-        /* Luxury Access Pass Card */
+        /* Signature Obsidian & Sterling Credential Card */
         .apple-wallet-pass {
           width: 100%;
-          max-width: 550px;
-          background: linear-gradient(155deg, #171a26 0%, #0d0f16 100%);
+          max-width: 560px;
+          background:
+            radial-gradient(ellipse at top right, rgba(226, 232, 240, 0.09) 0%, transparent 55%),
+            linear-gradient(155deg, #151924 0%, #0b0d13 62%, #07090d 100%);
           border: 1px solid rgba(255, 255, 255, 0.14);
-          border-radius: 24px;
-          padding: 1.75rem;
-          margin-bottom: 2.2rem;
+          border-radius: 20px;
+          padding: 0;
+          margin-bottom: 2rem;
           text-align: left;
-          box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6),
-                      0 0 0 1px rgba(226, 232, 240, 0.14),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+          box-shadow:
+            0 28px 64px rgba(0, 0, 0, 0.68),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
           position: relative;
           overflow: hidden;
           animation: passSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
@@ -1109,117 +1148,188 @@ export default function EarlyAccessModal() {
 
         .pass-specular-glare {
           position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
+          top: -60%;
+          left: -40%;
+          width: 180%;
+          height: 220%;
           background: linear-gradient(
             45deg,
-            transparent 45%,
-            rgba(255, 255, 255, 0.06) 50%,
-            transparent 55%
+            transparent 44%,
+            rgba(255, 255, 255, 0.045) 50%,
+            transparent 56%
           );
           pointer-events: none;
         }
 
         .pass-watermark-orb {
           position: absolute;
-          right: -25px;
-          bottom: -35px;
-          width: 180px;
-          height: 180px;
+          right: -40px;
+          bottom: -48px;
+          width: 210px;
+          height: 210px;
           border-radius: 50%;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          background: radial-gradient(circle, rgba(226, 232, 240, 0.08) 0%, transparent 70%);
+          border: 1px solid rgba(255, 255, 255, 0.055);
+          background: radial-gradient(circle, rgba(226, 232, 240, 0.07) 0%, transparent 70%);
           pointer-events: none;
         }
 
         .wallet-pass-header {
+          position: relative;
+          z-index: 1;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-          padding-bottom: 0.95rem;
-          margin-bottom: 1.25rem;
+          padding: 1.2rem 1.55rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.02);
         }
 
         .wallet-brand {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.7rem;
         }
 
-        .wallet-brand-symbol {
-          width: 9px;
-          height: 9px;
-          border-radius: 50%;
-          background: #cbd5e1;
-          box-shadow: 0 0 10px #cbd5e1;
+        .wallet-brand-logo {
+          height: 19px;
+          width: auto;
+          display: block;
+          opacity: 0.96;
         }
 
-        .wallet-brand-name {
-          font-size: 0.92rem;
-          font-weight: 700;
-          letter-spacing: 0.02em;
-          color: #ffffff;
+        .wallet-brand-divider {
+          width: 1px;
+          height: 14px;
+          background: rgba(255, 255, 255, 0.16);
+        }
+
+        .wallet-brand-register {
+          font-family: var(--font-mono);
+          font-size: 0.6rem;
+          font-weight: 600;
+          letter-spacing: 0.16em;
+          color: rgba(203, 213, 225, 0.75);
         }
 
         .wallet-pass-badge-wrap {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.55rem;
         }
 
         .wallet-pass-tier {
-          font-size: 0.72rem;
+          font-size: 0.68rem;
           font-weight: 600;
-          background: rgba(255, 255, 255, 0.1);
-          padding: 0.25rem 0.65rem;
+          background: rgba(255, 255, 255, 0.07);
+          padding: 0.24rem 0.65rem;
           border-radius: 9999px;
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #f1f5f9;
+          border: 1px solid rgba(255, 255, 255, 0.14);
         }
 
         .wallet-pass-code {
-          font-family: monospace;
+          font-family: var(--font-mono);
           font-size: 0.68rem;
-          color: rgba(255, 255, 255, 0.5);
-          letter-spacing: 0.05em;
+          font-weight: 600;
+          color: #e2e8f0;
+          letter-spacing: 0.06em;
+          padding: 0.24rem 0.55rem;
+          border-radius: 6px;
+          background: rgba(0, 0, 0, 0.35);
+          border: 1px solid rgba(255, 255, 255, 0.09);
         }
 
         .wallet-pass-body {
+          position: relative;
+          z-index: 1;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 1.25rem;
+          gap: 1.2rem 1.5rem;
+          padding: 1.45rem 1.55rem;
         }
 
         .wallet-info-item {
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
+          gap: 0.3rem;
           min-width: 0;
         }
 
         .wallet-label {
-          font-size: 0.64rem;
+          font-family: var(--font-mono);
+          font-size: 0.6rem;
           font-weight: 600;
-          color: rgba(255, 255, 255, 0.42);
-          letter-spacing: 0.06em;
+          color: rgba(148, 163, 184, 0.72);
+          letter-spacing: 0.12em;
         }
 
         .wallet-value {
-          font-size: 0.95rem;
+          font-size: 0.94rem;
           font-weight: 600;
           color: #ffffff;
           word-break: break-word;
         }
 
-        .text-gold {
-          color: #e2e8f0;
+        .wallet-value-muted {
+          color: #cbd5e1;
+          font-weight: 500;
         }
 
-        .text-emerald {
-          color: #34d399;
+        .text-silver {
+          color: #f8fafc;
+          letter-spacing: -0.01em;
+        }
+
+        .wallet-status-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          align-self: flex-start;
+          padding: 0.24rem 0.65rem;
+          border-radius: 9999px;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(52, 211, 153, 0.26);
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: #6ee7b7;
+        }
+
+        .wallet-status-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #34d399;
+          box-shadow: 0 0 8px rgba(52, 211, 153, 0.65);
+        }
+
+        .wallet-pass-footer {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          padding: 0.75rem 1.55rem;
+          background: rgba(255, 255, 255, 0.025);
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .wallet-pass-foot-text {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-family: var(--font-mono);
+          font-size: 0.58rem;
+          letter-spacing: 0.1em;
+          color: rgba(148, 163, 184, 0.68);
+        }
+
+        .wallet-pass-foot-tier {
+          font-family: var(--font-mono);
+          font-size: 0.58rem;
+          font-weight: 600;
+          letter-spacing: 0.14em;
+          color: rgba(226, 232, 240, 0.68);
         }
 
         .apple-success-actions {
@@ -1460,17 +1570,15 @@ export default function EarlyAccessModal() {
           }
 
           .apple-wallet-pass {
-            padding: 1.35rem;
-            border-radius: 18px;
+            border-radius: 16px;
             margin-bottom: 1.5rem;
           }
 
           .wallet-pass-header {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.5rem;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 0.65rem;
+            padding: 1rem 1.15rem;
           }
 
           .wallet-pass-badge-wrap {
@@ -1480,7 +1588,15 @@ export default function EarlyAccessModal() {
 
           .wallet-pass-body {
             grid-template-columns: 1fr;
-            gap: 0.75rem;
+            gap: 0.85rem;
+            padding: 1.15rem;
+          }
+
+          .wallet-pass-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+            padding: 0.7rem 1.15rem;
           }
 
           .apple-success-actions {

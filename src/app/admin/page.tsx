@@ -382,7 +382,7 @@ export default function AdminDashboardPage() {
               ORB FINANCE <span className="admin-badge-gold">VAULT</span>
             </h1>
             <p className="admin-subtitle">
-              Administrative Control Terminal • 15 January 2027
+              Administrative Control Terminal • Q2 (15 April 2027)
             </p>
           </div>
 
@@ -1171,7 +1171,7 @@ export default function AdminDashboardPage() {
               <div>
                 <div className="telemetry-badge-row">
                   <span className="banner-tag">SYSTEM READINESS</span>
-                  <span className="banner-date">OPENING 15 JANUARY 2027</span>
+                  <span className="banner-date">OPENING Q2 · 15 APRIL 2027</span>
                 </div>
                 <h3 className="banner-title">Platform Ingestion & Inquiries Pipeline</h3>
                 <p className="banner-desc">
@@ -1546,22 +1546,29 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="sql-code-box">
-              <pre>{`-- 1. WAITLIST SUBMISSIONS TABLE
+              <pre>{`-- 1. WAITLIST SUBMISSIONS & EMAIL UNIQUENESS
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE IF NOT EXISTS public.waitlist_submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   role TEXT NOT NULL,
   reference_id TEXT NOT NULL UNIQUE,
-  status TEXT NOT NULL DEFAULT 'pending',
+  status waitlist_status NOT NULL DEFAULT 'pending',
   notes TEXT
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_waitlist_submissions_email_lower
+ON public.waitlist_submissions (LOWER(email));
 
 -- 2. CONTACT INQUIRIES TABLE
 CREATE TABLE IF NOT EXISTS public.contact_inquiries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   company TEXT,
@@ -1569,18 +1576,29 @@ CREATE TABLE IF NOT EXISTS public.contact_inquiries (
   subject TEXT NOT NULL,
   message TEXT NOT NULL,
   reference_id TEXT NOT NULL UNIQUE,
-  status TEXT NOT NULL DEFAULT 'new',
+  status contact_status NOT NULL DEFAULT 'new',
   notes TEXT
 );
 
--- 3. ENABLE ROW LEVEL SECURITY
+-- 3. IDEMPOTENT ROW LEVEL SECURITY POLICIES
 ALTER TABLE public.waitlist_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_inquiries ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public insert waitlist" ON public.waitlist_submissions FOR INSERT TO anon, authenticated WITH CHECK (true);
-CREATE POLICY "Public insert contact" ON public.contact_inquiries FOR INSERT TO anon, authenticated WITH CHECK (true);
-CREATE POLICY "Admin full waitlist" ON public.waitlist_submissions FOR ALL TO service_role USING (true);
-CREATE POLICY "Admin full contact" ON public.contact_inquiries FOR ALL TO service_role USING (true);`}</pre>
+DROP POLICY IF EXISTS "Allow public insert to waitlist" ON public.waitlist_submissions;
+CREATE POLICY "Allow public insert to waitlist" ON public.waitlist_submissions
+FOR INSERT TO anon, authenticated WITH CHECK (length(trim(full_name)) >= 2 AND length(trim(email)) >= 5);
+
+DROP POLICY IF EXISTS "Allow service role full access to waitlist" ON public.waitlist_submissions;
+CREATE POLICY "Allow service role full access to waitlist" ON public.waitlist_submissions
+FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public insert to contact_inquiries" ON public.contact_inquiries;
+CREATE POLICY "Allow public insert to contact_inquiries" ON public.contact_inquiries
+FOR INSERT TO anon, authenticated WITH CHECK (length(trim(full_name)) >= 2 AND length(trim(email)) >= 5);
+
+DROP POLICY IF EXISTS "Allow service role full access to contact_inquiries" ON public.contact_inquiries;
+CREATE POLICY "Allow service role full access to contact_inquiries" ON public.contact_inquiries
+FOR ALL TO service_role USING (true) WITH CHECK (true);`}</pre>
             </div>
 
             <div className="sql-modal-footer">

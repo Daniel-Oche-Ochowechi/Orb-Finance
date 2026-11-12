@@ -2,7 +2,10 @@
 -- Orb Finance: Supabase Database Schema
 -- ==============================================================================
 -- Run this script in the Supabase SQL Editor (Dashboard -> SQL Editor -> New query)
+-- Safe to run multiple times (idempotent).
 -- ==============================================================================
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Create Custom Enum for Submission Status
 DO $$ 
@@ -47,12 +50,15 @@ ON public.waitlist_submissions (reference_id);
 
 -- Auto-update updated_at timestamp trigger
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
   NEW.updated_at = timezone('utc'::text, now());
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 DROP TRIGGER IF EXISTS set_waitlist_updated_at ON public.waitlist_submissions;
 CREATE TRIGGER set_waitlist_updated_at
@@ -67,6 +73,7 @@ EXECUTE FUNCTION public.handle_updated_at();
 ALTER TABLE public.waitlist_submissions ENABLE ROW LEVEL SECURITY;
 
 -- 1. Allow public anon key to INSERT valid submissions only
+DROP POLICY IF EXISTS "Allow public insert to waitlist" ON public.waitlist_submissions;
 CREATE POLICY "Allow public insert to waitlist"
 ON public.waitlist_submissions
 FOR INSERT
@@ -79,6 +86,7 @@ WITH CHECK (
 
 -- 2. Restrict SELECT, UPDATE, DELETE to Service Role (Admin backend only)
 -- Public clients cannot read or modify other users' submissions
+DROP POLICY IF EXISTS "Allow service role full access to waitlist" ON public.waitlist_submissions;
 CREATE POLICY "Allow service role full access to waitlist"
 ON public.waitlist_submissions
 FOR ALL
@@ -89,7 +97,8 @@ WITH CHECK (true);
 -- ==============================================================================
 -- Helpful Admin Summary View
 -- ==============================================================================
-CREATE OR REPLACE VIEW public.waitlist_metrics_summary AS
+CREATE OR REPLACE VIEW public.waitlist_metrics_summary
+WITH (security_invoker = true) AS
 SELECT
   count(*)::integer AS total_submissions,
   count(*) FILTER (WHERE role = 'Bank')::integer AS banks_count,
@@ -159,6 +168,7 @@ EXECUTE FUNCTION public.handle_updated_at();
 ALTER TABLE public.contact_inquiries ENABLE ROW LEVEL SECURITY;
 
 -- 1. Allow public anon key to INSERT inquiries only
+DROP POLICY IF EXISTS "Allow public insert to contact_inquiries" ON public.contact_inquiries;
 CREATE POLICY "Allow public insert to contact_inquiries"
 ON public.contact_inquiries
 FOR INSERT
@@ -170,6 +180,7 @@ WITH CHECK (
 );
 
 -- 2. Restrict SELECT, UPDATE, DELETE to Service Role (Admin backend only)
+DROP POLICY IF EXISTS "Allow service role full access to contact_inquiries" ON public.contact_inquiries;
 CREATE POLICY "Allow service role full access to contact_inquiries"
 ON public.contact_inquiries
 FOR ALL
@@ -178,7 +189,8 @@ USING (true)
 WITH CHECK (true);
 
 -- Helpful Contact Metrics Summary View
-CREATE OR REPLACE VIEW public.contact_metrics_summary AS
+CREATE OR REPLACE VIEW public.contact_metrics_summary
+WITH (security_invoker = true) AS
 SELECT
   count(*)::integer AS total_inquiries,
   count(*) FILTER (WHERE status = 'new')::integer AS new_count,
@@ -190,3 +202,9 @@ SELECT
   count(*) FILTER (WHERE category = 'Integration Support')::integer AS integration_count,
   count(*) FILTER (WHERE created_at >= (now() - INTERVAL '24 hours'))::integer AS last_24h_count
 FROM public.contact_inquiries;
+
+-- Explicit Schema & Table Permissions
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT INSERT ON public.waitlist_submissions, public.contact_inquiries TO anon, authenticated;
+GRANT ALL ON public.waitlist_submissions, public.contact_inquiries TO service_role;
+GRANT SELECT ON public.waitlist_metrics_summary, public.contact_metrics_summary TO service_role;

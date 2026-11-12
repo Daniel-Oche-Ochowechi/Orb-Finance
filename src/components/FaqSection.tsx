@@ -7,7 +7,7 @@ const FAQ_ITEMS = [
   {
     num: '01',
     q: 'When does Orb Finance launch?',
-    a: 'On 15 January 2027. Early access members hear from us first.',
+    a: 'In Q2 (15 April 2027). Early access members hear from us first.',
   },
   {
     num: '02',
