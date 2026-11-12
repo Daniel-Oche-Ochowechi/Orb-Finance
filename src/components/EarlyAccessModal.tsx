@@ -145,26 +145,36 @@ export default function EarlyAccessModal() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="apple-modal-scrim"
-            onClick={closeEarlyAccess}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 3000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div
-              className="apple-sheet-card"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="apple-modal-title"
-              initial={{ opacity: 0, y: 24, scale: 0.965 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.965 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
-            >
-              {/* Confetti Celebration on Confirmation */}
-              {isSuccess && <ClassyConfetti duration={4800} />}
+            <div className="apple-modal-scrim" onClick={closeEarlyAccess}>
+              <motion.div
+                style={{ width: '100%', maxWidth: '940px' }}
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, y: 24, scale: 0.965 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.965 }}
+                transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
+              >
+                <div
+                  className="apple-sheet-card"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="apple-modal-title"
+                >
+                  {/* Confetti Celebration on Confirmation */}
+                  {isSuccess && <ClassyConfetti duration={4800} />}
 
               {/* Mobile Pull Handle Indicator */}
               <div className="mobile-handle-bar" aria-hidden="true" />
@@ -187,12 +197,12 @@ export default function EarlyAccessModal() {
                 {!isSuccess ? (
                   <motion.div
                     key="early-access-form"
-                    className="apple-sheet-layout"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                   >
+                    <div className="apple-sheet-layout">
             {/* Left Narrative Column */}
             <div className="apple-narrative-panel">
               <div className="apple-status-eyebrow">
@@ -388,17 +398,18 @@ export default function EarlyAccessModal() {
                 </div>
               </form>
             </div>
+                    </div>
           </motion.div>
         ) : (
           /* Modern, Classy, Smooth Confirmation Popup */
           <motion.div
             key="early-access-success"
-            className="apple-success-view"
             initial={{ opacity: 0, y: 10, scale: 0.985 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.985 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           >
+            <div className="apple-success-view">
             {/* Pulsing Glowing Checkmark Badge */}
             <div className="apple-pass-icon-badge">
               <div className="badge-pulse-glow" aria-hidden="true" />
@@ -486,11 +497,14 @@ export default function EarlyAccessModal() {
                 <span>Submit another inquiry</span>
               </button>
             </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
-  </motion.div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -509,10 +523,10 @@ export default function EarlyAccessModal() {
         .apple-modal-scrim {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.76);
-          backdrop-filter: blur(22px) saturate(165%);
-          -webkit-backdrop-filter: blur(22px) saturate(165%);
-          z-index: 100;
+          background: rgba(5, 6, 9, 0.84);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          z-index: 3000;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -521,50 +535,21 @@ export default function EarlyAccessModal() {
 
         .apple-sheet-card {
           position: relative;
-          background: linear-gradient(165deg, rgba(22, 22, 34, 0.96) 0%, rgba(11, 11, 18, 0.98) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.13);
-          border-radius: 30px;
+          background: linear-gradient(165deg, #131621 0%, #0b0d12 100%);
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          border-radius: 28px;
           max-width: 940px;
           width: 100%;
-          box-shadow: 0 40px 100px -15px rgba(0, 0, 0, 0.9), 
-                      0 0 0 1px rgba(255, 255, 255, 0.08), 
-                      inset 0 1px 1px rgba(255, 255, 255, 0.25),
-                      inset 0 0 40px rgba(255, 255, 255, 0.015);
+          box-shadow: 0 32px 72px rgba(0, 0, 0, 0.88), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           overflow: hidden;
-          will-change: transform, opacity;
         }
 
         .apple-specular-top-light {
-          position: absolute;
-          top: -30%;
-          right: 10%;
-          width: 520px;
-          height: 520px;
-          background: radial-gradient(
-            circle,
-            rgba(192, 132, 252, 0.18) 0%,
-            rgba(245, 158, 11, 0.09) 40%,
-            transparent 70%
-          );
-          filter: blur(75px);
-          pointer-events: none;
-          z-index: 1;
+          display: none;
         }
 
         .apple-specular-bottom-light {
-          position: absolute;
-          bottom: -30%;
-          left: 5%;
-          width: 450px;
-          height: 450px;
-          background: radial-gradient(
-            circle,
-            rgba(124, 58, 237, 0.12) 0%,
-            transparent 70%
-          );
-          filter: blur(80px);
-          pointer-events: none;
-          z-index: 1;
+          display: none;
         }
 
         .apple-dismiss-btn {
@@ -575,13 +560,13 @@ export default function EarlyAccessModal() {
           height: 36px;
           border-radius: 50%;
           background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: rgba(255, 255, 255, 0.55);
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          color: rgba(255, 255, 255, 0.65);
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.22s ease;
           z-index: 10;
         }
 
@@ -622,8 +607,8 @@ export default function EarlyAccessModal() {
           color: rgba(255, 255, 255, 0.75);
           margin-bottom: 1.35rem;
           letter-spacing: 0.02em;
-          background: rgba(245, 158, 11, 0.08);
-          border: 1px solid rgba(245, 158, 11, 0.2);
+          background: rgba(226, 232, 240, 0.08);
+          border: 1px solid rgba(226, 232, 240, 0.2);
           padding: 0.3rem 0.75rem 0.3rem 0.65rem;
           border-radius: 9999px;
           width: fit-content;
@@ -633,8 +618,8 @@ export default function EarlyAccessModal() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 10px #f59e0b;
+          background: #cbd5e1;
+          box-shadow: 0 0 10px #cbd5e1;
           animation: pulseDot 2s infinite ease-in-out;
         }
 
@@ -652,8 +637,11 @@ export default function EarlyAccessModal() {
         }
 
         .apple-gradient-text {
-          background: linear-gradient(135deg, #ffffff 20%, #c084fc 65%, #fbbf24 100%);
+          position: relative;
+          z-index: 1;
+          background: linear-gradient(180deg, #ffffff 8%, #cbd5e1 64%, #94a3b8 100%);
           -webkit-background-clip: text;
+          background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
@@ -710,9 +698,9 @@ export default function EarlyAccessModal() {
         .privilege-num {
           font-size: 0.68rem;
           font-weight: 700;
-          color: #f59e0b;
-          background: rgba(245, 158, 11, 0.1);
-          border: 1px solid rgba(245, 158, 11, 0.22);
+          color: #cbd5e1;
+          background: rgba(226, 232, 240, 0.1);
+          border: 1px solid rgba(226, 232, 240, 0.22);
           border-radius: 6px;
           padding: 0.15rem 0.4rem;
           line-height: 1;
@@ -817,13 +805,13 @@ export default function EarlyAccessModal() {
         }
 
         .apple-field-wrap:focus-within :global(.apple-field-icon) {
-          color: #f59e0b;
+          color: #cbd5e1;
         }
 
         .apple-input-field:focus {
           background: rgba(255, 255, 255, 0.075);
-          border-color: rgba(245, 158, 11, 0.6);
-          box-shadow: 0 0 0 3.5px rgba(245, 158, 11, 0.16);
+          border-color: rgba(226, 232, 240, 0.6);
+          box-shadow: 0 0 0 3.5px rgba(226, 232, 240, 0.16);
         }
 
         .apple-input-field.apple-field-error {
@@ -921,7 +909,7 @@ export default function EarlyAccessModal() {
         }
 
         :global(.apple-check-glyph) {
-          color: #f59e0b;
+          color: #cbd5e1;
           animation: checkPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -999,8 +987,8 @@ export default function EarlyAccessModal() {
         .apple-primary-cta:hover .apple-cta-arrow {
           transform: translateX(3px) scale(1.04);
           background: #141420;
-          border-color: rgba(245, 158, 11, 0.45);
-          color: #f59e0b;
+          border-color: rgba(226, 232, 240, 0.45);
+          color: #cbd5e1;
         }
 
         .apple-spinner-wrap {
@@ -1078,12 +1066,12 @@ export default function EarlyAccessModal() {
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.12em;
-          color: #f59e0b;
+          color: #cbd5e1;
           margin-bottom: 0.6rem;
         }
 
         :global(.sparkle-gold) {
-          color: #fbbf24;
+          color: #e2e8f0;
         }
 
         .apple-success-title {
@@ -1101,19 +1089,19 @@ export default function EarlyAccessModal() {
           margin-bottom: 2rem;
         }
 
-        /* Apple Wallet Access Pass Card */
+        /* Luxury Access Pass Card */
         .apple-wallet-pass {
           width: 100%;
           max-width: 550px;
-          background: linear-gradient(145deg, rgba(32, 32, 48, 0.92) 0%, rgba(16, 16, 26, 0.96) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          border-radius: 22px;
+          background: linear-gradient(155deg, #171a26 0%, #0d0f16 100%);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 24px;
           padding: 1.75rem;
           margin-bottom: 2.2rem;
           text-align: left;
-          box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6), 
-                      0 0 0 1px rgba(192, 132, 252, 0.18),
-                      inset 0 1px 1px rgba(255, 255, 255, 0.28);
+          box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6),
+                      0 0 0 1px rgba(226, 232, 240, 0.14),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.12);
           position: relative;
           overflow: hidden;
           animation: passSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
@@ -1141,8 +1129,8 @@ export default function EarlyAccessModal() {
           width: 180px;
           height: 180px;
           border-radius: 50%;
-          border: 1px solid rgba(255, 255, 255, 0.04);
-          background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: radial-gradient(circle, rgba(226, 232, 240, 0.08) 0%, transparent 70%);
           pointer-events: none;
         }
 
@@ -1165,8 +1153,8 @@ export default function EarlyAccessModal() {
           width: 9px;
           height: 9px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 10px #f59e0b;
+          background: #cbd5e1;
+          box-shadow: 0 0 10px #cbd5e1;
         }
 
         .wallet-brand-name {
@@ -1227,7 +1215,7 @@ export default function EarlyAccessModal() {
         }
 
         .text-gold {
-          color: #fbbf24;
+          color: #e2e8f0;
         }
 
         .text-emerald {

@@ -9,8 +9,15 @@ export default function ClosingCta() {
 
   return (
     <section className="closing-cta-root" id="closing-cta">
-      {/* Aurora Radial Halo */}
-      <div className="closing-aura-glow" aria-hidden="true" />
+      {/* Third Orbital Earth Background Image */}
+      <div className="closing-bg-media" aria-hidden="true">
+        <img
+          src="/images/orb-orbital-earth.jpg"
+          alt=""
+          className="closing-bg-img"
+        />
+        <div className="closing-bg-scrim" />
+      </div>
 
       <div className="container text-center">
         <div className="closing-badge-row font-mono">
@@ -50,34 +57,42 @@ export default function ClosingCta() {
 
       <style jsx>{`
         .closing-cta-root {
-          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0 clamp(5.5rem, 9.5vw, 9.5rem) 0;
+          padding: clamp(5.5rem, 10vw, 10rem) 0 clamp(6rem, 10.5vw, 10.5rem) 0;
           position: relative;
           overflow: hidden;
           z-index: 2;
         }
 
-        .closing-aura-glow {
+        .closing-bg-media {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 900px;
-          height: 520px;
-          background: radial-gradient(
-            circle,
-            rgba(139, 92, 246, 0.25) 0%,
-            rgba(245, 158, 11, 0.14) 45%,
-            transparent 72%
-          );
-          filter: blur(85px);
-          pointer-events: none;
+          inset: 0;
           z-index: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .closing-bg-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center 46%;
+          opacity: 0.68;
+          filter: saturate(0.95) contrast(1.06);
+          transform: scale(1.02);
+        }
+
+        .closing-bg-scrim {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(ellipse 65% 65% at 50% 48%, rgba(7, 8, 11, 0.58) 0%, rgba(7, 8, 11, 0.36) 55%, rgba(7, 8, 11, 0.85) 100%),
+            linear-gradient(180deg, #07080b 0%, rgba(7, 8, 11, 0.2) 28%, rgba(7, 8, 11, 0.35) 75%, #06070a 100%);
         }
 
         .text-center {
           text-align: center;
           position: relative;
-          z-index: 1;
+          z-index: 2;
         }
 
         .closing-badge-row {
@@ -86,10 +101,12 @@ export default function ClosingCta() {
           gap: 0.5rem;
           font-size: 0.74rem;
           letter-spacing: 0.14em;
-          color: #fbbf24;
-          background: rgba(245, 158, 11, 0.1);
-          border: 1px solid rgba(245, 158, 11, 0.22);
-          padding: 0.35rem 0.95rem;
+          color: #f8fafc;
+          background: rgba(13, 16, 24, 0.76);
+          border: 1px solid rgba(226, 232, 240, 0.32);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          padding: 0.38rem 1rem;
           border-radius: 9999px;
           margin-bottom: 1.6rem;
         }
@@ -98,8 +115,7 @@ export default function ClosingCta() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 8px #f59e0b;
+          background: #e2e8f0;
         }
 
         .closing-headline {
@@ -135,27 +151,26 @@ export default function ClosingCta() {
           display: inline-flex;
           align-items: center;
           justify-content: space-between;
-          gap: 1.25rem;
-          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
-          color: #07070d;
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          gap: 1.1rem;
+          background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+          color: #07080b;
+          border: 1px solid rgba(255, 255, 255, 0.85);
           border-radius: 9999px;
-          padding: 0.45rem 0.52rem 0.45rem 1.85rem;
+          padding: 0.45rem 0.52rem 0.45rem 1.75rem;
           font-family: var(--font-sans);
-          font-size: 1rem;
+          font-size: 0.98rem;
           font-weight: 600;
           letter-spacing: -0.015em;
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px -4px rgba(255, 255, 255, 0.18);
-          transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease;
+          box-shadow: 0 10px 28px -6px rgba(226, 232, 240, 0.22), 0 4px 14px rgba(0, 0, 0, 0.35);
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, background 0.25s ease;
         }
 
         .apple-closing-primary-btn:hover {
           background: #ffffff;
+          border-color: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
-                      0 14px 38px -4px rgba(255, 255, 255, 0.35),
-                      0 4px 16px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 16px 34px -6px rgba(226, 232, 240, 0.32), 0 6px 18px rgba(0, 0, 0, 0.4);
         }
 
         .apple-closing-primary-btn:active {
@@ -163,44 +178,43 @@ export default function ClosingCta() {
         }
 
         .btn-arrow-circle {
-          width: 38px;
-          height: 38px;
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
-          background: #07070d;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #07080b;
+          border: 1px solid rgba(255, 255, 255, 0.14);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                      background-color 0.25s ease, 
-                      color 0.25s ease, 
+          transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                      background-color 0.25s ease,
+                      color 0.25s ease,
                       border-color 0.25s ease;
         }
 
         .apple-closing-primary-btn:hover .btn-arrow-circle {
-          transform: translateX(4px) scale(1.06);
-          background: #12121c;
-          border-color: rgba(245, 158, 11, 0.45);
-          color: #f59e0b;
+          transform: translateX(3px);
+          background: #12151f;
+          border-color: rgba(226, 232, 240, 0.48);
+          color: #f8fafc;
         }
 
         .apple-closing-secondary-btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255, 255, 255, 0.05);
-          color: #ffffff;
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.025) 100%);
+          color: rgba(255, 255, 255, 0.94);
           border: 1px solid rgba(255, 255, 255, 0.14);
           border-radius: 9999px;
-          padding: 0.85rem 1.85rem;
-          font-size: 0.96rem;
-          font-weight: 600;
+          padding: 0.85rem 1.8rem;
+          font-size: 0.95rem;
+          font-weight: 500;
           letter-spacing: -0.01em;
           cursor: pointer;
-          backdrop-filter: blur(16px);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.25);
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.25);
+          transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .apple-closing-secondary-btn:hover {

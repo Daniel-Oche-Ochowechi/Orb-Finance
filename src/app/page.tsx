@@ -13,8 +13,6 @@ import TrustCompliance from '@/components/TrustCompliance';
 import ClosingCta from '@/components/ClosingCta';
 import Footer from '@/components/Footer';
 import SocialRail from '@/components/SocialRail';
-import AmbientCanvas from '@/components/AmbientCanvas';
-import CursorGlow from '@/components/CursorGlow';
 import ScrollRevealProvider from '@/components/ScrollRevealProvider';
 import { EarlyAccessProvider } from '@/context/EarlyAccessContext';
 
@@ -23,10 +21,6 @@ export default function HomePage() {
     <EarlyAccessProvider>
       <ScrollRevealProvider>
         <div className="site-shell relative min-h-screen bg-deep">
-          {/* Dynamic Ambient Background Canvas & Cursor Follower */}
-          <AmbientCanvas />
-          <CursorGlow />
-
           {/* Left Social Dock */}
           <SocialRail />
 

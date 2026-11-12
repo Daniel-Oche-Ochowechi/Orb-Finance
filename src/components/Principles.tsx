@@ -30,7 +30,11 @@ export default function Principles() {
     <section className="page-section principles-root" id="principles">
       <div className="container">
         <div className="section-header-center">
-          <span className="section-label font-mono">PRINCIPLES</span>
+          <div className="principles-eyebrow-row">
+            <span className="principles-eyebrow-rule" aria-hidden="true" />
+            <span className="section-label">PRINCIPLES</span>
+            <span className="principles-eyebrow-rule" aria-hidden="true" />
+          </div>
           <h2 className="section-headline">
             Our <span className="italic-accent gradient-shimmer">principles.</span>
           </h2>
@@ -39,11 +43,11 @@ export default function Principles() {
         <div className="principles-2x2-grid">
           {PRINCIPLES_DATA.map((p) => {
             return (
-              <div key={p.num} className="principle-card glass-surface">
+              <div key={p.num} className="principle-card">
                 <div className="principle-card-specular" aria-hidden="true" />
-                
+
                 <div className="principle-top-row">
-                  <span className="principle-num font-mono">{p.num}</span>
+                  <span className="principle-num">{p.num}</span>
                 </div>
 
                 <h3 className="principle-title">{p.title}</h3>
@@ -55,86 +59,139 @@ export default function Principles() {
       </div>
 
       <style jsx>{`
+        .principles-root {
+          padding: clamp(5rem, 9vw, 9rem) 0;
+          position: relative;
+          z-index: 2;
+        }
+
         .section-header-center {
           text-align: center;
-          margin-bottom: clamp(2.5rem, 4.8vw, 4.5rem);
+          max-width: 720px;
+          margin: 0 auto clamp(2.8rem, 5vw, 4.5rem);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .principles-eyebrow-row {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.85rem;
+          margin-bottom: 1.2rem;
+        }
+
+        .principles-eyebrow-rule {
+          width: 24px;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.55));
+        }
+
+        .principles-eyebrow-rule:last-child {
+          background: linear-gradient(90deg, rgba(226, 232, 240, 0.55), transparent);
         }
 
         .section-label {
-          font-family: var(--font-mono);
-          font-size: 0.74rem;
-          font-weight: 600;
-          letter-spacing: 0.18em;
-          color: #f59e0b;
+          font-family: var(--font-sans);
+          font-size: 0.66rem;
+          font-weight: 500;
+          letter-spacing: 0.24em;
+          color: rgba(203, 213, 225, 0.66);
           text-transform: uppercase;
-          margin-bottom: 1.1rem;
-          display: inline-block;
         }
 
         .section-headline {
-          font-size: clamp(2.2rem, 5vw, 4rem);
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 1.08;
+          font-size: clamp(2.4rem, 4.8vw, 3.9rem);
+          font-weight: 600;
+          letter-spacing: -0.038em;
+          line-height: 1.07;
           color: #ffffff;
+        }
+
+        .gradient-shimmer {
+          font-weight: 300;
+          background: linear-gradient(180deg, #ffffff 14%, #cbd5e1 85%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
 
         .principles-2x2-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: clamp(1.25rem, 2.4vw, 2rem);
+          gap: clamp(1.35rem, 2.4vw, 2rem);
         }
 
         .principle-card {
           position: relative;
-          padding: clamp(1.85rem, 3.2vw, 3rem) clamp(1.45rem, 2.8vw, 2.6rem);
-          border-radius: clamp(20px, 2.2vw, 26px);
+          padding: clamp(1.75rem, 3vw, 2.6rem) clamp(1.45rem, 2.8vw, 2.45rem);
+          border-radius: 28px;
+          background: linear-gradient(
+            165deg,
+            rgba(16, 19, 28, 0.88) 0%,
+            rgba(9, 11, 16, 0.94) 100%
+          );
+          border: 1px solid rgba(226, 232, 240, 0.12);
+          box-shadow: 0 24px 56px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+          gap: 0.85rem;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.3s ease,
+            box-shadow 0.4s ease;
         }
 
         .principle-card:hover {
-          transform: translateY(-3px);
-          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-4px);
+          border-color: rgba(226, 232, 240, 0.26);
+          box-shadow: 0 32px 68px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.14);
         }
 
         .principle-card-specular {
           position: absolute;
           top: 0;
-          left: 0;
-          right: 0;
+          left: 14%;
+          right: 14%;
           height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(226, 232, 240, 0.36) 50%,
+            transparent 100%
+          );
+          pointer-events: none;
         }
 
         .principle-top-row {
           display: flex;
           align-items: center;
-          margin-bottom: 0.5rem;
+          padding-bottom: 0.85rem;
+          margin-bottom: 0.4rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .principle-num {
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #fbbf24;
-          letter-spacing: 0.08em;
+          font-family: var(--font-sans);
+          font-size: 1.02rem;
+          font-weight: 300;
+          color: rgba(241, 245, 249, 0.82);
+          letter-spacing: 0.06em;
         }
 
         .principle-title {
-          font-size: 1.45rem;
-          font-weight: 700;
+          font-size: clamp(1.3rem, 1.8vw, 1.5rem);
+          font-weight: 550;
           color: #ffffff;
-          letter-spacing: -0.02em;
-          line-height: 1.3;
+          letter-spacing: -0.025em;
+          line-height: 1.32;
         }
 
         .principle-desc {
-          font-size: 1.06rem;
-          line-height: 1.68;
-          color: rgba(255, 255, 255, 0.68);
+          font-size: 0.98rem;
+          line-height: 1.66;
+          color: rgba(203, 213, 225, 0.66);
+          font-weight: 400;
         }
 
         @media (max-width: 860px) {

@@ -66,24 +66,34 @@ export default function EmailModal({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="email-modal-backdrop"
-            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 3000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div
-              className="email-modal-card"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Waitlist confirmation email"
-              initial={{ opacity: 0, y: 18, scale: 0.965 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 14, scale: 0.965 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.8 }}
-            >
+            <div className="email-modal-backdrop" onClick={onClose}>
+              <motion.div
+                style={{ width: '100%', maxWidth: '660px' }}
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, y: 18, scale: 0.965 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 14, scale: 0.965 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.8 }}
+              >
+                <div
+                  className="email-modal-card"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Waitlist confirmation email"
+                >
         {/* Top Header */}
         <div className="modal-header-bar">
           <div className="modal-header-info">
@@ -132,19 +142,20 @@ export default function EmailModal({
         <div className="modal-body-scroll">
           <div className="stationery-canvas">
             <div className="stationery-sheet">
-              {/* Obsidian Masthead */}
+              {/* Centered Obsidian Masthead */}
               <div className="sheet-masthead">
-                <div className="sheet-brand-left">
-                  <span className="sheet-brass-dot" aria-hidden="true" />
-                  <span className="sheet-brand-orb">ORB</span>
-                  <span className="sheet-brand-finance">FINANCE</span>
-                </div>
-                <span className="sheet-masthead-tag font-mono">PRIORITY REGISTER</span>
+                <img
+                  src="/images/orb-logo-white.png"
+                  alt="Orb Finance"
+                  className="sheet-masthead-logo"
+                />
+                <span className="sheet-masthead-rule" aria-hidden="true" />
+                <span className="sheet-masthead-tag">PRIORITY REGISTER</span>
               </div>
 
               {/* Letter Content */}
               <div className="sheet-body">
-                <p className="sheet-kicker font-mono">RESERVATION CONFIRMED</p>
+                <p className="sheet-kicker">RESERVATION CONFIRMED</p>
                 <h3 className="sheet-headline">
                   You are in <span className="sheet-headline-italic">orbit.</span>
                 </h3>
@@ -175,7 +186,7 @@ export default function EmailModal({
                     </div>
                     <div className="ledger-row">
                       <span className="ledger-key font-mono">OPENING DATE</span>
-                      <span className="ledger-val ledger-val-amber">{emailCopy.launchDate}</span>
+                      <span className="ledger-val">{emailCopy.launchDate}</span>
                     </div>
                     <div className="ledger-row ledger-row-last">
                       <span className="ledger-key font-mono">STATUS</span>
@@ -197,6 +208,11 @@ export default function EmailModal({
 
               {/* Stationery Footer */}
               <div className="sheet-footer">
+                <img
+                  src="/images/orb-logo-black.png"
+                  alt="Orb Finance"
+                  className="sheet-footer-logo"
+                />
                 <p className="sheet-footer-brand">
                   Orb Finance &nbsp;&middot;&nbsp; Opening {emailCopy.launchDate}
                 </p>
@@ -216,7 +232,9 @@ export default function EmailModal({
                   <span>Close</span>
                 </button>
               </div>
-            </motion.div>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -225,10 +243,10 @@ export default function EmailModal({
         .email-modal-backdrop {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.78);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          z-index: 120;
+          background: rgba(5, 6, 9, 0.84);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          z-index: 3000;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -236,17 +254,16 @@ export default function EmailModal({
         }
 
         .email-modal-card {
-          background: #0d0e15;
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          border-radius: 22px;
+          background: linear-gradient(165deg, #131621 0%, #0b0d12 100%);
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          border-radius: 24px;
           max-width: 660px;
           width: 100%;
           max-height: 90dvh;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.85);
+          box-shadow: 0 28px 64px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           overflow: hidden;
-          will-change: transform, opacity;
         }
 
         .modal-header-bar {
@@ -269,7 +286,7 @@ export default function EmailModal({
 
         .modal-badge {
           font-size: 0.68rem;
-          color: #fbbf24;
+          color: #e2e8f0;
           letter-spacing: 0.14em;
         }
 
@@ -336,7 +353,7 @@ export default function EmailModal({
 
         .modal-body-scroll {
           overflow-y: auto;
-          background: #f4f1ea;
+          background: #eef1f5;
           flex: 1;
         }
 
@@ -346,55 +363,43 @@ export default function EmailModal({
 
         .stationery-sheet {
           background: #ffffff;
-          border: 1px solid #e2ddd2;
-          border-radius: 4px;
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
           overflow: hidden;
           text-align: left;
-          color: #18181b;
+          color: #0b0d13;
         }
 
         .sheet-masthead {
-          background: #0b0d13;
-          padding: 1.35rem 1.9rem;
-          border-bottom: 2px solid #b8812e;
+          background: linear-gradient(180deg, #111520 0%, #090b10 100%);
+          padding: 1.85rem 1.9rem 1.55rem;
+          border-bottom: 1px solid #e2e8f0;
           display: flex;
+          flex-direction: column;
           align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
+          justify-content: center;
+          text-align: center;
+          gap: 0.72rem;
         }
 
-        .sheet-brand-left {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
+        .sheet-masthead-logo {
+          height: 40px;
+          width: auto;
+          display: block;
+          object-fit: contain;
         }
 
-        .sheet-brass-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #d99429;
-          flex-shrink: 0;
-        }
-
-        .sheet-brand-orb {
-          font-size: 0.95rem;
-          font-weight: 800;
-          letter-spacing: 0.22em;
-          color: #ffffff;
-        }
-
-        .sheet-brand-finance {
-          font-size: 0.62rem;
-          font-weight: 600;
-          letter-spacing: 0.24em;
-          color: #9ca3af;
+        .sheet-masthead-rule {
+          width: 40px;
+          height: 1px;
+          background: #334155;
         }
 
         .sheet-masthead-tag {
-          font-size: 0.62rem;
-          letter-spacing: 0.14em;
-          color: #9ca3af;
+          font-size: 0.58rem;
+          font-weight: 500;
+          letter-spacing: 0.24em;
+          color: #94a3b8;
         }
 
         .sheet-body {
@@ -402,46 +407,46 @@ export default function EmailModal({
         }
 
         .sheet-kicker {
-          font-size: 0.65rem;
+          font-size: 0.62rem;
           font-weight: 600;
-          letter-spacing: 0.18em;
-          color: #9a6518;
+          letter-spacing: 0.22em;
+          color: #64748b;
           margin: 0 0 0.65rem 0;
         }
 
         .sheet-headline {
           font-size: 1.65rem;
-          font-weight: 700;
+          font-weight: 600;
           line-height: 1.2;
-          letter-spacing: -0.025em;
+          letter-spacing: -0.03em;
           color: #0b0d13;
           margin: 0 0 1.4rem 0;
         }
 
         .sheet-headline-italic {
           font-style: italic;
-          font-weight: 400;
-          color: #4b5563;
+          font-weight: 300;
+          color: #475569;
         }
 
         .sheet-greeting {
           font-size: 0.92rem;
           font-weight: 600;
-          color: #111827;
+          color: #0b0d13;
           margin: 0 0 0.9rem 0;
         }
 
         .sheet-prose {
           font-size: 0.9rem;
           line-height: 1.7;
-          color: #374151;
+          color: #334155;
           margin: 0 0 0.9rem 0;
         }
 
         .ledger-slip {
-          background: #faf8f4;
-          border: 1px solid #e5e0d5;
-          border-radius: 3px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
           margin: 1.5rem 0;
           overflow: hidden;
         }
@@ -451,15 +456,15 @@ export default function EmailModal({
           align-items: center;
           justify-content: space-between;
           padding: 0.7rem 1.1rem;
-          background: #f4f0e8;
-          border-bottom: 1px solid #e5e0d5;
+          background: #f1f5f9;
+          border-bottom: 1px solid #e2e8f0;
         }
 
         .ledger-slip-title {
           font-size: 0.62rem;
           font-weight: 600;
           letter-spacing: 0.14em;
-          color: #57534e;
+          color: #64748b;
         }
 
         .ledger-slip-ref {
@@ -479,7 +484,7 @@ export default function EmailModal({
           justify-content: space-between;
           gap: 1rem;
           padding: 0.62rem 0;
-          border-bottom: 1px solid #ece7dc;
+          border-bottom: 1px solid #e2e8f0;
         }
 
         .ledger-row-last {
@@ -489,7 +494,7 @@ export default function EmailModal({
         .ledger-key {
           font-size: 0.64rem;
           letter-spacing: 0.08em;
-          color: #78716c;
+          color: #64748b;
           flex-shrink: 0;
         }
 
@@ -502,12 +507,8 @@ export default function EmailModal({
 
         .ledger-val-break {
           font-weight: 500;
-          color: #27272a;
+          color: #1e293b;
           word-break: break-all;
-        }
-
-        .ledger-val-amber {
-          color: #9a6518;
         }
 
         .ledger-val-status {
@@ -533,47 +534,59 @@ export default function EmailModal({
         }
 
         .sheet-signoff {
-          border-top: 1px solid #ece7dc;
+          border-top: 1px solid #e2e8f0;
           padding-top: 1.2rem;
         }
 
         .sheet-tagline {
           font-size: 0.86rem;
           font-style: italic;
-          color: #52525b;
+          color: #475569;
           margin: 0 0 0.25rem 0;
         }
 
         .sheet-team {
           font-size: 0.86rem;
-          font-weight: 700;
+          font-weight: 600;
           color: #0b0d13;
           margin: 0;
         }
 
         .sheet-footer {
-          background: #faf9f6;
-          border-top: 1px solid #e8e4dc;
-          padding: 1.15rem 1.9rem;
+          background: #f8fafc;
+          border-top: 1px solid #e2e8f0;
+          padding: 1.35rem 1.9rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .sheet-footer-logo {
+          height: 22px;
+          width: auto;
+          display: block;
+          margin-bottom: 0.65rem;
+          opacity: 0.78;
         }
 
         .sheet-footer-brand {
           font-size: 0.72rem;
           font-weight: 600;
-          color: #4b5563;
+          color: #334155;
           margin: 0 0 0.3rem 0;
         }
 
         .sheet-footer-meta {
           font-size: 0.68rem;
           line-height: 1.5;
-          color: #78716c;
+          color: #64748b;
           margin: 0 0 0.2rem 0;
         }
 
         .sheet-footer-copy {
           font-size: 0.68rem;
-          color: #a8a29e;
+          color: #94a3b8;
           margin: 0;
         }
 

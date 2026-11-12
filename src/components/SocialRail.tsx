@@ -67,11 +67,10 @@ export default function SocialRail() {
         }
 
         .social-icon-circle:hover {
-          color: #ffffff;
-          background: rgba(255, 255, 255, 0.15);
-          border-color: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px) scale(1.1);
-          box-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+          color: #f8fafc;
+          background: rgba(18, 21, 31, 0.9);
+          border-color: rgba(226, 232, 240, 0.42);
+          transform: translateY(-2px) scale(1.06);
         }
 
         .social-dock-line {

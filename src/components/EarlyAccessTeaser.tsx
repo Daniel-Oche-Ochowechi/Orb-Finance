@@ -115,39 +115,20 @@ export default function EarlyAccessTeaser() {
 
         .teaser-glass-card {
           position: relative;
-          background: linear-gradient(155deg, rgba(20, 22, 34, 0.85) 0%, rgba(10, 11, 18, 0.95) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: clamp(22px, 2.8vw, 32px);
+          background: linear-gradient(155deg, #12151f 0%, #0a0c11 100%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 28px;
           padding: clamp(1.85rem, 4.8vw, 4.5rem) clamp(1.25rem, 4.2vw, 4rem);
           overflow: hidden;
-          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.65), 
-                      0 0 0 1px rgba(255, 255, 255, 0.06),
-                      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          box-shadow: 0 28px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
         .card-ambient-glow {
-          position: absolute;
-          top: -30%;
-          right: 5%;
-          width: 500px;
-          height: 500px;
-          background: radial-gradient(
-            circle,
-            rgba(167, 139, 250, 0.15) 0%,
-            rgba(245, 158, 11, 0.08) 40%,
-            transparent 70%
-          );
-          filter: blur(70px);
-          pointer-events: none;
+          display: none;
         }
 
         .card-top-specular {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+          display: none;
         }
 
         .teaser-layout-grid {
@@ -176,15 +157,14 @@ export default function EarlyAccessTeaser() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 8px #f59e0b;
+          background: #e2e8f0;
         }
 
         .teaser-eyebrow {
           font-size: 0.74rem;
           font-weight: 600;
           letter-spacing: 0.18em;
-          color: #fbbf24;
+          color: #e2e8f0;
           text-transform: uppercase;
         }
 
@@ -198,8 +178,11 @@ export default function EarlyAccessTeaser() {
         }
 
         .teaser-gradient-shimmer {
-          background: linear-gradient(135deg, #ffffff 20%, #c084fc 60%, #fbbf24 100%);
+          position: relative;
+          z-index: 1;
+          background: linear-gradient(180deg, #ffffff 8%, #cbd5e1 64%, #94a3b8 100%);
           -webkit-background-clip: text;
+          background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
@@ -246,7 +229,7 @@ export default function EarlyAccessTeaser() {
         .perk-index {
           font-size: 0.8rem;
           font-weight: 600;
-          color: #fbbf24;
+          color: #e2e8f0;
           flex-shrink: 0;
         }
 
@@ -271,38 +254,30 @@ export default function EarlyAccessTeaser() {
         /* Right Pass Card */
         .pass-container {
           position: relative;
-          background: linear-gradient(145deg, rgba(26, 28, 44, 0.9) 0%, rgba(13, 14, 22, 0.96) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          border-radius: 24px;
-          padding: 2.8rem 2.4rem;
+          background: linear-gradient(155deg, #161925 0%, #0d0f16 100%);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 26px;
+          padding: 2.6rem 2.3rem;
           display: flex;
           flex-direction: column;
-          gap: 1.8rem;
-          backdrop-filter: blur(25px);
-          -webkit-backdrop-filter: blur(25px);
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), 
-                      0 0 0 1px rgba(192, 132, 252, 0.12),
-                      inset 0 1px 1px rgba(255, 255, 255, 0.22);
+          gap: 1.75rem;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.1);
           overflow: hidden;
         }
 
         .pass-specular {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+          display: none;
         }
 
         .pass-watermark-glow {
           position: absolute;
-          bottom: -40px;
-          right: -40px;
-          width: 160px;
-          height: 160px;
+          bottom: -45px;
+          right: -45px;
+          width: 180px;
+          height: 180px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(226, 232, 240, 0.09) 0%, transparent 70%);
           pointer-events: none;
         }
 
@@ -328,15 +303,14 @@ export default function EarlyAccessTeaser() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 6px #f59e0b;
+          background: #e2e8f0;
         }
 
         .pass-tier-tag {
-          color: #fbbf24;
-          background: rgba(245, 158, 11, 0.12);
-          border: 1px solid rgba(245, 158, 11, 0.25);
-          padding: 0.25rem 0.65rem;
+          color: #f8fafc;
+          background: rgba(226, 232, 240, 0.12);
+          border: 1px solid rgba(226, 232, 240, 0.28);
+          padding: 0.25rem 0.7rem;
           border-radius: 9999px;
           font-weight: 600;
         }
@@ -368,32 +342,31 @@ export default function EarlyAccessTeaser() {
           margin-top: 0.25rem;
         }
 
-        /* Apple CTA Button */
+        /* Warm Ivory CTA Button */
         .apple-pass-cta-btn {
           display: inline-flex;
           align-items: center;
           justify-content: space-between;
-          background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
-          color: #07070d;
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+          color: #07080b;
+          border: 1px solid rgba(255, 255, 255, 0.85);
           border-radius: 9999px;
           padding: 0.45rem 0.5rem 0.45rem 1.65rem;
           font-family: var(--font-sans);
-          font-size: 0.98rem;
+          font-size: 0.96rem;
           font-weight: 600;
           letter-spacing: -0.015em;
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px -4px rgba(255, 255, 255, 0.18);
-          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 10px 28px -6px rgba(226, 232, 240, 0.22), 0 4px 14px rgba(0, 0, 0, 0.35);
+          transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
           width: 100%;
         }
 
         .apple-pass-cta-btn:hover {
           background: #ffffff;
+          border-color: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
-                      0 14px 36px -4px rgba(255, 255, 255, 0.35),
-                      0 4px 16px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 16px 34px -6px rgba(226, 232, 240, 0.32), 0 6px 18px rgba(0, 0, 0, 0.4);
         }
 
         .apple-pass-cta-btn:active {
@@ -402,26 +375,26 @@ export default function EarlyAccessTeaser() {
         }
 
         .btn-arrow-bubble {
-          width: 38px;
-          height: 38px;
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
-          background: #07070d;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #07080b;
+          border: 1px solid rgba(255, 255, 255, 0.14);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-                      background-color 0.25s ease, 
-                      color 0.25s ease, 
+          transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                      background-color 0.25s ease,
+                      color 0.25s ease,
                       border-color 0.25s ease;
         }
 
         .apple-pass-cta-btn:hover .btn-arrow-bubble {
-          transform: translateX(3px) scale(1.04);
-          background: #141420;
-          border-color: rgba(245, 158, 11, 0.45);
-          color: #f59e0b;
+          transform: translateX(3px);
+          background: #12151f;
+          border-color: rgba(226, 232, 240, 0.48);
+          color: #f8fafc;
         }
 
         .pass-discreet-footer {

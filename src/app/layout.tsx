@@ -24,6 +24,14 @@ export const metadata: Metadata = {
     template: '%s | Orb Finance',
   },
   applicationName: 'Orb Finance',
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png', sizes: '256x256' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png', sizes: '180x180' },
+    ],
+  },
   description:
     'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
   openGraph: {

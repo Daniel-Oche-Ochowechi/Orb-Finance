@@ -117,7 +117,7 @@ export default function FaqSection() {
           font-size: 0.74rem;
           font-weight: 600;
           letter-spacing: 0.18em;
-          color: #f59e0b;
+          color: #e2e8f0;
           text-transform: uppercase;
           margin-bottom: 1.1rem;
           display: inline-block;
@@ -133,8 +133,11 @@ export default function FaqSection() {
         }
 
         .faq-accent-text {
-          background: linear-gradient(135deg, #ffffff 20%, #c084fc 60%, #fbbf24 100%);
+          position: relative;
+          z-index: 1;
+          background: linear-gradient(180deg, #ffffff 8%, #cbd5e1 64%, #94a3b8 100%);
           -webkit-background-clip: text;
+          background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
@@ -146,32 +149,37 @@ export default function FaqSection() {
           margin: 0 auto;
         }
 
-        /* Pure Linear Stack with 1px Hairline Dividers */
+        /* Soft Rounded Accordion Stack */
         .faq-line-stack {
           display: flex;
           flex-direction: column;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          gap: 0.85rem;
         }
 
         .faq-row-item {
           position: relative;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: background-color 0.25s ease, border-color 0.25s ease;
+          background: linear-gradient(160deg, #11141e 0%, #0b0d12 100%);
+          border: 1px solid rgba(255, 255, 255, 0.085);
+          border-radius: 22px;
+          padding: 0 clamp(1rem, 2.2vw, 1.5rem);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+          transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .faq-row-item:hover {
-          background-color: rgba(255, 255, 255, 0.015);
+          border-color: rgba(255, 255, 255, 0.16);
+          transform: translateY(-1px);
         }
 
         .faq-row-item.is-expanded {
-          border-bottom-color: rgba(255, 255, 255, 0.18);
+          border-color: rgba(226, 232, 240, 0.3);
         }
 
         .faq-trigger {
           width: 100%;
           background: transparent;
           border: none;
-          padding: clamp(1.35rem, 2.8vw, 2rem) 0.5rem;
+          padding: clamp(1.25rem, 2.5vw, 1.75rem) 0.25rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -198,29 +206,39 @@ export default function FaqSection() {
 
         .faq-row-item:hover .faq-item-num,
         .faq-row-item.is-expanded .faq-item-num {
-          color: #fbbf24;
+          color: #e2e8f0;
         }
 
         .faq-question-title {
           font-family: var(--font-sans);
-          font-size: clamp(1.15rem, 2vw, 1.35rem);
+          font-size: clamp(1.1rem, 2vw, 1.3rem);
           font-weight: 600;
           letter-spacing: -0.02em;
           color: #ffffff;
-          line-height: 1.3;
+          line-height: 1.35;
           transition: color 0.2s ease;
         }
 
-        /* Minimalist Line Plus / Minus Icon */
+        /* Circular Minimalist Plus / Minus Icon */
         .faq-plus-icon {
-          width: 32px;
-          height: 32px;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.045);
+          border: 1px solid rgba(255, 255, 255, 0.09);
           position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          color: rgba(255, 255, 255, 0.6);
+          color: rgba(255, 255, 255, 0.65);
+          transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .faq-row-item.is-expanded .faq-plus-icon {
+          background: rgba(226, 232, 240, 0.12);
+          border-color: rgba(226, 232, 240, 0.35);
+          color: #f8fafc;
         }
 
         .icon-bar {
@@ -243,10 +261,6 @@ export default function FaqSection() {
         .icon-bar.vertical.rotated {
           transform: rotate(90deg);
           opacity: 0;
-        }
-
-        .faq-row-item.is-expanded .faq-plus-icon {
-          color: #ffffff;
         }
 
         /* Drawer */

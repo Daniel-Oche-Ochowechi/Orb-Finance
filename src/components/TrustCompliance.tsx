@@ -30,8 +30,12 @@ export default function TrustCompliance() {
       <div className="container">
         {/* Section Header */}
         <div className="trust-header-center">
-          <span className="trust-eyebrow font-mono">TRUST & COMPLIANCE</span>
-          
+          <div className="trust-eyebrow-row">
+            <span className="trust-eyebrow-rule" aria-hidden="true" />
+            <span className="trust-eyebrow">TRUST &amp; COMPLIANCE</span>
+            <span className="trust-eyebrow-rule" aria-hidden="true" />
+          </div>
+
           <h2 className="trust-headline">
             Institutional integrity. <br className="hidden md:inline" />
             <span className="italic-accent apple-shimmer-text">By design.</span>
@@ -42,19 +46,19 @@ export default function TrustCompliance() {
           </p>
         </div>
 
-        {/* 3-Column Apple Pro Bento Deck */}
+        {/* 3-Column Architectural Deck */}
         <div className="trust-pillars-grid">
           {TRUST_PILLARS.map((pillar) => {
             const IconComponent = pillar.icon;
             return (
-              <div key={pillar.num} className="trust-bento-card glass-surface">
+              <div key={pillar.num} className="trust-bento-card">
                 <div className="card-specular-edge" aria-hidden="true" />
 
                 <div className="card-top-row">
-                  <div className="trust-icon-box">
-                    <IconComponent size={20} strokeWidth={2} />
-                  </div>
-                  <span className="trust-num font-mono">{pillar.num}</span>
+                  <span className="trust-num">{pillar.num}</span>
+                  <span className="trust-icon-plain" aria-hidden="true">
+                    <IconComponent size={16} strokeWidth={1.65} />
+                  </span>
                 </div>
 
                 <div className="card-body">
@@ -69,15 +73,15 @@ export default function TrustCompliance() {
 
       <style jsx>{`
         .apple-trust-root {
-          padding: clamp(4.5rem, 8.5vw, 8.5rem) 0;
+          padding: clamp(5rem, 9vw, 9rem) 0;
           position: relative;
           z-index: 2;
         }
 
         .trust-header-center {
           text-align: center;
-          max-width: 800px;
-          margin: 0 auto clamp(2.75rem, 5vw, 5rem) auto;
+          max-width: 760px;
+          margin: 0 auto clamp(2.8rem, 5vw, 4.75rem) auto;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -85,129 +89,154 @@ export default function TrustCompliance() {
           z-index: 1;
         }
 
-        .trust-eyebrow {
-          font-size: 0.74rem;
-          font-weight: 600;
-          letter-spacing: 0.18em;
-          color: #f59e0b;
-          text-transform: uppercase;
+        .trust-eyebrow-row {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.85rem;
           margin-bottom: 1.2rem;
-          display: inline-block;
+        }
+
+        .trust-eyebrow-rule {
+          width: 24px;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.55));
+        }
+
+        .trust-eyebrow-rule:last-child {
+          background: linear-gradient(90deg, rgba(226, 232, 240, 0.55), transparent);
+        }
+
+        .trust-eyebrow {
+          font-family: var(--font-sans);
+          font-size: 0.66rem;
+          font-weight: 500;
+          letter-spacing: 0.24em;
+          color: rgba(203, 213, 225, 0.66);
+          text-transform: uppercase;
         }
 
         .trust-headline {
-          font-size: clamp(2.2rem, 5vw, 4rem);
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 1.08;
-          margin-bottom: 1.35rem;
+          font-size: clamp(2.4rem, 4.9vw, 3.9rem);
+          font-weight: 600;
+          letter-spacing: -0.038em;
+          line-height: 1.07;
+          margin-bottom: 1.3rem;
           color: #ffffff;
         }
 
         .apple-shimmer-text {
-          background: linear-gradient(135deg, #ffffff 20%, #c084fc 60%, #fbbf24 100%);
+          font-weight: 300;
+          background: linear-gradient(180deg, #ffffff 14%, #cbd5e1 85%);
           -webkit-background-clip: text;
+          background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
         .trust-lead-text {
-          font-size: clamp(1rem, 1.8vw, 1.15rem);
-          line-height: 1.7;
-          color: rgba(255, 255, 255, 0.68);
-          max-width: 680px;
+          font-size: clamp(1rem, 1.4vw, 1.14rem);
+          line-height: 1.68;
+          color: rgba(226, 232, 240, 0.64);
+          max-width: 660px;
+          font-weight: 400;
         }
 
-        /* 3-Column Bento Grid */
+        /* 3-Column Architectural Grid */
         .trust-pillars-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: clamp(1.25rem, 2.4vw, 2rem);
+          gap: clamp(1.35rem, 2.4vw, 2rem);
           position: relative;
           z-index: 1;
         }
 
         .trust-bento-card {
           position: relative;
-          padding: clamp(1.85rem, 3.4vw, 3.2rem) clamp(1.45rem, 2.8vw, 2.4rem);
-          border-radius: clamp(22px, 2.4vw, 28px);
-          background: rgba(14, 16, 26, 0.72);
-          border: 1px solid rgba(255, 255, 255, 0.11);
-          backdrop-filter: blur(20px) saturate(165%);
-          -webkit-backdrop-filter: blur(20px) saturate(165%);
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+          padding: clamp(1.7rem, 3vw, 2.45rem) clamp(1.45rem, 2.6vw, 2.15rem);
+          border-radius: 28px;
+          background: linear-gradient(
+            165deg,
+            rgba(16, 19, 28, 0.88) 0%,
+            rgba(9, 11, 16, 0.94) 100%
+          );
+          border: 1px solid rgba(226, 232, 240, 0.12);
+          box-shadow: 0 24px 56px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
-          gap: clamp(1.25rem, 2.2vw, 2rem);
+          gap: 1.15rem;
           overflow: hidden;
-          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.3s ease,
+            box-shadow 0.4s ease;
         }
 
         .trust-bento-card:hover {
           transform: translateY(-4px);
-          border-color: rgba(255, 255, 255, 0.22);
-          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+          border-color: rgba(226, 232, 240, 0.26);
+          box-shadow: 0 32px 68px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.14);
         }
 
         .card-specular-edge {
           position: absolute;
           top: 0;
-          left: 0;
-          right: 0;
+          left: 14%;
+          right: 14%;
           height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(226, 232, 240, 0.36) 50%,
+            transparent 100%
+          );
+          pointer-events: none;
         }
 
         .card-top-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          padding-bottom: 0.85rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .trust-icon-box {
-          width: 46px;
-          height: 46px;
-          border-radius: 14px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #c084fc;
-          display: flex;
+        .trust-icon-plain {
+          display: inline-flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.25s ease;
+          color: rgba(203, 213, 225, 0.54);
+          transition: color 0.25s ease;
         }
 
-        .trust-bento-card:hover .trust-icon-box {
-          background: rgba(192, 132, 252, 0.15);
-          border-color: rgba(192, 132, 252, 0.35);
+        .trust-bento-card:hover .trust-icon-plain {
           color: #ffffff;
-          transform: scale(1.05);
         }
 
         .trust-num {
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #fbbf24;
-          letter-spacing: 0.08em;
+          font-family: var(--font-sans);
+          font-size: 1.02rem;
+          font-weight: 300;
+          color: rgba(241, 245, 249, 0.82);
+          letter-spacing: 0.06em;
         }
 
         .card-body {
           display: flex;
           flex-direction: column;
-          gap: 0.85rem;
+          gap: 0.65rem;
         }
 
         .card-title {
-          font-size: 1.45rem;
-          font-weight: 700;
+          font-size: clamp(1.25rem, 1.7vw, 1.42rem);
+          font-weight: 550;
           color: #ffffff;
-          letter-spacing: -0.02em;
-          line-height: 1.25;
+          letter-spacing: -0.025em;
+          line-height: 1.28;
         }
 
         .card-desc {
-          font-size: 1.05rem;
-          line-height: 1.68;
-          color: rgba(255, 255, 255, 0.68);
+          font-size: 0.96rem;
+          line-height: 1.66;
+          color: rgba(203, 213, 225, 0.66);
+          font-weight: 400;
         }
 
         @media (max-width: 992px) {

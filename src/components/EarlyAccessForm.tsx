@@ -427,7 +427,7 @@ export default function EarlyAccessForm() {
           right: 15%;
           width: 500px;
           height: 500px;
-          background: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 70%);
+          background: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(226, 232, 240, 0.1) 40%, transparent 70%);
           filter: blur(65px);
           pointer-events: none;
         }
@@ -455,8 +455,8 @@ export default function EarlyAccessForm() {
           width: 7px;
           height: 7px;
           border-radius: 50%;
-          background: #f59e0b;
-          box-shadow: 0 0 8px #f59e0b;
+          background: #cbd5e1;
+          box-shadow: 0 0 8px #cbd5e1;
         }
 
         .access-main-title {
@@ -519,9 +519,9 @@ export default function EarlyAccessForm() {
         .privilege-num {
           font-size: 0.68rem;
           font-weight: 700;
-          color: #f59e0b;
-          background: rgba(245, 158, 11, 0.1);
-          border: 1px solid rgba(245, 158, 11, 0.22);
+          color: #cbd5e1;
+          background: rgba(226, 232, 240, 0.1);
+          border: 1px solid rgba(226, 232, 240, 0.22);
           border-radius: 6px;
           padding: 0.15rem 0.4rem;
           line-height: 1;
@@ -602,7 +602,7 @@ export default function EarlyAccessForm() {
         }
 
         .form-field-wrap:focus-within :global(.form-field-icon) {
-          color: #f59e0b;
+          color: #cbd5e1;
         }
 
         .text-field {
@@ -619,9 +619,9 @@ export default function EarlyAccessForm() {
         }
 
         .text-field:focus {
-          border-color: rgba(245, 158, 11, 0.6);
+          border-color: rgba(226, 232, 240, 0.6);
           background: rgba(255, 255, 255, 0.08);
-          box-shadow: 0 0 0 3.5px rgba(245, 158, 11, 0.16);
+          box-shadow: 0 0 0 3.5px rgba(226, 232, 240, 0.16);
         }
 
         .text-field.input-invalid {
@@ -719,7 +719,7 @@ export default function EarlyAccessForm() {
         }
 
         :global(.apple-check-glyph) {
-          color: #f59e0b;
+          color: #cbd5e1;
           animation: checkPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -790,8 +790,8 @@ export default function EarlyAccessForm() {
         .submit-cta-pill:hover .cta-arrow-circle {
           transform: translateX(3px) scale(1.04);
           background: #141420;
-          border-color: rgba(245, 158, 11, 0.45);
-          color: #f59e0b;
+          border-color: rgba(226, 232, 240, 0.45);
+          color: #cbd5e1;
         }
 
         .spinner-wrapper {
@@ -858,7 +858,7 @@ export default function EarlyAccessForm() {
         }
 
         .text-gold {
-          color: #fbbf24;
+          color: #e2e8f0;
         }
 
         .success-status-pill {
@@ -868,7 +868,7 @@ export default function EarlyAccessForm() {
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.12em;
-          color: #f59e0b;
+          color: #cbd5e1;
           margin-bottom: 0.5rem;
         }
 

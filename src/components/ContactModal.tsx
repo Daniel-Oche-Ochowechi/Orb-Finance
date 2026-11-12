@@ -138,41 +138,48 @@ export default function ContactModal() {
       <AnimatePresence>
         {isContactOpen && (
           <motion.div
-            className="contact-modal-backdrop"
-            onClick={closeContact}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 3000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div
-              className="contact-modal-card"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Contact Orb Institutional Desk"
-              initial={{ opacity: 0, y: 20, scale: 0.965 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.965 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
-            >
-              <div className="ambient-gold-glow" />
-              <div className="ambient-violet-glow" />
+            <div className="contact-modal-backdrop" onClick={closeContact}>
+              <motion.div
+                style={{ width: '100%', maxWidth: '580px' }}
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, y: 20, scale: 0.965 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 16, scale: 0.965 }}
+                transition={{ type: 'spring', stiffness: 360, damping: 32, mass: 0.85 }}
+              >
+                <div
+                  className="contact-modal-card"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Contact Orb Institutional Desk"
+                >
+                  <button onClick={closeContact} className="modal-close-icon" aria-label="Close modal" type="button">
+                    <X size={18} />
+                  </button>
 
-              <button onClick={closeContact} className="modal-close-icon" aria-label="Close modal" type="button">
-                <X size={18} />
-              </button>
-
-              <AnimatePresence mode="wait" initial={false}>
-                {successData ? (
-                  <motion.div
-                    key="contact-success"
-                    className="success-view"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                  >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {successData ? (
+                      <motion.div
+                        key="contact-success"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <div className="success-view">
                     <div className="success-icon-ring">
                       <CheckCircle2 size={32} />
                     </div>
@@ -195,16 +202,17 @@ export default function ContactModal() {
                     <button onClick={closeContact} className="success-done-btn" type="button">
                       Done
                     </button>
+                        </div>
                   </motion.div>
                 ) : (
                   <motion.div
                     key="contact-form"
-                    className="form-view"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                   >
+                    <div className="form-view">
             <div className="form-header">
               <div className="header-chips">
                 <span className="tag-direct">DIRECT LINE</span>
@@ -237,7 +245,7 @@ export default function ContactModal() {
                         onClick={() => setCategory(cat.id)}
                         className={`category-pill ${isSelected ? 'active' : ''}`}
                       >
-                        <Icon size={13} color={isSelected ? '#f59e0b' : 'rgba(255,255,255,0.4)'} />
+                        <Icon size={13} color={isSelected ? '#cbd5e1' : 'rgba(255,255,255,0.4)'} />
                         <span className="category-label">{cat.label}</span>
                       </button>
                     );
@@ -331,11 +339,14 @@ export default function ContactModal() {
                   <span className="ref-tag">Ref: ORB-DIRECT</span>
                 </div>
               </form>
+                    </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
-    </motion.div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -343,10 +354,10 @@ export default function ContactModal() {
         .contact-modal-backdrop {
           position: fixed;
           inset: 0;
-          z-index: 999;
-          background: rgba(0, 0, 0, 0.82);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
+          z-index: 3000;
+          background: rgba(5, 6, 9, 0.84);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -358,49 +369,28 @@ export default function ContactModal() {
           position: relative;
           width: 100%;
           max-width: 580px;
-          border-radius: 24px;
-          background: #0d0e17;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+          border-radius: 26px;
+          background: linear-gradient(165deg, #131621 0%, #0b0d12 100%);
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          box-shadow: 0 28px 64px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           padding: clamp(1.4rem, 3.5vw, 2rem);
           color: #ffffff;
           overflow: hidden;
           max-height: 92vh;
           overflow-y: auto;
-          will-change: transform, opacity;
-        }
-
-        .ambient-gold-glow {
-          position: absolute;
-          top: -60px;
-          left: -60px;
-          width: 260px;
-          height: 260px;
-          background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .ambient-violet-glow {
-          position: absolute;
-          bottom: -60px;
-          right: -60px;
-          width: 260px;
-          height: 260px;
-          background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
-          pointer-events: none;
         }
 
         .modal-close-icon {
           position: absolute;
           top: 1.25rem;
           right: 1.25rem;
-          background: none;
-          border: none;
-          color: rgba(255, 255, 255, 0.5);
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.6);
           cursor: pointer;
           padding: 0.4rem;
           border-radius: 50%;
-          transition: all 0.15s ease;
+          transition: all 0.18s ease;
         }
 
         .modal-close-icon:hover {
@@ -440,7 +430,7 @@ export default function ContactModal() {
           font-size: 0.68rem;
           font-family: var(--font-mono);
           text-transform: uppercase;
-          color: #f59e0b;
+          color: #cbd5e1;
           letter-spacing: 0.08em;
         }
 
@@ -482,7 +472,7 @@ export default function ContactModal() {
           font-family: var(--font-mono);
           font-size: 1.1rem;
           font-weight: 700;
-          color: #f59e0b;
+          color: #cbd5e1;
           letter-spacing: 0.05em;
         }
 
@@ -521,9 +511,9 @@ export default function ContactModal() {
           font-family: var(--font-mono);
           padding: 0.15rem 0.55rem;
           border-radius: 9999px;
-          background: rgba(245, 158, 11, 0.15);
-          border: 1px solid rgba(245, 158, 11, 0.35);
-          color: #f59e0b;
+          background: rgba(226, 232, 240, 0.15);
+          border: 1px solid rgba(226, 232, 240, 0.35);
+          color: #cbd5e1;
         }
 
         .tag-date {
@@ -636,7 +626,7 @@ export default function ContactModal() {
         }
 
         .modal-input:focus {
-          border-color: rgba(245, 158, 11, 0.6);
+          border-color: rgba(226, 232, 240, 0.6);
           background: rgba(0, 0, 0, 0.3);
         }
 
@@ -655,7 +645,7 @@ export default function ContactModal() {
         }
 
         .modal-textarea:focus {
-          border-color: rgba(245, 158, 11, 0.6);
+          border-color: rgba(226, 232, 240, 0.6);
           background: rgba(0, 0, 0, 0.3);
         }
 
@@ -666,8 +656,7 @@ export default function ContactModal() {
         .submit-inquiry-btn {
           width: 100%;
           padding: 0.8rem 1.25rem;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+          border-radius: 9999px; background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
           border: none;
           color: #07070d;
           font-weight: 600;
@@ -677,7 +666,7 @@ export default function ContactModal() {
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
+          box-shadow: 0 10px 25px rgba(226, 232, 240, 0.2);
           transition: all 0.2s ease;
         }
 

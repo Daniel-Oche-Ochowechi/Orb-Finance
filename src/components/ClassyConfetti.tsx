@@ -22,16 +22,13 @@ interface Particle {
 }
 
 const LUXURY_PALETTE = [
-  '#F59E0B', // Amber Gold
-  '#FBBF24', // Warm Gold
-  '#FDE68A', // Champagne
-  '#FEF3C7', // Pale Gold
-  '#C084FC', // Lavender Violet
-  '#A855F7', // Royal Purple
-  '#7C3AED', // Deep Violet
-  '#34D399', // Emerald Shimmer
-  '#10B981', // Crisp Emerald
-  '#FFFFFF', // Diamond White
+  '#FFFFFF', // Pure White
+  '#F8FAFC', // Frost White
+  '#E2E8F0', // Sterling Silver
+  '#CBD5E1', // Brushed Platinum
+  '#94A3B8', // Muted Chrome
+  '#34D399', // Crisp Emerald
+  '#10B981', // Emerald Mint
 ];
 
 export default function ClassyConfetti({ duration = 4500 }: { duration?: number }) {

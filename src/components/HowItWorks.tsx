@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Terminal, Play, ArrowRight, ShieldCheck, Zap, Layers } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 
 const CODE_EXAMPLES = {
   curl: `curl -X POST "https://api.orb.finance/v1/settlements/quote" \\
@@ -98,90 +98,87 @@ export default function HowItWorks() {
     <section className="page-section how-root" id="how-it-works">
       <div className="container">
         <div className="section-header-center">
-          <span className="section-label font-mono">HOW IT WORKS</span>
-          <h2 className="section-headline">
+          <div className="how-eyebrow-row">
+            <span className="how-eyebrow-rule" aria-hidden="true" />
+            <span className="how-eyebrow">HOW IT WORKS</span>
+            <span className="how-eyebrow-rule" aria-hidden="true" />
+          </div>
+          <h2 className="how-headline">
             The pathway into <span className="italic-accent gradient-shimmer">orbit.</span>
           </h2>
-          <p className="section-subtext">
-            Three simple milestones between your product and global liquidity.
+          <p className="how-subtext">
+            Three quiet milestones between your product and global liquidity.
           </p>
         </div>
 
-        {/* 3 Step Progression Cards */}
+        {/* 3 Architectural Step Cards */}
         <div className="steps-cards-grid">
           {/* 01 */}
-          <div className="step-box glass-surface">
+          <div className="step-box">
             <div className="step-card-specular" aria-hidden="true" />
-            <div className="step-orbit-watermark font-mono">01</div>
-            
+
             <div className="step-top-row">
-              <span className="step-tag font-mono">MILESTONE ONE</span>
-              <span className="step-dot active" />
+              <span className="step-num">01</span>
+              <span className="step-tag">MILESTONE ONE</span>
             </div>
 
-            <h3 className="step-title">01. Connect</h3>
+            <h3 className="step-title">Connect</h3>
             <p className="step-description">
               Integrate once. Rehearse the entire flow in our sandbox before anything goes live.
             </p>
-            
-            <div className="step-chips-row font-mono">
-              <span className="chip-item">✦ Staging Sandbox</span>
-              <span className="chip-item">✦ Typed Client SDKs</span>
+
+            <div className="step-chips-row">
+              <span className="chip-item">Staging Sandbox</span>
+              <span className="chip-item">Typed Client SDKs</span>
             </div>
           </div>
 
           {/* 02 */}
-          <div className="step-box glass-surface">
+          <div className="step-box">
             <div className="step-card-specular" aria-hidden="true" />
-            <div className="step-orbit-watermark font-mono">02</div>
-            
+
             <div className="step-top-row">
-              <span className="step-tag font-mono">MILESTONE TWO</span>
-              <span className="step-dot active" />
+              <span className="step-num">02</span>
+              <span className="step-tag">MILESTONE TWO</span>
             </div>
 
-            <h3 className="step-title">02. Move</h3>
+            <h3 className="step-title">Move</h3>
             <p className="step-description">
-              Request a quote in the sender's currency, see exactly what the recipient will receive in theirs, and confirm. Orb handles screening, conversion and settlement.
+              Request a quote in the sender&apos;s currency, see exactly what the recipient will receive in theirs, and confirm. Orb handles screening, conversion and settlement.
             </p>
-            
-            <div className="step-chips-row font-mono">
-              <span className="chip-item">✦ Upfront Locked FX</span>
-              <span className="chip-item">✦ Instant Sanctions Pass</span>
+
+            <div className="step-chips-row">
+              <span className="chip-item">Upfront Locked FX</span>
+              <span className="chip-item">Instant Sanctions Pass</span>
             </div>
           </div>
 
           {/* 03 */}
-          <div className="step-box glass-surface">
+          <div className="step-box">
             <div className="step-card-specular" aria-hidden="true" />
-            <div className="step-orbit-watermark font-mono">03</div>
-            
+
             <div className="step-top-row">
-              <span className="step-tag font-mono">MILESTONE THREE</span>
-              <span className="step-dot active" />
+              <span className="step-num">03</span>
+              <span className="step-tag">MILESTONE THREE</span>
             </div>
 
-            <h3 className="step-title">03. Observe</h3>
+            <h3 className="step-title">Observe</h3>
             <p className="step-description">
               Watch every transaction in real time. Receive a signed webhook the moment a status changes.
             </p>
-            
-            <div className="step-chips-row font-mono">
-              <span className="chip-item">✦ HMAC Signed Webhooks</span>
-              <span className="chip-item">✦ Immutable Double-Entry</span>
+
+            <div className="step-chips-row">
+              <span className="chip-item">HMAC Signed Webhooks</span>
+              <span className="chip-item">Immutable Double-Entry</span>
             </div>
           </div>
         </div>
 
-        {/* Developer Sandbox Code Terminal */}
-        <div className="developer-terminal glass-surface">
+        {/* Minimalist Developer Sandbox Console */}
+        <div className="developer-terminal">
+          <div className="terminal-specular" aria-hidden="true" />
           <div className="terminal-header-bar">
             <div className="terminal-left-meta">
-              <div className="mac-traffic-dots">
-                <span className="dot red" />
-                <span className="dot yellow" />
-                <span className="dot green" />
-              </div>
               <div className="language-tabs font-mono">
                 {(['curl', 'node', 'python', 'webhook'] as const).map((lang) => {
                   const isActive = activeLang === lang;
@@ -195,10 +192,17 @@ export default function HowItWorks() {
                       {isActive && (
                         <motion.span
                           layoutId="howItWorksLangPill"
-                          className="lang-tab-pill"
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            borderRadius: '9999px',
+                            pointerEvents: 'none',
+                          }}
                           transition={{ type: 'spring', stiffness: 420, damping: 32 }}
                           aria-hidden="true"
-                        />
+                        >
+                          <span className="lang-tab-pill" />
+                        </motion.span>
                       )}
                       <span className="lang-tab-label">
                         {lang === 'webhook' ? 'Signed Webhook' : lang.toUpperCase()}
@@ -212,7 +216,7 @@ export default function HowItWorks() {
             <div className="terminal-actions font-mono">
               <span className="endpoint-pill">POST /v1/settlements/quote</span>
               <button className="copy-code-btn" onClick={handleCopy} title="Copy Code" type="button">
-                {copied ? <Check size={13} className="text-emerald" /> : <Copy size={13} />}
+                {copied ? <Check size={12} className="text-emerald" /> : <Copy size={12} />}
                 <span>{copied ? 'COPIED' : 'COPY'}</span>
               </button>
             </div>
@@ -220,141 +224,231 @@ export default function HowItWorks() {
 
           <div className="terminal-code-body">
             <AnimatePresence mode="wait" initial={false}>
-              <motion.pre
+              <motion.div
                 key={activeLang}
-                className="font-mono text-sm leading-relaxed text-slate-200"
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               >
-                <code>{CODE_EXAMPLES[activeLang]}</code>
-              </motion.pre>
+                <pre className="terminal-pre font-mono">
+                  <code>{CODE_EXAMPLES[activeLang]}</code>
+                </pre>
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
       </div>
 
       <style jsx>{`
-        .section-header-center {
-          text-align: center;
-          margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+        .how-root {
+          padding: clamp(5rem, 9vw, 9rem) 0;
+          position: relative;
+          z-index: 2;
         }
 
-        .section-header-center .section-subtext {
-          margin-left: auto;
-          margin-right: auto;
+        .section-header-center {
+          text-align: center;
+          max-width: 720px;
+          margin: 0 auto clamp(3rem, 5.5vw, 4.75rem);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .how-eyebrow-row {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.85rem;
+          margin-bottom: 1.2rem;
+        }
+
+        .how-eyebrow-rule {
+          width: 24px;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.55));
+        }
+
+        .how-eyebrow-rule:last-child {
+          background: linear-gradient(90deg, rgba(226, 232, 240, 0.55), transparent);
+        }
+
+        .how-eyebrow {
+          font-family: var(--font-sans);
+          font-size: 0.66rem;
+          font-weight: 500;
+          letter-spacing: 0.24em;
+          color: rgba(203, 213, 225, 0.66);
+          text-transform: uppercase;
+        }
+
+        .how-headline {
+          font-size: clamp(2.45rem, 4.8vw, 3.95rem);
+          font-weight: 600;
+          letter-spacing: -0.038em;
+          line-height: 1.07;
+          margin-bottom: 1.25rem;
+          color: #ffffff;
+        }
+
+        .gradient-shimmer {
+          font-weight: 300;
+          background: linear-gradient(180deg, #ffffff 14%, #cbd5e1 85%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .how-subtext {
+          font-size: clamp(1.02rem, 1.4vw, 1.14rem);
+          line-height: 1.68;
+          color: rgba(226, 232, 240, 0.64);
+          max-width: 560px;
+          font-weight: 400;
         }
 
         .steps-cards-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: clamp(1.25rem, 2.5vw, 2rem);
-          margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+          gap: clamp(1.35rem, 2.4vw, 2rem);
+          margin-bottom: clamp(2.5rem, 4.5vw, 3.8rem);
         }
 
         .step-box {
           position: relative;
-          padding: clamp(1.75rem, 3.2vw, 2.8rem) clamp(1.35rem, 2.6vw, 2.2rem);
-          border-radius: clamp(20px, 2.2vw, 26px);
+          padding: clamp(1.65rem, 2.8vw, 2.3rem) clamp(1.45rem, 2.5vw, 2.15rem);
+          border-radius: 28px;
+          background: linear-gradient(
+            165deg,
+            rgba(16, 19, 28, 0.88) 0%,
+            rgba(9, 11, 16, 0.94) 100%
+          );
+          border: 1px solid rgba(226, 232, 240, 0.12);
+          box-shadow: 0 24px 56px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.08);
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.3s ease,
+            box-shadow 0.4s ease;
         }
 
         .step-box:hover {
           transform: translateY(-4px);
-          border-color: rgba(255, 255, 255, 0.18);
+          border-color: rgba(226, 232, 240, 0.26);
+          box-shadow: 0 32px 68px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.14);
         }
 
         .step-card-specular {
           position: absolute;
           top: 0;
-          left: 0;
-          right: 0;
+          left: 14%;
+          right: 14%;
           height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
-        }
-
-        .step-orbit-watermark {
-          position: absolute;
-          top: -10px;
-          right: 18px;
-          font-size: 5.5rem;
-          font-weight: 800;
-          color: rgba(255, 255, 255, 0.03);
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(226, 232, 240, 0.36) 50%,
+            transparent 100%
+          );
           pointer-events: none;
-          line-height: 1;
         }
 
         .step-top-row {
           display: flex;
-          align-items: center;
+          align-items: baseline;
           justify-content: space-between;
-          margin-bottom: 1rem;
+          padding-bottom: 0.85rem;
+          margin-bottom: 1.45rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .step-num {
+          font-family: var(--font-sans);
+          font-size: 1.05rem;
+          font-weight: 300;
+          letter-spacing: 0.06em;
+          color: rgba(241, 245, 249, 0.82);
         }
 
         .step-tag {
-          font-size: 0.68rem;
-          font-weight: 600;
-          letter-spacing: 0.14em;
-          color: #fbbf24;
-        }
-
-        .step-dot.active {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 8px #10b981;
+          font-family: var(--font-sans);
+          font-size: 0.6rem;
+          font-weight: 500;
+          letter-spacing: 0.2em;
+          color: rgba(148, 163, 184, 0.65);
         }
 
         .step-title {
-          font-size: 1.6rem;
-          font-weight: 700;
+          font-size: clamp(1.45rem, 2vw, 1.75rem);
+          font-weight: 550;
+          letter-spacing: -0.028em;
           color: #ffffff;
-          margin-bottom: 0.85rem;
+          margin-bottom: 0.75rem;
         }
 
         .step-description {
-          font-size: 0.96rem;
-          line-height: 1.65;
-          color: rgba(255, 255, 255, 0.65);
-          margin-bottom: 1.8rem;
+          font-size: 0.95rem;
+          line-height: 1.66;
+          color: rgba(203, 213, 225, 0.66);
+          margin-bottom: 1.85rem;
           flex: 1;
+          font-weight: 400;
         }
 
         .step-chips-row {
           display: flex;
           flex-direction: column;
-          gap: 0.45rem;
+          gap: 0.42rem;
           border-top: 1px solid rgba(255, 255, 255, 0.06);
           padding-top: 1rem;
         }
 
         .chip-item {
+          font-family: var(--font-sans);
           font-size: 0.76rem;
-          color: rgba(255, 255, 255, 0.5);
+          font-weight: 500;
+          letter-spacing: 0.01em;
+          color: rgba(226, 232, 240, 0.56);
         }
 
-        /* Developer Sandbox Terminal */
+        /* Minimalist Developer Sandbox Console */
         .developer-terminal {
           position: relative;
-          background: rgba(12, 14, 22, 0.9);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 24px;
+          background: linear-gradient(
+            165deg,
+            rgba(15, 18, 26, 0.94) 0%,
+            rgba(8, 10, 14, 0.98) 100%
+          );
+          border: 1px solid rgba(226, 232, 240, 0.13);
+          border-radius: 28px;
           overflow: hidden;
-          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+          box-shadow: 0 32px 72px rgba(0, 0, 0, 0.66), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .terminal-specular {
+          position: absolute;
+          top: 0;
+          left: 10%;
+          right: 10%;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(226, 232, 240, 0.36) 50%,
+            transparent 100%
+          );
+          z-index: 3;
+          pointer-events: none;
         }
 
         .terminal-header-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: clamp(0.75rem, 1.8vw, 0.9rem) clamp(1rem, 2.6vw, 1.4rem);
-          background: rgba(255, 255, 255, 0.025);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          padding: clamp(0.85rem, 1.8vw, 1.05rem) clamp(1.1rem, 2.6vw, 1.55rem);
+          background: rgba(255, 255, 255, 0.02);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.065);
           flex-wrap: wrap;
           gap: 0.75rem 1rem;
         }
@@ -362,35 +456,19 @@ export default function HowItWorks() {
         .terminal-left-meta {
           display: flex;
           align-items: center;
-          gap: clamp(0.75rem, 2vw, 1.25rem);
           max-width: 100%;
           min-width: 0;
           flex-wrap: wrap;
         }
 
-        .mac-traffic-dots {
-          display: flex;
-          gap: 6px;
-        }
-
-        .dot {
-          width: 9px;
-          height: 9px;
-          border-radius: 50%;
-        }
-
-        .dot.red { background: #ef4444; }
-        .dot.yellow { background: #f59e0b; }
-        .dot.green { background: #10b981; }
-
         .language-tabs {
           position: relative;
           display: flex;
-          background: rgba(0, 0, 0, 0.4);
+          background: rgba(0, 0, 0, 0.42);
           padding: 0.22rem;
           border-radius: 9999px;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          gap: 0.2rem;
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          gap: 0.18rem;
           overflow-x: auto;
           max-width: 100%;
           scrollbar-width: none;
@@ -405,32 +483,30 @@ export default function HowItWorks() {
           position: relative;
           background: transparent;
           border: none;
-          padding: 0.34rem 0.78rem;
+          padding: 0.36rem 0.9rem;
           border-radius: 9999px;
-          font-size: 0.72rem;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.5);
+          font-size: 0.7rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          color: rgba(203, 213, 225, 0.54);
           cursor: pointer;
           white-space: nowrap;
           flex-shrink: 0;
-          transition: color 0.22s ease;
+          transition: color 0.2s ease;
         }
 
-        .lang-tab-btn:hover {
-          color: #ffffff;
-        }
-
+        .lang-tab-btn:hover,
         .lang-tab-btn.active {
           color: #ffffff;
         }
 
         .lang-tab-pill {
-          position: absolute;
-          inset: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.14);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          background: rgba(255, 255, 255, 0.11);
+          border: 1px solid rgba(226, 232, 240, 0.16);
         }
 
         .lang-tab-label {
@@ -441,17 +517,14 @@ export default function HowItWorks() {
         .terminal-actions {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.95rem;
           flex-wrap: wrap;
         }
 
         .endpoint-pill {
-          font-size: 0.7rem;
-          background: rgba(245, 158, 11, 0.12);
-          color: #fbbf24;
-          padding: 0.25rem 0.75rem;
-          border-radius: 9999px;
-          border: 1px solid rgba(245, 158, 11, 0.2);
+          font-size: 0.72rem;
+          color: rgba(203, 213, 225, 0.56);
+          letter-spacing: 0.02em;
           max-width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -461,36 +534,41 @@ export default function HowItWorks() {
         .copy-code-btn {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: rgba(255, 255, 255, 0.8);
-          padding: 0.35rem 0.75rem;
-          border-radius: 8px;
-          font-size: 0.7rem;
-          font-weight: 600;
+          gap: 0.42rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(226, 232, 240, 0.14);
+          color: rgba(241, 245, 249, 0.84);
+          padding: 0.36rem 0.9rem;
+          border-radius: 9999px;
+          font-size: 0.66rem;
+          font-weight: 500;
+          letter-spacing: 0.08em;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
 
         .copy-code-btn:hover {
-          background: rgba(255, 255, 255, 0.14);
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(226, 232, 240, 0.28);
           color: #ffffff;
         }
 
-        .text-emerald { color: #34d399; }
+        .text-emerald {
+          color: #34d399;
+        }
 
         .terminal-code-body {
-          padding: clamp(1.1rem, 2.8vw, 1.8rem);
+          padding: clamp(1.25rem, 3vw, 2rem);
           overflow-x: auto;
-          background: rgba(0, 0, 0, 0.45);
+          background: rgba(5, 6, 9, 0.55);
           min-height: 220px;
         }
 
-        .terminal-code-body pre {
+        .terminal-pre {
           margin: 0;
-          line-height: 1.7;
-          font-size: clamp(0.76rem, 1.4vw, 0.875rem);
+          line-height: 1.72;
+          font-size: clamp(0.76rem, 1.35vw, 0.86rem);
+          color: rgba(226, 232, 240, 0.88);
         }
 
         @media (max-width: 992px) {

@@ -54,7 +54,7 @@ export default function AmbientCanvas() {
         this.opacity = Math.random() * 0.42 + 0.16;
         this.color =
           Math.random() > 0.65
-            ? '#fbbf24'
+            ? '#e2e8f0'
             : Math.random() > 0.3
             ? '#c084fc'
             : '#ffffff';
