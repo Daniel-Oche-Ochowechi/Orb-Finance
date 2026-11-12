@@ -385,6 +385,9 @@ html.light-mode .gradient-shimmer {
 .stagger-4 { transition-delay: 0.32s; }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .reveal-init {
     opacity: 1 !important;
     transform: none !important;

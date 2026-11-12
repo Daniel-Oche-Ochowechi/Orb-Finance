@@ -19,11 +19,15 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Orb Finance | The settlement layer for a borderless economy',
+  title: {
+    default: 'Orb Finance — Every currency. One orbit.',
+    template: '%s | Orb Finance',
+  },
+  applicationName: 'Orb Finance',
   description:
     'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
   openGraph: {
-    title: 'Orb Finance | The settlement layer for a borderless economy',
+    title: 'Orb Finance — Every currency. One orbit.',
     description:
       'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027. Request early access.',
     url: 'https://orbfinance.com',
@@ -33,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Orb Finance | Every currency. One orbit.',
+    title: 'Orb Finance — Every currency. One orbit.',
     description:
       'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens 15 January 2027.',
   },

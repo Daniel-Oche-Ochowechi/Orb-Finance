@@ -13,8 +13,10 @@ export default function Footer() {
         <div className="footer-top-grid">
           {/* Brand Col */}
           <div className="footer-brand-col">
-            <Link href="/" className="footer-brand-pure" aria-label="Orb Home">
+            <Link href="/" className="footer-brand-pure" aria-label="Orb Finance — Home">
+              <span className="brand-dot" aria-hidden="true" />
               <span className="brand-wordmark-orb">ORB</span>
+              <span className="brand-wordmark-finance font-mono">FINANCE</span>
             </Link>
 
             <p className="footer-tagline">
@@ -92,7 +94,7 @@ export default function Footer() {
         .footer-root {
           background: rgba(6, 6, 10, 0.96);
           border-top: 1px solid var(--glass-border);
-          padding: 5rem 0 2.5rem 0;
+          padding: clamp(3.25rem, 6vw, 5rem) 0 clamp(1.75rem, 3vw, 2.5rem) 0;
           position: relative;
           z-index: 20;
         }
@@ -104,8 +106,8 @@ export default function Footer() {
         .footer-top-grid {
           display: grid;
           grid-template-columns: 1.4fr 2.6fr;
-          gap: 4rem;
-          margin-bottom: 4rem;
+          gap: clamp(2rem, 4.5vw, 4rem);
+          margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
         }
 
         .footer-brand-col {
@@ -118,20 +120,42 @@ export default function Footer() {
         .footer-brand-pure {
           display: inline-flex;
           align-items: center;
+          gap: 0.5rem;
           text-decoration: none;
+        }
+
+        .brand-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #fbbf24;
+          box-shadow: 0 0 10px rgba(251, 191, 36, 0.65);
+          flex-shrink: 0;
         }
 
         .brand-wordmark-orb {
           font-family: var(--font-sans);
-          font-size: 1.75rem;
+          font-size: 1.65rem;
           font-weight: 800;
           letter-spacing: -0.05em;
           color: #ffffff;
           line-height: 1;
         }
 
+        .brand-wordmark-finance {
+          font-size: 0.72rem;
+          font-weight: 600;
+          letter-spacing: 0.22em;
+          color: rgba(255, 255, 255, 0.6);
+          padding-top: 0.1em;
+        }
+
         html.light-mode .brand-wordmark-orb {
           color: #0f172a;
+        }
+
+        html.light-mode .brand-wordmark-finance {
+          color: #475569;
         }
 
         .footer-tagline {
@@ -145,8 +169,8 @@ export default function Footer() {
 
         .footer-nav-columns {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+          gap: clamp(1.5rem, 3vw, 2rem);
         }
 
         .col-header {
@@ -209,18 +233,8 @@ export default function Footer() {
           color: var(--text-primary);
         }
 
-        @media (max-width: 992px) {
+        @media (max-width: 900px) {
           .footer-top-grid {
-            grid-template-columns: 1fr;
-            gap: 3rem;
-          }
-          .footer-nav-columns {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        @media (max-width: 600px) {
-          .footer-nav-columns {
             grid-template-columns: 1fr;
           }
         }

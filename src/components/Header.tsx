@@ -167,9 +167,16 @@ export default function Header() {
       {/* Sticky Full-Width Apple Navigation Bar */}
       <header className={`sticky-nav-header ${isScrolled ? 'is-scrolled' : ''}`}>
         <div className="nav-container">
-          {/* Brand Wordmark: Clean, Monolithic 'ORB' */}
-          <a href="#" onClick={scrollToTop} className="nav-brand-wordmark" aria-label="Orb Home">
-            <span>ORB</span>
+          {/* Brand Wordmark: Crisp 'ORB FINANCE' title lockup */}
+          <a
+            href="#"
+            onClick={scrollToTop}
+            className="nav-brand-wordmark"
+            aria-label="Orb Finance — Every currency. One orbit."
+          >
+            <span className="brand-dot" aria-hidden="true" />
+            <span className="brand-primary">ORB</span>
+            <span className="brand-secondary font-mono">FINANCE</span>
           </a>
 
           {/* Desktop Navigation Links — Pure Unboxed Typography */}
@@ -252,8 +259,11 @@ export default function Header() {
                   scrollToTop(e);
                 }}
                 className="mobile-brand"
+                aria-label="Orb Finance — Home"
               >
-                <span>ORB</span>
+                <span className="brand-dot" aria-hidden="true" />
+                <span className="brand-primary">ORB</span>
+                <span className="brand-secondary font-mono">FINANCE</span>
               </a>
               <button
                 className="mobile-close-btn"
@@ -416,18 +426,39 @@ export default function Header() {
 
         /* Brand Wordmark */
         .nav-brand-wordmark {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
           font-family: var(--font-sans);
-          font-size: clamp(1.35rem, 2.2vw, 1.6rem);
+          font-size: clamp(1.28rem, 2vw, 1.52rem);
           font-weight: 800;
           letter-spacing: -0.05em;
           color: #ffffff;
           text-decoration: none;
           line-height: 1;
+          white-space: nowrap;
           transition: opacity 0.2s ease;
         }
 
         .nav-brand-wordmark:hover {
-          opacity: 0.85;
+          opacity: 0.88;
+        }
+
+        .brand-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #fbbf24;
+          box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+          flex-shrink: 0;
+        }
+
+        .brand-secondary {
+          font-size: clamp(0.62rem, 1vw, 0.72rem);
+          font-weight: 600;
+          letter-spacing: 0.22em;
+          color: rgba(255, 255, 255, 0.62);
+          padding-top: 0.08em;
         }
 
         /* Pure Unboxed Links Deck */
@@ -577,12 +608,16 @@ export default function Header() {
         }
 
         .mobile-brand {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
           font-family: var(--font-sans);
-          font-size: 1.75rem;
+          font-size: 1.55rem;
           font-weight: 800;
           letter-spacing: -0.05em;
           color: #ffffff;
           text-decoration: none;
+          line-height: 1;
         }
 
         .mobile-close-btn {
