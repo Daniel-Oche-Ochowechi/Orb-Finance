@@ -113,7 +113,7 @@ export default function Footer() {
               <span>Instagram</span>
               <ArrowUpRight size={12} />
             </a>
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="footer-social-pill">
+            <a href="https://x.com/OrbFinanceHq" target="_blank" rel="noopener noreferrer" className="footer-social-pill" aria-label="Orb Finance on X (@OrbFinanceHq)">
               <span>X</span>
               <ArrowUpRight size={12} />
             </a>

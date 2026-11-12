@@ -124,7 +124,7 @@ export default function EmailModal({
         <div className="envelope-metadata-bar">
           <div>
             <span className="meta-key">From:</span>{' '}
-            <span className="meta-val">Orb Finance &lt;hello@orbfinance.com&gt;</span>
+            <span className="meta-val">Orb Finance &lt;hello@orbfinance.co&gt;</span>
           </div>
           <div>
             <span className="meta-key">To:</span>{' '}
@@ -221,6 +221,16 @@ export default function EmailModal({
                   {emailCopy.referenceId}).
                 </p>
                 <p className="sheet-footer-copy">&copy; 2026 Orb Finance. All rights reserved.</p>
+                <p className="sheet-footer-social">
+                  <a
+                    href="https://x.com/OrbFinanceHq"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sheet-footer-x-link font-mono"
+                  >
+                    X / @OrbFinanceHq
+                  </a>
+                </p>
               </div>
             </div>
           </div>
@@ -622,7 +632,26 @@ export default function EmailModal({
         .sheet-footer-copy {
           font-size: 0.68rem;
           color: #94a3b8;
+          margin: 0 0 0.45rem 0;
+        }
+
+        .sheet-footer-social {
           margin: 0;
+        }
+
+        .sheet-footer-x-link {
+          font-size: 0.66rem;
+          letter-spacing: 0.06em;
+          color: #475569;
+          text-decoration: none;
+          border-bottom: 1px solid #cbd5e1;
+          padding-bottom: 1px;
+          transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sheet-footer-x-link:hover {
+          color: #0b0d13;
+          border-color: #64748b;
         }
 
         .modal-footer-bar {

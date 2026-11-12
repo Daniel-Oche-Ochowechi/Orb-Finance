@@ -358,8 +358,13 @@ export function renderWaitlistConfirmationEmail(
               <p style="margin:0 0 4px 0;font-family:${fontSans};font-size:11px;line-height:1.5;color:#64748b;">
                 Sent to ${safeEmail} following your early access registration (${safeReferenceId}).
               </p>
-              <p style="margin:0;font-family:${fontSans};font-size:11px;color:#94a3b8;">
+              <p style="margin:0 0 8px 0;font-family:${fontSans};font-size:11px;color:#94a3b8;">
                 &copy; 2026 Orb Finance. All rights reserved.
+              </p>
+              <p style="margin:0;font-family:${fontMono};font-size:10.5px;letter-spacing:0.06em;">
+                <a href="https://x.com/OrbFinanceHq" target="_blank" rel="noopener noreferrer" style="color:#475569;text-decoration:none;border-bottom:1px solid #cbd5e1;padding-bottom:1px;">
+                  X / @OrbFinanceHq
+                </a>
               </p>
             </td>
           </tr>

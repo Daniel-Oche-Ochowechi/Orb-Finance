@@ -45,6 +45,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@OrbFinanceHq',
+    creator: '@OrbFinanceHq',
     title: 'Orb Finance — Every currency. One orbit.',
     description:
       'Send your local currency to anyone, anywhere. They receive the equivalent in theirs. Orb Finance opens Q2 (15 April 2027).',
