@@ -5,6 +5,10 @@ import {
   renderWaitlistConfirmationEmail,
   WaitlistEmailParams,
 } from './waitlistTemplate';
+import {
+  renderAdminOtpEmail,
+  AdminOtpEmailParams,
+} from './adminOtpTemplate';
 
 export type EmailProvider = 'resend' | 'smtp' | 'none';
 
@@ -305,6 +309,24 @@ export async function sendWaitlistConfirmationEmail(
 
   return dispatchTransactionalEmail({
     to: rendered.copy.email,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text,
+    inlineAssets,
+  });
+}
+
+export async function sendAdminOtpEmail(
+  params: AdminOtpEmailParams
+): Promise<SendEmailResult> {
+  const inlineAssets = loadInlineLogoAssets();
+  const rendered = renderAdminOtpEmail({
+    ...params,
+    useCidImages: inlineAssets.length === 2,
+  });
+
+  return dispatchTransactionalEmail({
+    to: rendered.email,
     subject: rendered.subject,
     html: rendered.html,
     text: rendered.text,

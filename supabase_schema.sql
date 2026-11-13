@@ -208,3 +208,62 @@ GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 GRANT INSERT ON public.waitlist_submissions, public.contact_inquiries TO anon, authenticated;
 GRANT ALL ON public.waitlist_submissions, public.contact_inquiries TO service_role;
 GRANT SELECT ON public.waitlist_metrics_summary, public.contact_metrics_summary TO service_role;
+
+-- ==============================================================================
+-- Admin Email OTP Verification Challenges & Supabase Auth Role Setup
+-- ==============================================================================
+-- Stores hashed, single-use 6-digit email OTP challenges for Supabase Auth admins.
+CREATE TABLE IF NOT EXISTS public.admin_otp_challenges (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  challenge_id TEXT NOT NULL UNIQUE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  code_hash TEXT NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  expires_at TIMESTAMPTZ NOT NULL,
+  consumed_at TIMESTAMPTZ,
+  ip_address TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_otp_challenges_email_exp
+ON public.admin_otp_challenges (LOWER(email), expires_at DESC);
+
+ALTER TABLE public.admin_otp_challenges ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow service role full access to admin_otp_challenges" ON public.admin_otp_challenges;
+CREATE POLICY "Allow service role full access to admin_otp_challenges"
+ON public.admin_otp_challenges
+FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);
+
+GRANT ALL ON public.admin_otp_challenges TO service_role;
+
+-- Secure helper to grant the Supabase Auth 'admin' role in raw_app_meta_data.
+-- Create your admin user in Supabase Dashboard -> Authentication -> Users (Email + Password),
+-- then run in Supabase SQL Editor:
+--   SELECT public.promote_supabase_admin('admin@orbfinance.co');
+CREATE OR REPLACE FUNCTION public.promote_supabase_admin(target_email TEXT)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth
+AS $$
+BEGIN
+  UPDATE auth.users
+  SET raw_app_meta_data = COALESCE(raw_app_meta_data, '{}'::jsonb) || jsonb_build_object(
+    'role', 'admin',
+    'roles', jsonb_build_array('admin')
+  )
+  WHERE LOWER(email) = LOWER(trim(target_email));
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'No Supabase Auth user found with email: %', target_email;
+  END IF;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.promote_supabase_admin(TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.promote_supabase_admin(TEXT) TO service_role;
